@@ -253,10 +253,13 @@ the run's folder.
 - `runs/<tag>/hookshot_log.txt`: first line `hookshot v2.1.0-rc.3-39-gbdfe09c (source ...)`; `vk: device 0: NVIDIA
   GeForce RTX 4090`; `vk: N presents, X fps` every 120 presents and `vi: N frames presented (X fps over the last 5.0 s)`;
   `vcores: <thread> ... ran without a core after 250 ms` (issue 1929's escapes, counted as `nocore=`).
-- Frame times: headless runs have no swapchain, so `RX_VK_FRAME_LOG` stays empty (it is written only in
-  `gpu/vk/vk_replay.cpp present_out`); hs-run.sh takes them from `HOS_PRESENT_TRACE` (`runs/<tag>/present.csv`: frame,
-  return_ns, interval_ns, ...: the game's own presents, frame limiter included). At the 60 cap intervals scatter around
-  16.67 ms, so `over16.7` counts about half the frames; read `over20` and `over25` for real drops.
+- Frame times: `RX_VK_FRAME_LOG=<csv>` writes a line per present (frame, seconds, frame time in ms). Builds from
+  60a4b84c on (main since #2354) write it in a headless run too: there the times are the CPU intervals after the
+  offscreen copy is submitted, without swapchain or display waits, so do not compare them with a windowed run's. Older
+  builds leave it empty without a swapchain. hs-run.sh takes its frame times from `HOS_PRESENT_TRACE` either way
+  (`runs/<tag>/present.csv`: frame, return_ns, interval_ns, ...: the game's own presents, frame limiter included). At
+  the 60 cap intervals scatter around 16.67 ms, so `over16.7` counts about half the frames; read `over20` and
+  `over25` for real drops.
 - Every Linux run on NVIDIA logs `vk: guest ... its dma-buf not imported (VkResult -2)` for each pool and falls back to
   a host-pointer import; the kernel then logs one `NVRM: memMap_IMPL: CPU mapping not supported for addressSpace: 0x1`
   (expected `nvrm=1`). The main session's rule: stop all runs and tell it at once if a run shows more NVRM lines, or any
@@ -279,9 +282,9 @@ Hyprland at run time. Nothing else may ever be sent there (no dispatch, keyword,
 `~/.config`); reading (`hyprctl version`, `clients -j`, `activewindow -j`, `monitors -j`, `getoption`) is allowed.
 
 - **When.** Headless stays the default. A window only for what needs a real swapchain and the compositor: the
-  present mode and V-Sync, frame pacing, frame generation's output (`RX_VK_FRAME_LOG` is written only with a
-  swapchain), the window's title. HDR cannot be tested here: the monitor (HP E243, 1920x1080 at 60 Hz, scale 1.25)
-  has no HDR.
+  present mode and V-Sync, frame pacing as the display sees it, frame generation's output, the window's title
+  (`RX_VK_FRAME_LOG` in a headless run has no swapchain or display waits in its times). HDR cannot be tested here:
+  the monitor (HP E243, 1920x1080 at 60 Hz, scale 1.25) has no HDR.
 - **The switch.** Only while `/home/mooki/Games/.hookshot-harness/window-ok` exists (the main session creates it
   while the user is away and removes it when he is back; agents never touch it). Without it `--window` exits 2 and
   starts nothing; a run whose turn in the gate comes after the file went starts nothing either (exit 5); a run in
