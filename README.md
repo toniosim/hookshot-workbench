@@ -8,7 +8,7 @@ it. It is not part of Hookshot and not endorsed by its maintainers.
 **No game files are here, and nothing made from them:** no dump, no saves, no built game, no data read out of the
 game's files. You need your own legally obtained game and your own Hookshot build.
 
-I work with coding agents (Claude). The `skills/` are the instructions those agents follow on my machine, and most of
+I work with coding agents (Claude, and GPT-6 Astra). The `skills/` are the instructions those agents follow on my machine, and most of
 the scripts were written by them under those rules, then run and checked here. The commits say so in their trailers.
 
 ## What is here
@@ -16,10 +16,11 @@ the scripts were written by them under those rules, then run and checked here. T
 | Folder | What | Start with |
 |---|---|---|
 | `skills/hookshot-workbench` | How to build Hookshot from source on Arch, run it unattended, test and debug it: the commands, the times they take, the traps | `SKILL.md` |
-| `skills/hookshot-pr-evidence` | The standard for a pull request and for anything posted: an issue that claims the work, the overlap search, the evidence to collect while working, the body's form | `SKILL.md`, `scripts/pr_overlap.py`, `scripts/panels.sh` |
+| `skills/hookshot-pr-evidence` | The standard for a pull request and for anything posted: the claim, the overlap search, the evidence to collect while working, the body's form | `SKILL.md`, `scripts/pr_overlap.py`, `scripts/panels.sh` |
 | `skills/hookshot-perf-compare` | Comparing two builds or settings honestly: runs in turn, a quiet machine, per-run tables, what counts as a difference | `SKILL.md` |
 | `skills/hookshot-scripted-play` | Playing the game without a controller: input scripts, the state line, saves at story points | `SKILL.md` |
 | `skills/hookshot-issue-triage` | Reading an issue or someone else's pull request and reproducing it on this hardware | `SKILL.md` |
+| `skills/hookshot-discord-updates` | Posting claims and pull request updates to the project's Discord as me, through my own signed-in browser tab: the fixed forms, the checks before a post, what I see first. Discord's terms do not allow automating a user account; I accepted that for a few short posts a day, and you should decide for yourself | `SKILL.md`, `scripts/discord_tab.mjs` |
 | `harness/` | The run wrapper and its helpers | `hs-run.sh` |
 | `gates/` | Queues that let many test runs share one GPU and one CPU without hurting each other or the desktop | `nx2navi-gpu-slot` |
 | `play/` | A driver that plays steps on a running game from its state line | `hsap.py` |

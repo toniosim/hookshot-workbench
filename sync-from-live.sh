@@ -11,7 +11,8 @@ here=$(cd "$(dirname "$0")" && pwd)
 H=/home/mooki/Games/.hookshot-harness
 S=/home/mooki/.agents/skills
 
-for s in hookshot-workbench hookshot-pr-evidence hookshot-perf-compare hookshot-scripted-play hookshot-issue-triage; do
+for s in hookshot-workbench hookshot-pr-evidence hookshot-perf-compare hookshot-scripted-play hookshot-issue-triage \
+         hookshot-discord-updates; do
     rm -rf "$here/skills/$s"
     cp -r "$S/$s" "$here/skills/$s"
 done

@@ -36,10 +36,13 @@ tag named); [offline] = run only without the game (tests, simulated game); [read
 - `HOS_INPUT_FRAME_CLOCK=1`: script times in game frames at 60 a second (steadier under load). `HOS_INPUT_EXCLUSIVE=1`:
   only the script drives. [read; both set by hsap below]
 - **What input cannot do yet:** in main, no analog stick values (eight directions at full push only); branch
-  `input-script-analog` (a draft pull request) adds `LX= LY= RX= RY=<-32767..32767>` tokens, the same as #926's control
-  socket; the harness copy `.hookshot-h-play2` has them (hsap `push`, `--analog`). No text or menu helpers (the pause
-  menu, shops and the ocarina are button sequences you must write; PR #2048 has pause-menu sequences); no save command
-  in main (the harness build's `!cheat 996` works [run newgame-2, house-2]).
+  `input-script-analog` adds `LX= LY= RX= RY=<-32767..32767>` tokens, the same as #926's control socket; the harness
+  copy `.hookshot-h-play2` has them (hsap `push`, `--analog`), and the game takes them: four pushes of the left stick
+  at the edge, a half, a quarter and an eighth moved Link four different ways, falling in that order [run village-1a;
+  `PlayHarness-files/analog-evidence/push_table.py` measures a push from the tap's lines]. The way is not in
+  proportion to the value (the game has its own curve from walk to run). No text or menu helpers (the pause menu,
+  shops and the ocarina are button sequences you must write; PR #2048 has pause-menu sequences); no save command in
+  main (the harness build's `!cheat 996` works [run newgame-2, house-2, village-1a]).
 
 ## The state tap (pull request #2292, branch `play-harness`; not in main yet)
 
@@ -58,9 +61,12 @@ newgame-2, house-2, yard-1]. `HOS_OOT_STATE_FLAGS=Name,0xHASH,...` adds `"flags"
 `"#<murmur3 of the value's name>"`); `HOS_OOT_STATE_CHANGES=1` adds `"changed":{"0x<hash>":value}` for every
 Bool/Int/Enum/UInt flag that changed: the way to find which flag an action sets. Checked in the game, field by field,
 in the report ("The tap's fields against the pictures"): right are map, pos (= the save's place at each save), facing
-(in play; -180 in a cutscene), camera (by steering), event, child, life, prompt (`Open` at a door), music, flags; at 0
-only: rupees; not exercised: loading. **During a scene `pos` is where the scene parks the Player**, not where Link is
-drawn. Check offline: `python -I -B tests/test_oot_state_tap.py --cc gcc` [offline, passes with gcc and clang].
+(in play; -180 in a cutscene), camera (by steering), event, child, life (also when it changes: a hit takes a quarter
+heart and the HUD agrees), prompt (`Open` at a door, `Crawl` at a crawl hole, `Talk` in a talk), music, flags, rupees
+(0, and the new count after a pickup, equal to the game's own flag; the HUD drew no counter to compare) [run
+village-1a for life, rupees, `Crawl`]; not exercised: loading. **During a scene `pos` is where the scene parks the
+Player**, not where Link is drawn. Check offline: `python -I -B tests/test_oot_state_tap.py --cc gcc` [offline,
+passes with gcc and clang].
 
 Harness builds (fast path of the workbench, `RX_RELEASE=1`, `RX_PGO`; `object keys: ... flags f08f29989d, hot flags
 fc9905f579`): `/home/mooki/Games/.hookshot-h-play` = branch `play-harness-local` cea9ba2f (worktree
@@ -143,3 +149,14 @@ contents and every game fact they showed are in `playthrough/NOTES.md`.
 - `test_recorder_sync.py` and `test_display_pointer.py` are timing-dependent under load (one failed on origin/main
   alone at load 98, the other in a loaded full run): compare at a quiet hour before blaming a branch.
 - A probe that walks into a talk or scene without a rule stops dead (yard-1): every script needs the held rule.
+- **A straight `walk` is only for open ground.** Between walls it ends `stuck`, and the script's next steps (a press,
+  a jump, "does he climb here?") then run somewhere else and prove nothing: in village-1a two of three tries at one
+  spot were made 13 m away from it. Use `plan` wherever the planner has a route, and read each step's result in
+  `probe.log` (and the picture) before believing what came after it. probe.py has no "stop unless reached" yet.
+- **`save` can be refused**: the game's own autosave has a cooldown after a load (the step answers `refused ...
+  request not taken (cooldown N)`; 12 s after control was too early, two minutes later it was taken) [run
+  village-1a]. Put the save at a segment's end, and check its result: the chain's `has_save` test passes on any old
+  slot in the folder.
+- **Picking something up can be an event** (a text to press through): the held rule handles it [run village-1a].
+- A probe that ends with its script ends the game by SIGTERM: `exit=143` in the summary line is the normal end.
+- The queue again: village-1a waited 2 h 48 min for 3 min 18 s of game. Put as much as fits into one 470 s run.

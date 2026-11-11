@@ -96,11 +96,13 @@ Keep it under `reports/<Topic>-files/` as you go; a body written from memory fai
 Things that were asked for in review every time they were missing: the base commit, the load, whether the run had a
 window, what the default is and who sets it, and what happens on Windows.
 
-## Before work starts: the issue, the claim and the overlap search
+## Before work starts: the claim, the issue and the overlap search
 
-The user wants **an issue for every pull request**, so the work is claimed (`docs/workflow.md`: claim on the issue and
-in Discord #dev-work with what, why and the hardware it can be tested on; the score is severity weight S0 8, S1 5,
-S2 3, S3 1, times reach, times confidence 1.0, 0.7 or 0.4).
+The work is claimed before it starts (`docs/workflow.md`: on the issue and in Discord, with what, why and the hardware
+it can be tested on; the score is severity weight S0 8, S1 5, S2 3, S3 1, times reach, times confidence 1.0, 0.7 or
+0.4). **A claim issue is opened only while there is no pull request yet.** On 2026-11-11 the maintainer closed four
+claim issues of ours the same day as duplicates of their pull requests ("closing the issue so the work is tracked in
+one place there"), so an issue next to a pull request that already exists is noise.
 
 1. Search first; add to an existing issue instead of opening a duplicate:
 
@@ -108,16 +110,21 @@ S2 3, S3 1, times reach, times confidence 1.0, 0.7 or 0.4).
        gh pr list --repo NotRexed/Hookshot --state all --search "<words>" --json number,title,state
        /home/mooki/.agents/skills/hookshot-pr-evidence/scripts/pr_overlap.py --branch <name>
 
-2. An existing issue: comment the claim there (what, why, hardware, the branch or pull request).
-3. None: open one. Blank issues are switched off, so write the body with the form's own headings
-   (`.github/ISSUE_TEMPLATE/1-game-problem.yml`, `2-build-problem.yml`, `3-idea.yml`) and its label (`bug` or
-   `enhancement`), and end it with the claim. Small fixes of one kind share one issue (the tests that fail on Arch).
+2. An existing issue: comment the claim there (what, why, hardware, the branch or pull request); the pull request
+   says `Fixes #N` (or `Refs #N` when it is one part) and names the tracking issue.
+3. No issue, and the pull request can be opened the same day (a fix that is already proven, a reviewer's follow-up):
+   no issue. The pull request is the record; its first paragraph and its Problem section carry what the issue would
+   have said, and it names the review or pull request it follows.
+4. No issue, and the work takes longer or needs a decision before it starts (a feature, a change of behaviour):
+   open one. Blank issues are switched off, so write the body with the form's own headings
+   (`.github/ISSUE_TEMPLATE/1-game-problem.yml`, `2-build-problem.yml`, `3-idea.yml`) and end it with the claim.
+   Small fixes of one kind share one issue. The maintainer may close it once the pull request exists.
 
-       gh issue create --repo NotRexed/Hookshot --title "<plain sentence>" --label bug --body-file <file>
+       gh issue create --repo NotRexed/Hookshot --title "<plain sentence>" --body-file <file>
 
-4. The pull request says `Fixes #N` (or `Refs #N` when it is one part) and names the tracking issue; rows go into
-   `reports/POSTED.md` and `reports/PR-INDEX.md`. We cannot post to Discord: the user pastes
-   `reports/drafts/DISCORD-dev-work.md`, which the main session keeps current.
+5. The claim and the pull request are announced in the Discord's #dev-agents by the main session (skill
+   `hookshot-discord-updates`: `Claiming …`, then `PR up …`). Rows go into `reports/POSTED.md` and
+   `reports/PR-INDEX.md`.
 
 A claim is dropped out loud when the work stops.
 

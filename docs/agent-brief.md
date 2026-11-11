@@ -34,10 +34,19 @@ Their rules bind you as they bind everyone. The ones that matter most:
    ...); it becomes the squash commit. The description opens with why the change is needed, in one or two plain
    sentences; then what changed, how it was tested (GPU, driver, place in the game, frame rates before and after where
    speed is claimed), what was not tested, and screenshots when the change shows on screen. Link the issue.
-5. **AI assistance is recorded** with trailers, as the maintainers do: `Assisted-by: Claude Opus 5.5` and
-   `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` at the end of each commit message.
-6. **Claims**: the project asks for a claim in its Discord (#dev-work) and on the issue before work starts. You never
-   post anywhere; say in your report what should be claimed, and the main session and the user do it.
+5. **AI assistance is recorded** with trailers, as the maintainers do, naming the model that did the work: since
+   2026-11-11 16:30 new agents run on GPT-6 Astra (`Assisted-by: GPT-6 Astra` and
+   `Co-Authored-By: GPT-6 Astra <noreply@openai.com>`); agents picked up from before keep
+   `Assisted-by: Claude Opus 5.5` and `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. At the end of each
+   commit message. At most 12 sub-agents run at once (the user's word of 2026-11-11).
+   **A check is updated, never removed**: when main or a review changes what a test covers, bring its checks to the
+   new code; do not delete one to make a rebase pass (a reviewer sent two of our pull requests back for that on
+   2026-11-11).
+6. **Claims**: the project asks for a claim in its Discord and on the issue before work starts. You never post
+   anywhere. Since 2026-11-11 16:42 the main session posts to the Discord's #dev-agents itself (skill
+   `hookshot-discord-updates`): write what should be claimed or announced as `reports/drafts/DISCORD-<lane>.md` in
+   that skill's forms (`Claiming (mooki000's agent): …`, `PR up …`, `Progress …`, `Needs review …`, `Needs testing …`),
+   two to eight lines with the pull request's or issue's link, and name the file in your final message.
 7. Hardware tiers: a change must not break NVIDIA RTX and AMD RX on Windows and Linux, or the Steam Deck, to help
    something else. Say what you could not test (Windows, AMD, real input devices).
 
@@ -80,6 +89,15 @@ Their rules bind you as they bind everyone. The ones that matter most:
   priority no longer starves the queue, but it is still only for single short runs the main session has named, never
   for a series. To see the state: `/tmp/nx2navi-gpu-slots/` has `queue/` and `yielded/` (the waiters), `holder.0`,
   `holder.1` (who runs), `last-kind`, `long-holds.log` (holds past 8 minutes are written there).
+- **Two games in one hold** (a co-op session with both games on the RTX 4090, so both pictures are in true colours;
+  since 2026-11-11 10:00, only with the main session's word for that one hold): ask the gate once with `--whole`; both
+  games are children of that one gate command (the guard ends anything of the harness that opens the card outside
+  it); the hold lasts 8 minutes at most. Start the second game only when the first has run a minute AND `nvidia-smi`
+  shows at least 12 GB of the card free AND `MemAvailable` in `/proc/meminfo` is at least 30 GB; if that does not come
+  within three minutes, end the hold and tell the main session. Write the three readings into the session's log.
+  A game on the Intel device holds up to 28 GB of system memory (its driver's shader preparation): never let one sit
+  waiting for a partner while other sessions run; start the Intel game last, or do without it. On 2026-11-11 10:28 a
+  second game was started with 7 GB available beside such an Intel game and went into swap.
 - **Windowed runs** (`hs-run.sh ... --window`: a real window on the user's desktop, never focused, at most two
   minutes, one at a time, the whole card): only for what needs a swapchain and the compositor (presentation, frame
   pacing, V-Sync, frame generation's output), only while the file `/home/mooki/Games/.hookshot-harness/window-ok`
@@ -144,8 +162,11 @@ The user wants every pull request at the level of his own earlier ones for the o
 - **Pictures**: several frames as one labelled picture with
   `/home/mooki/.agents/skills/hookshot-pr-evidence/scripts/panels.sh`; look at it; name it `hookshot-<topic>-<what>.jpg`
   and tell the main session, which uploads it.
-- **An issue for every pull request**: search first; say in your hand-off which existing issue it belongs to, or give
-  a draft of a new one in the form's headings (`reports/drafts/<Topic>-issue.md`) with the score and the hardware.
+- **A claim issue only while there is no pull request yet** (the user's word of 2026-11-11, after the maintainer
+  closed four of ours as duplicates of their pull requests): search first; say in your hand-off which existing issue
+  the work belongs to. If there is none and the pull request can be opened at once, no issue. If the work takes
+  longer or needs a decision first, give a draft of one in the form's headings (`reports/drafts/<Topic>-issue.md`)
+  with the score and the hardware.
 - Hand over the branch with its head, the title file and the body file with no placeholder left, then stop editing them.
 
 ## The public repository (since 2026-11-11)
