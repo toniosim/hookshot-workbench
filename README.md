@@ -18,14 +18,14 @@ the scripts were written by them under those rules, then run and checked here. T
 | `skills/hookshot-workbench` | How to build Hookshot from source on Arch, run it unattended, test and debug it: the commands, the times they take, the traps | `SKILL.md` |
 | `skills/hookshot-pr-evidence` | The standard for a pull request and for anything posted: the claim, the overlap search, the evidence to collect while working, the body's form | `SKILL.md`, `scripts/pr_overlap.py`, `scripts/panels.sh` |
 | `skills/hookshot-perf-compare` | Comparing two builds or settings honestly: runs in turn, a quiet machine, per-run tables, what counts as a difference | `SKILL.md` |
-| `skills/hookshot-scripted-play` | Playing the game without a controller: input scripts, the state line, saves at story points | `SKILL.md` |
+| `skills/hookshot-scripted-play` | Playing without a controller: inputs and state samples through the control bridge, the file driver for older builds, saves at story points | `SKILL.md` |
 | `skills/hookshot-issue-triage` | Reading an issue or someone else's pull request and reproducing it on this hardware | `SKILL.md` |
 | `skills/hookshot-discord-updates` | Posting claims and pull request updates to the project's Discord as me, through my own signed-in browser tab: the fixed forms, the checks before a post, what I see first. Discord's terms do not allow automating a user account; I accepted that for a few short posts a day, and you should decide for yourself | `SKILL.md`, `scripts/discord_tab.mjs` |
 | `skills/hookshot-regression-hunt` | Finding which merged pull request made a build worse: show the difference first with the same measuring code in both builds, test named suspects by revert, then bisect | `SKILL.md` |
 | `skills/hookshot-nightly-playtest` | Building the project's nightly tag from source each night, running its checks, and comparing the result with the nights before; what a first night can and cannot say | `SKILL.md` |
 | `harness/` | The run wrapper and its helpers | `hs-run.sh` |
 | `gates/` | Queues that let many test runs share one GPU and one CPU without hurting each other or the desktop | `nx2navi-gpu-slot` |
-| `play/` | A driver that plays steps on a running game from its state line | `hsap.py` |
+| `play/` | Step drivers that play on a running game: one for the control bridge's state samples, one for older builds with the state file; the driver is chosen explicitly | `hsap.py`, `hsap_file.py` |
 | `regress/` | The regression hunt's engine and its two adapters (build a candidate, run a scenario), with their game-free tests | `regress.py` |
 | `nightly/` | The nightly's driver: build, the checks, the comparison with earlier nights, the report; its game scenarios are written but have never run on the game | `hs-nightly.py`, `README.md` |
 | `docs/agent-brief.md` | The rules every agent on my machine reads first | |
@@ -73,11 +73,16 @@ card out of memory and took the desktop down. The gates are small shell scripts 
 
 ### Playing without a controller
 
-`play/hsap.py` runs one game through `hs-run.sh` and plays steps on it: presses through `HOS_INPUT_LIVE`, and Link's
-place, facing and state from the state line of [Hookshot #2292](https://github.com/NotRexed/Hookshot/pull/2292)
-(`HOS_OOT_STATE_FILE`). `walk <x> <z>` steers to a point and says whether it arrived, got stuck or was held by a
-scene. `play/tapcheck.py` puts a run's state lines beside its pictures. `play/test_hsap.py` tests the driver without
-a game.
+`play/hsap.py` runs one game through `hs-run.sh` and plays steps on it through the control bridge (`HOS_CONTROL`):
+inputs as the bridge's own commands, and Link's place, facing and state from the state samples that
+[Hookshot #2292](https://github.com/NotRexed/Hookshot/pull/2292) adds to it (`status.game`, and `subscribe` with
+`events:["oot"]`; `game.frame` dates a sample). `walk <x> <z>` steers to a point and says whether it arrived, got
+stuck or was held by a scene. Main's control bridge alone is not enough: the build must have that subscription, and
+the driver says so in one sentence when it does not.
+
+Older builds with the state file (`HOS_OOT_STATE_FILE`) need `play/hsap_file.py`, the earlier driver kept as it was.
+There is no silent fallback from one to the other. `play/tapcheck.py` puts a run's samples beside its pictures;
+`play/test_hsap.py` and `play/test_hsap_file.py` test the two drivers without a game.
 
 ### Finding a regression
 

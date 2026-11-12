@@ -21,7 +21,8 @@ cp "$H/hs-run.sh" "$H/hs-idle.sh" "$H/hs-nocore.sh" "$H/hs-pr-check.sh" "$H/hs-s
    "$H/hs-watch-threads.py" "$H/hs-window.py" "$H/tools/deps-local.sh" "$here/harness/"
 cp /home/mooki/Games/nx2navi-gpu-slot /home/mooki/Games/nx2navi-intel-slot /home/mooki/Games/nx2navi-build-slot \
    /home/mooki/Games/.nx2navi-harness/gpu-guard.sh "$here/gates/"
-cp "$H/playthrough/hsap.py" "$H/playthrough/tapcheck.py" "$H/playthrough/test_hsap.py" "$here/play/"
+cp "$H/playthrough/hsap.py" "$H/playthrough/hsap_file.py" "$H/playthrough/tapcheck.py" "$H/playthrough/test_hsap.py" \
+   "$H/playthrough/test_hsap_file.py" "$here/play/"
 cp "$H/regress/regress.py" "$H/regress/build_case.py" "$H/regress/run_case.py" "$H/regress/test_regress.py" "$here/regress/"
 for f in hs-nightly.py build.py common.py scenario.py monitor.py metrics.py compare.py store.py report.py hunt.py \
          test_compare.py test_driver.py README.md; do

@@ -1,9 +1,9 @@
 ---
 name: hookshot-scripted-play
 description: >
-  Drive Hookshot (the Ocarina of Time Switch 2 recompilation) by script on this machine: HOS_INPUT_SCRIPT and
-  HOS_INPUT_LIVE presses, the state tap (Link's area, position, facing, camera, cutscene, health, flags as JSON lines),
-  getting from the title into play, the step driver hsap.py, the local world model and route planner, the segment
+  Drive Hookshot (the Ocarina of Time Switch 2 recompilation) by script on this machine: control-bridge input and
+  state samples, the explicit file driver for older tap-enabled builds, getting from the title into play,
+  the step drivers hsap.py and hsap_file.py, the local world model and route planner, the segment
   pilot and how a segment keeps a save, and the traps. Use for controller-free play, test saves at story points, area
   tours, or any run that must know where Link is. Read hookshot-workbench first (building, hs-run.sh, gates).
 ---
@@ -18,12 +18,17 @@ world model) is game data: it goes into `/home/mooki/Games/.hookshot-harness/pla
 PC, and never into this file, git, an issue or a pull request. The world model, the saves and the segment files stay
 under `/home/mooki/Games/.hookshot-harness/` for the same reason.
 
-Written 2026-11-10 by PlayHarness-2, brought up to the first game runs by PlayHarness3 on 2026-11-11; the report
-`/home/mooki/Code/hookshot-wt/reports/PlayHarness.md` has the evidence. **Marks:** [run] = run in the game (the run's
-tag named); [offline] = run only without the game (tests, simulated game); [read] = read in the code only.
+Written 2026-11-10; transport and driver selection updated 2026-11-12. The report
+`/home/mooki/Code/hookshot-wt/reports/PlayHarness.md` holds the evidence. **Marks:** [run] = exercised in the game
+(the report names the run); [offline] = checked without the game; [read] = read in the code only.
 
 ## Input: what main has
 
+- The control bridge (`HOS_CONTROL`, merged in #926) accepts frame-timed `press`, `stick` and `sequence` requests;
+  `stick` takes x/y from -1 to 1, including partial pushes and exact angles. `sequence` with `units:"hos"` takes
+  seconds and milliseconds like the input script. `hsap.py` uses these commands with exclusive input and handles
+  completion replies without blocking receipt of state samples. Bridge inputs alone do **not** imply that a build
+  has the `oot` state subscription. [read; driver checked offline]
 - `HOS_INPUT_SCRIPT='<s>:<buttons>[/<ms>],...'` (hs-run.sh `--input`): times from the first controller read. Buttons `A B
   X Y L R ZL ZR PLUS MINUS LS RS LEFT UP RIGHT DOWN`; sticks only at their edges: `LUP LDOWN LLEFT LRIGHT RUP RDOWN RLEFT
   RRIGHT`, combinable (`LUP+LRIGHT`); hold 200 ms unless `/<ms>`. Unknown names are ignored silently. [read:
@@ -33,80 +38,88 @@ tag named); [offline] = run only without the game (tests, simulated game); [read
   (2/3 mark and return, 100+h time, 200+ pouch, 999 age, 1000+i teleport, 3000+ inventory; `host/hos_main.c`
   `oot_update_player_cheats`), `!shots <ms>`, `!dump`, `!synclog`. Keep the file outside `runs/<tag>` (hs-run.sh
   empties that folder). [read]
-- `HOS_INPUT_FRAME_CLOCK=1`: script times in game frames at 60 a second (steadier under load). `HOS_INPUT_EXCLUSIVE=1`:
-  only the script drives. [read; both set by hsap below]
-- **What input cannot do yet:** in main, no analog stick values (eight directions at full push only); branch
-  `input-script-analog` adds `LX= LY= RX= RY=<-32767..32767>` tokens, the same as #926's control socket; the harness
-  copy `.hookshot-h-play2` has them (hsap `push`, `--analog`), and the game takes them: four pushes of the left stick
-  at the edge, a half, a quarter and an eighth moved Link four different ways, falling in that order [run village-1a;
-  `PlayHarness-files/analog-evidence/push_table.py` measures a push from the tap's lines]. The way is not in
-  proportion to the value (the game has its own curve from walk to run). No text or menu helpers (the pause menu,
-  shops and the ocarina are button sequences you must write; PR #2048 has pause-menu sequences); no save command in
-  main (the harness build's `!cheat 996` works [run newgame-2, house-2, village-1a]).
+- `HOS_INPUT_FRAME_CLOCK=1`: file-script times in game frames at 60 a second. `HOS_INPUT_EXCLUSIVE=1`: the file script
+  alone drives. `hsap_file.py` sets both; `hsap.py` instead supplies frame counts and exclusivity in socket requests.
+- The eight-direction restriction applies to the file-input parser unless the build adds analog tokens.
+  `hsap_file.py`'s `push`/`--analog` therefore need a file-input build with `LX=`/`LY=` support; `hsap.py` uses the
+  bridge's existing analog inputs and does not need that unpublished parser change.
+- Extra debug actions require their matching build extension; neither kind of state tap promises that an autosave
+  or other debug command exists. Keep such commands separate from ordinary socket inputs.
 
-## The state tap (pull request #2292, branch `play-harness`; not in main yet)
+## State: the control bridge first
 
-Branch `play-harness` (worktree `/home/mooki/Code/hookshot-wt/play`, commit d7a29e88 on origin/main 49f75dc8) adds
-`host/oot_state_tap.c`. `HOS_OOT_STATE_FILE=<file>` writes one JSON line every `HOS_OOT_STATE_EVERY` presents (6) from the
-update of Link, so only while he is updated (none on the title, the load list and the first part of the opening; two
-gaps of 18 and 67 presents inside one scene) [run newgame-2, house-2]:
+`hsap.py` requires Hookshot #2292's **control-bridge revision** (runtime commit a57f35fe, submitted head 045fc13d).
+The ordinary control bridge on `main` has inputs and basic status, but no such sampled-state tap until that revision
+merges: merely setting `HOS_CONTROL` is not enough. Select the driver from the actual binary's capability, not its
+folder name; this machine's read-only binary inventory is in the harness's private `LOCAL-NOTES.md`.
 
-    {"t":..,"frame":..,"map":"<map name>","pos":[x,y,z],"facing":deg,"camera":deg,"event":0|1,"loading":0|1,
-     "child":0|1,"life":quarter hearts,"max_life":..,"rupees":..,"prompt":"Empty|Open|Crawl|...","music":"BGM_..."}
+Set `HOS_CONTROL` to a private socket path (a named pipe on Windows), then use `status` for the latest
+`status.game` snapshot or `subscribe` for fresh `oot` events:
 
-`frame` is the present count, the same number as a picture's name `vk_<present>.png`: `playthrough/tapcheck.py
-<state.jsonl> <shots>` prints the line nearest each picture, the runs of map/event/music and the values per field.
-`facing`/`camera`: degrees, 0 toward +z, 90 toward +x. `event`: 1 through cutscenes and talks, 0 in control [run
-newgame-2, house-2, yard-1]. `HOS_OOT_STATE_FLAGS=Name,0xHASH,...` adds `"flags":{...}` (an Enum value reads as
-`"#<murmur3 of the value's name>"`); `HOS_OOT_STATE_CHANGES=1` adds `"changed":{"0x<hash>":value}` for every
-Bool/Int/Enum/UInt flag that changed: the way to find which flag an action sets. Checked in the game, field by field,
-in the report ("The tap's fields against the pictures"): right are map, pos (= the save's place at each save), facing
-(in play; -180 in a cutscene), camera (by steering), event, child, life (also when it changes: a hit takes a quarter
-heart and the HUD agrees), prompt (`Open` at a door, `Crawl` at a crawl hole, `Talk` in a talk), music, flags, rupees
-(0, and the new count after a pickup, equal to the game's own flag; the HUD drew no counter to compare) [run
-village-1a for life, rupees, `Crawl`]; not exercised: loading. **During a scene `pos` is where the scene parks the
-Player**, not where Link is drawn. Check offline: `python -I -B tests/test_oot_state_tap.py --cc gcc` [offline,
-passes with gcc and clang].
+```json
+{"id":1,"cmd":"subscribe","events":["oot"],"every":6,"flags":[],"changes":true}
+```
 
-Harness builds (fast path of the workbench, `RX_RELEASE=1`, `RX_PGO`; `object keys: ... flags f08f29989d, hot flags
-fc9905f579`): `/home/mooki/Games/.hookshot-h-play` = branch `play-harness-local` cea9ba2f (worktree
-`/home/mooki/Code/hookshot-wt/play-local`: play-harness + PR #2048 merged + a local-only `!cheat 996` that asks the game
-for its own autosave) [run]; `/home/mooki/Games/.hookshot-h-play2` = `play-harness-local2` b9eff490 (the same +
-input-script-analog) [built 2026-11-11 07:19]. PR #2048 adds `!cheat 998` (a `cheats: state:` log line) and
-`!teleport <map> <start> [<event>]`. Build [run]:
+- `every` is the minimum spacing in game presents; the protocol default is 60, and `hsap.py` requests 6.
+- `flags` is an array of up to 64 chosen names or explicit `0x` hashes. An unreadable/missing value is `null`;
+  Enum values are `#` followed by the hash of the value's name.
+- `changes:true` adds changed Bool/Int/Enum/UInt values by hash. The first sample establishes a baseline; at most 32
+  changes are returned, with `more` counting the rest. Replacing or ending the subscription resets its baseline.
+- `game` includes the sampled map, position/facing, camera yaw, event/loading/age, life/max life, rupees, prompt and
+  music. **Use `game.frame` to date the sample**, not the reply/event envelope's current frame. `game.t` is the host
+  monotonic clock in seconds. The top-level map is the bridge's last known map, not a substitute for `game.map`.
+- Reads happen in Link's update, under its existing debug lock; the bridge receives copies, not guest pointers.
+  No update means no new sample. `status.game` can be retained through a pause/load, so only fresh samples with
+  known-false event/loading values establish control. Position is the actor's position, not necessarily its drawn
+  pose during an event.
 
-    cd /home/mooki/Code/hookshot-wt/play-local      # work/build is a reflink copy of bench/work/build
-    /home/mooki/Games/nx2navi-build-slot env RX_CPM=/home/mooki/Code/hookshot-wt/deps/cpm OOT_WORK=$PWD/work/build \
-        RX_RELEASE=1 RX_PGO=$PWD/work/build/hookshot_pieces.prof \
-        /home/mooki/Code/hookshot-wt/deps/python/bin/python3 -I -u nx2/build.py --standalone --jobs 16
-    cp work/build/sa/build/hookshot work/build/sa/build/hookshot_vk.so /home/mooki/Games/.hookshot-h-play2/
+The client can show both forms:
 
-(compiled in 8-11 s; 48 s with the gate.) Keep one binary per copy while a chain runs on it: build into a new copy
-(`PlayHarness-files/build-fast2.sh` makes one by reflink without the `runs/`).
+```sh
+python -I scripts/hookshot_ctl.py --json status
+python -I scripts/hookshot_ctl.py --json watch --events oot --every 6 --changes
+```
+
+`hsap.py` writes received samples to `<live>/state.jsonl` as a **client journal**, normalizing age/booleans for the
+existing pilot schema; that file is not a second game-output channel. `playthrough/tapcheck.py` can inspect this
+journal beside captures, but a sample and a rendered capture need not be simultaneous. The bridge sampler has
+game-free gcc/clang coverage and an in-game file/socket value comparison; the new driver's steering and error paths
+are checked against a simulated bridge, not a further game playthrough (see PlayHarness5 in the report).
+
+Older tap-enabled builds use `HOS_OOT_STATE_FILE`, `HOS_OOT_STATE_EVERY`, `HOS_OOT_STATE_FLAGS` and
+`HOS_OOT_STATE_CHANGES`; they need **`hsap_file.py`**, which preserves the former file-state/live-input driver.
+A build with neither tap works with neither driver, and there is no silent fallback: an `oot` subscription refusal
+from `hsap.py` names `hsap_file.py` or a build with Hookshot #2292's control-bridge commits.
 
 ## From the title into play
 
-- New game: A every ~0.75 s from the title (the log's `a frame: N draws` reaches 15) until the state lines show Link in
-  a map with `event` 0 and `loading` 0 for three seconds (PR #2048's `new_game` method; hsap `--boot newgame`) [run
-  newgame-2: control at present 23622, about 400 s after the start at 60 fps; the opening's text advances with A].
-- A save: copy it as `--user` (hs-run.sh copies, never in place) and A every 2 s from the title (hsap `--boot continue`)
-  [run house-2, yard-1: in play about 30 s after the title]; the workbench's `5:A,8.7:A,11.7:A,15:A` with the frame
-  clock also works [run by HsWorkbench].
-- hsap's boot limit (900 s) counts from the game's start (its log appearing), not from hsap's: the GPU gate may hold a
-  run for hours (newgame-1 timed out in the queue before this was fixed; newgame-2 waited 2 h 21 min).
+- Choose a tap-compatible build and driver before starting a run. Both drivers support
+  `--boot newgame|continue|none`; they advance the title through timed input and wait for fresh quiet state samples.
+  A retained status snapshot alone is not evidence that boot or a load finished.
+- Supply only a copy of a save when needed; the run wrapper makes its own throwaway user folder. Keep particular
+  save choices, routes and successful button recipes in local notes rather than this public skill.
+- The boot limit counts from the game's start (its log appearing), not from when the driver joined the GPU queue.
 
-## The step driver: hsap.py (public)
+## The step drivers (public)
 
-`playthrough/hsap.py <copy> <tag> <wall s> --live <dir> [--save <user folder>] [--boot newgame|continue|none]`: runs
-one game through hs-run.sh (headless, gate) with the live file, the tap, the frame clock and exclusive input, and plays
-steps from `<dir>/steps.txt`, answering in `<dir>/out.jsonl` (`gameplay`, `step` with result, `state`, `bad`, `done`).
-Steps: `walk|run x z [radius r] [timeout s]` (closed loop on the tap's position and camera; reached / stuck / timeout /
-**held** (an event held Link 0.6 s); the stick's handedness is checked and flipped while walking; `--analog` or
-`HSAP_ANALOG=1`: exact angles with `LX=`/`LY=`, a build that has them), `press B [ms]`, `stick up|down|.. ms`, `push lx
-ly ms`, `raw <live line> <wait s>` (e.g. `0:LUP/1400,0.5:X/120`), `cheat <n>` (a debug-tools action, answers the
-log's `cheats:` line), `until flag N=V|area A|prompt=P|control [timeout s] [press A every s]`, `wait s`, `climb
-[timeout s]`, `save [timeout s]` (`!cheat 996`, done when a `progress.sav` changes [run]), `report s`, `shot`, `end`.
-`python3 -I test_hsap.py` [offline: all passed, against a simulated game; `HSAP_TEST_MODULE=<file>` tests a copy].
+`playthrough/hsap.py <copy> <tag> <wall s> --live <dir> [--save <user folder>] [--boot newgame|continue|none]`
+runs a bridge-sampler build through `hs-run.sh` (headless, gate). `hsap_file.py` takes the same form for older
+file-tap builds. Both play `<dir>/steps.txt` and answer in `<dir>/out.jsonl` (`gameplay`, `step`, `state`, `bad`,
+`done`); pick one explicitly before launch.
+
+`walk`/`run` steer from fresh position/camera samples and report reached, stuck, timeout or held; the handedness
+check remains. `--analog`/`HSAP_ANALOG=1` uses exact angles, with the file-parser requirement noted above only for
+`hsap_file.py`. Ordinary `press`, `stick`, `push` and `raw` steps use the socket in `hsap.py`; raw sequences keep
+their seconds/milliseconds through `units:"hos"`. Discrete steps wait for frame-completion replies while state
+reception continues; steering can have several replies outstanding without sending twice for the same sample.
+
+Other steps retain their existing contract: `cheat`, `until`, `wait`, `climb`, `save`, `report`, `shot`, `end`.
+Legacy debug cheats/shots use the live file; a save step still requires its build's debug extension and must observe
+a newly written save, not merely an existing file.
+
+Game-free checks: `python3 -I -B test_hsap.py` for the socket driver and
+`python3 -I -B test_hsap_file.py` for the preserved file driver. `HSAP_TEST_MODULE=<file>` tests a staged copy.
+Never replace a driver used by a live run: write beside it, check processes, then rename.
 
 ## The world model, the planner and the pilot (local: they carry game data)
 
@@ -148,15 +161,11 @@ contents and every game fact they showed are in `playthrough/NOTES.md`.
   tests/run_all.py` (idle class, core dumps off); a single test that may die by a signal through `hs-nocore.sh`.
 - `test_recorder_sync.py` and `test_display_pointer.py` are timing-dependent under load (one failed on origin/main
   alone at load 98, the other in a loaded full run): compare at a quiet hour before blaming a branch.
-- A probe that walks into a talk or scene without a rule stops dead (yard-1): every script needs the held rule.
-- **A straight `walk` is only for open ground.** Between walls it ends `stuck`, and the script's next steps (a press,
-  a jump, "does he climb here?") then run somewhere else and prove nothing: in village-1a two of three tries at one
-  spot were made 13 m away from it. Use `plan` wherever the planner has a route, and read each step's result in
-  `probe.log` (and the picture) before believing what came after it. probe.py has no "stop unless reached" yet.
-- **`save` can be refused**: the game's own autosave has a cooldown after a load (the step answers `refused ...
-  request not taken (cooldown N)`; 12 s after control was too early, two minutes later it was taken) [run
-  village-1a]. Put the save at a segment's end, and check its result: the chain's `has_save` test passes on any old
-  slot in the folder.
-- **Picking something up can be an event** (a text to press through): the held rule handles it [run village-1a].
+- A probe held by an event needs an explicit rule for resuming; a successful input reply does not prove control
+  returned. Keep watching fresh state samples.
+- **A straight `walk` is only for open ground.** If it ends stuck, later steps may run somewhere other than their
+  intended target and prove nothing. Use the local planner where appropriate, and inspect each step result and
+  capture before relying on what followed it.
+- **`save` can be refused.** Check the debug reply and a newly written save; finding any old slot is not proof that
+  the request succeeded. Keep build-specific timing observations in local notes.
 - A probe that ends with its script ends the game by SIGTERM: `exit=143` in the summary line is the normal end.
-- The queue again: village-1a waited 2 h 48 min for 3 min 18 s of game. Put as much as fits into one 470 s run.
