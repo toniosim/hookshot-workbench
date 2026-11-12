@@ -103,12 +103,12 @@ def main():
     python=c['python']; gate=c.get('build_gate',str(Path.home()/'Games/hs-build-slot'))
     if donor:
         e.update(OOT_WORK=str(w/'work/fast'),RX_PGO=str(w/'work/build'/names.profile))
-        argv=[gate,python,'-I','-u','nx2/build.py','--standalone','--jobs',str(c.get('jobs',16))]
+        argv=[gate,python,'-I','-u','nx2/build.py','--standalone','--jobs',str(c.get('jobs',12))]
     else:
-        suffix_values.update(LIFT_JOBS=str(c.get('lift_jobs',8)),KEEP_BUILD_FILES='1')
+        suffix_values.update(LIFT_JOBS=str(c.get('lift_jobs',2)),KEEP_BUILD_FILES='1')
         argv=['flock',c.get('full_build_lock','/tmp/hookshot-full-build.lock'),gate,python,'-I','-u','nx2/make_game.py',
               '--romfs',c['romfs'],'--exefs',c['exefs'],'--out',str(game),'--work',str(w/'work/build'),
-              '--jobs',str(c.get('jobs',16)),'--no-prepare-shaders','--log',str(out/'make-game.log')]
+              '--jobs',str(c.get('jobs',12)),'--no-prepare-shaders','--log',str(out/'make-game.log')]
     e.update(build_env(w,suffix_values))
     support.save(out/'command.json',{'argv':argv,'donor':str(donor) if donor else None,'started':support.date()})
     with (out/'compile.log').open('w') as log: subprocess.run(argv,cwd=w,env=e,stdout=log,stderr=subprocess.STDOUT,check=True)

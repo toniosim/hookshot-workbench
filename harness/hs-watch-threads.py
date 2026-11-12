@@ -19,7 +19,7 @@ import sys
 import time
 
 REPO = 'NotRexed/Hookshot'
-ME = 'mooki000'
+ME = 'toniosim'
 args = sys.argv[1:]
 since_arg = state_path = None
 while args and args[0].startswith('--'):

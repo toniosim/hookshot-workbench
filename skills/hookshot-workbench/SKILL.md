@@ -12,8 +12,38 @@ description: >
 **Hookshot / Longshot:** Longshot continues the project at `https://git.magicbean.dev/MagicBeanDev/Longshot`.
 Keep skill names, local harness/clone paths, gates and `HOOKSHOT_WB_*` unchanged. `hs-names.sh` / `hs_names.py`
 select the owned checkout/copy's runtime names; missing or mixed identities refuse. Existing `gh`, release, CI and
-queue routes below remain GitHub-only. Do not substitute forge names or migrate credentials; use reviewed public
-Forgejo GET readers. Proposed forge login/read helpers can change credentials and are not an approved workaround.
+queue routes below are GitHub-only: on this machine they serve old Hookshot history only (see "This machine").
+
+> **This machine (tonesi; tailored 2026-11-11, moved to Longshot 2026-11-12):** Pop!_OS 24.04, COSMIC (Wayland),
+> i7-12700K (20 threads), RTX 3070 Ti 8 GB (NVIDIA 595.104.02; it also drives the desktop) and the Intel UHD 770
+> beside it, **16 GB of RAM**. Most numbers below (build times, loads, memory, two games at once, Hyprland windows)
+> are the original author's 32-thread, 96 GB, RTX 4090 machine's: read them as orders of magnitude. Here: one game,
+> one build and one checks run at a time (the gates enforce it); **two lift workers** (`*_LIFT_JOBS=2`, ~4.8 GB
+> each) and `--jobs 12` wherever the text says 8 and 16; ImageMagick 6 (`montage`/`convert`/`identify`, no `magick`).
+> COSMIC has no window rules: `--window` opens an ordinary unmanaged window, so everything about `hs-window.py` and
+> Hyprland applies only there.
+>
+> - **Toolchain:** no system clang, Vulkan headers or Python packages, and no `$W/deps`. `source
+>   /home/tonesi/Hookshot/build-linux/dev-env.sh` in every shell that builds or tests: it puts the unpacked v2.1.0
+>   AppImage's Python 3.12 (pinned packages) and clang first on `PATH` and sets `RX_CPM` and both the `HOOKSHOT_*`
+>   and `LONGSHOT_*` build variables. Then use `P=python3` and `CPM=$RX_CPM`. `tools/deps-local.sh` is the original
+>   author's Arch route and is not used here. Longshot kept v2.1.0's pins; if `scripts/linux/deps.sh` bumps one, the
+>   unpacked toolchain needs a newer release's AppImage.
+> - **The dump** is `/home/tonesi/Hookshot/work/dump` (read only), not `$W/work/dump`. The play profile is in the
+>   clone's `work/` as both `hookshot_pieces.prof` and `longshot_pieces.prof` (with `hot_funcs.txt`,
+>   `hot_order.txt`): copy the one `$HS_PROFILE` names into a new worktree's `work/`.
+> - **Where the project lives:** Longshot, `https://git.magicbean.dev/MagicBeanDev/Longshot` (Forgejo). The clone
+>   `/home/tonesi/Hookshot` has `forge` = Longshot (fetch only; never push), `forge-fork` = `tonesi/Longshot` (push
+>   branches here; made by `python3 -I scripts/forge.py fork`), and the old GitHub remotes `origin` = NotRexed/Hookshot,
+>   `fork` = toniosim/Hookshot for history. Local `main` tracks `forge/main`; new worktrees start from `forge/main`.
+>   The user is signed in (`python3 -I scripts/forge.py whoami` = `tonesi`); that one sign-in covers git, team chat
+>   and test requests. Pull requests, comments and issues go through `scripts/forge.py` (`docs/forge.md`), not `gh`;
+>   a PR opens as WIP and `pr ready` checks the description. Forgejo runs no CI: run `tests/run_all.py` yourself.
+> - **Renamed in Longshot:** `longshot` / `longshot.exe`, `longshot_vk.so`, `longshot_log.txt`,
+>   `longshot_options.ini`, `scripts/longshot_ctl.py`, `LONGSHOT_*` build variables; `HOS_*` and `RX_*` are unchanged.
+>   Let `hs_names` pick them; never hard-code either name.
+> - **The play folders** `/home/tonesi/Games/Hookshot` (and a future `Games/Longshot`) are the user's: never run,
+>   change or test in them.
 
 **Use for:** every Hookshot or Longshot task on this machine. Read the agent brief, then the matching task skill.
 **All game runs are windowless.** A leftover `window-ok` is not permission. Do not send anything to the compositor.
@@ -23,9 +53,10 @@ Reports name the skills read, tools used, pinned sources, checks exercised and w
 
 ```sh
 H="$HOME/Games/.hookshot-harness"
-W="$HOME/Code/hookshot-wt"
-P="$W/deps/python/bin/python3"
-CPM="$W/deps/cpm"
+W="$HOME/hookshot-wt"
+source "$HOME/Hookshot/build-linux/dev-env.sh"   # this machine: the AppImage toolchain
+P=python3
+CPM="$RX_CPM"
 ```
 
 Read `$W/reports/AGENT-BRIEF.md`. In the selected Hookshot or Longshot checkout read `docs/workflow.md`, `AGENTS.md`,
@@ -42,9 +73,9 @@ source "$H/hs-names.sh"
 
 | Thing | Location |
 |---|---|
-| Legacy clone and GitHub remote names | `$HOME/Code/Hookshot`; `origin`, `fork` |
+| Clone and remotes | `$HOME/Hookshot`; `forge` (Longshot), `forge-fork` (yours), legacy `origin`, `fork` |
 | Worktrees and reports | `$W/<name>`; `$W/reports` |
-| Read-only dump | `$W/work/dump` (`exefs/`, `romfs/`) |
+| Read-only dump | `$HOME/Hookshot/work/dump` (`exefs/`, `romfs/`) |
 | Pinned Python and headers | `$P`; `$CPM` |
 | Run, test and local play tools | `$H`; `$H/playthrough`; `$H/regress` |
 | Owned game copies | `$HOME/Games/.hookshot-h-<name>` |

@@ -4,7 +4,7 @@
 #   hs-save.sh <name> <target folder> [--voice <language>]
 #   hs-save.sh --list
 #
-#   <name>     an entry of /home/mooki/Games/.hookshot-harness/saves/ (its README.txt says what it is), or the path of
+#   <name>     an entry of /home/tonesi/Games/.hookshot-harness/saves/ (its README.txt says what it is), or the path of
 #              any Hookshot user folder (one that holds save/<user id>/)
 #   <target>   the folder to make: it must not exist, or be one this script made before (then it is replaced)
 #   --voice    set the copy's Voice Language option (option.sav), e.g. pt-BR, ja, en-US, Portuguese_Brazil
@@ -15,7 +15,7 @@
 # library is never written. Then: hs-run.sh <copy> <tag> <seconds> --user <target> --input '<presses>' ...
 # Saves are game data: they stay on this PC. Never attach, post, upload or commit them.
 set -euo pipefail
-H=/home/mooki/Games/.hookshot-harness
+H=/home/tonesi/Games/.hookshot-harness
 source "$(dirname -- "${BASH_SOURCE[0]}")/hs-names.sh"
 LIB=$H/saves
 MARK=.hs-save
@@ -57,7 +57,7 @@ target=$(realpath -m "$target")
 protected=$(hs_protected_user_paths "$HOME") || exit 2
 mapfile -t protected_paths <<< "$protected"
 for p in "${protected_paths[@]}" "$HOME/Games/Ocarina" "$HOME/Games/Ocarina-linux-next" \
-         "$LIB" /home/mooki/Games/.hookshot-harness; do
+         "$LIB" /home/tonesi/Games/.hookshot-harness; do
     case "$target/" in "$p"/*) echo "hs-save.sh: refusing to write under $p" >&2; exit 2 ;; esac
 done
 if [ -e "$target" ]; then

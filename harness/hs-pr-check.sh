@@ -11,9 +11,11 @@
 # commit: every file the commit touches is byte-identical to the same path in the source's tree, the author is the
 # source commit's author, the message has a line "Imported from <repo>#<n> at <source hash>", and the user committed it.
 set -u
-repo=/home/mooki/Code/Hookshot
+repo=/home/tonesi/Hookshot
 usage='usage: hs-pr-check.sh <branch> [<title file>] [--imported <commit>=<original>]... [--imported-files <commit>=<source>]...'
-me='7663497+mooki000@users.noreply.github.com'
+# this machine: toniosim's GitHub no-reply address (keeps the private e-mail out of public commits); HS_GIT_EMAIL overrides
+me=${HS_GIT_EMAIL:-10343143+toniosim@users.noreply.github.com}
+me_re=$(printf '%s' "$me" | sed 's/[.+]/\\&/g')
 branch=; title_file=; imported=(); imported_files=()
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -90,7 +92,7 @@ done
 bad=0
 for c in $(git -C "$repo" rev-list "$base..$branch"); do
     case "$exempt" in *" $c "*) continue ;; esac
-    git -C "$repo" log -1 --format='%ae %ce' "$c" | grep -q -E "^7663497\+mooki000@users\.noreply\.github\.com (7663497\+mooki000@users\.noreply\.github\.com|noreply@github\.com)$" || bad=$((bad + 1))
+    git -C "$repo" log -1 --format='%ae %ce' "$c" | grep -q -E "^$me_re ($me_re|noreply@github\.com)\$" || bad=$((bad + 1))
 done
 [ "$bad" -eq 0 ] && say OK "every commit of ours is by the user's identity" || { say FAIL "$bad commits with another author or committer (an unchanged commit of someone else's needs --imported):"; git -C "$repo" log --format='  %h %an <%ae> / %cn <%ce>' "$base..$branch" | sort -u | head -n 5; }
 

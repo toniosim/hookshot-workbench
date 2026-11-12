@@ -42,7 +42,7 @@ watch: until the run's top process is gone, reads the clients and the active win
 import json, os, signal, subprocess, sys, time
 
 CLASS = "hookshot-harness"
-SAFE_OK = "/home/mooki/Games/.hookshot-harness/safe-mode-ok"
+SAFE_OK = "/home/tonesi/Games/.hookshot-harness/safe-mode-ok"
 
 
 def hyprctl(env, *a):

@@ -9,6 +9,10 @@
 # Number the captions ("1. ...") and say in each what to look at; a reader sees the picture before the text.
 # Look at the result before you cite it.
 set -euo pipefail
+# ImageMagick 6 (Ubuntu/Pop!_OS 24.04) has convert/identify instead of the "magick" command of version 7
+if ! command -v magick > /dev/null; then
+    magick() { if [ "$1" = identify ]; then shift; identify "$@"; else convert "$@"; fi; }
+fi
 out=$1; per_row=$2; shift 2
 w=${PANEL_W:-1280}; h=${PANEL_H:-720}
 font=$(fc-match -f '%{file}' 'DejaVu Sans')

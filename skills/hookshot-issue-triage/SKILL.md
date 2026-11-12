@@ -31,7 +31,7 @@ not causal, bottleneck, fixed/not-fixed or speed verdicts; timing still uses the
 
 Discover current `[Tracking]` families and open/merged PRs before choosing work. `docs/worklist.md` is the scored
 list. The **testing wanted** label permits non-collaborator PRs in the opt-in queue; claims also live in team chat, so
-“nobody claims it on GitHub” does not mean unclaimed. This machine adds **Linux with an RTX 4090
+“nobody claims it on GitHub” does not mean unclaimed. This machine adds **Linux with an RTX 3070 Ti
 on NVIDIA's driver** (Tier 1 for the project) and **an Intel UHD 770 on Mesa** (no mesh shaders: the compute fallback).
 Read `skill://hookshot-workbench` for building and running, `skill://hookshot-pr-evidence` before anything is posted.
 
@@ -73,7 +73,7 @@ A new problem becomes a row in `docs/worklist.md` through a pull request.
    A reporter's `source <hex>` is a content fingerprint (`nx2/version.py`), not a Git revision; pin the release tag
    or reported head separately. Read a moved PR's description before a test: “parked/hold off” stops that work.
 2. Verdict for this machine before any run: reproducible here (Linux, NVIDIA or the Intel device, the story point
-   reachable from a save in `/home/mooki/Games/.hookshot-harness/saves/`), or not (Windows only, AMD, HDR, a real pad).
+   reachable from a save in `/home/tonesi/Games/.hookshot-harness/saves/`), or not (Windows only, AMD, HDR, a real pad).
    “Cannot reproduce this hardware symptom” is separate from “can test its portable API/recording contract with
    authored fixtures here”; a fixture proof must not be promoted into an AMD/Windows gameplay claim.
 3. Choose a bounded reproduction and repeat count from the reported failure rate; do not automatically spend ten
@@ -84,12 +84,12 @@ A new problem becomes a row in `docs/worklist.md` through a pull request.
    Main reviews executable changes before any test/build. Carry verified identical-rebase evidence instead of
    repeating it. Otherwise compare its owned head/base copies: helps, nothing to show here, breaks, or untestable here.
 5. If nobody has: the cause before the fix; hand a fix to its own branch and pull request.
-6. Draft the comment under `/home/mooki/Code/hookshot-wt/reports/drafts/`: what was run (build, settings, driver),
+6. Draft the comment under `/home/tonesi/hookshot-wt/reports/drafts/`: what was run (build, settings, driver),
    what was seen, the numbers through a script, what was not tested. The main session posts it.
 
 ## What our earlier work answers
 
-`/home/mooki/Code/hookshot-wt/reports/OURS.md` lists everything built for the other port of this game with a verdict
+`/home/tonesi/hookshot-wt/reports/OURS.md` lists everything built for the other port of this game with a verdict
 for Hookshot (port as a feature, fix there too, nothing to do). The two ports are unrelated code on the same game
 binary: facts are leads, not proof that the other port's code fault exists here.
 Reproduce on Hookshot before presenting a lead as a finding. Keep game-derived details in private notes.

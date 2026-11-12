@@ -46,7 +46,7 @@ _root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_root if (_root / 'hs_names.py').is_file() else _root / 'harness'))
 from hs_names import GAME_EXECUTABLES, log_path
 
-HS_RUN = '/home/mooki/Games/.hookshot-harness/hs-run.sh'
+HS_RUN = '/home/tonesi/Games/.hookshot-harness/hs-run.sh'
 SLOT_VARS = ('HSGATE_SLOT_DIR', 'HSGATE_INTEL_SLOT_DIR', 'HSGATE_SLOT_TEST', 'HSGATE_SLOT_NODESKTOP', 'HSGATE_IN_GATE')
 PROMPT_HASH = '0x9824206c'
 # The left stick's eight directions: (angle from "away from the camera", positive toward the right, degrees) -> presses

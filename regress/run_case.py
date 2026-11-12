@@ -583,7 +583,7 @@ def run_case(copy, output, scenario, seconds, commit):
     try:
         assert logfile is not None and logfile.name == names.log, 'run log does not match the copy project'
         assert rc == 0 and code == (0 if settings.get('prepare') else 124), 'run did not reach its intended end'
-        assert re.search(settings.get('device_pattern', r'vk: device 0: NVIDIA GeForce RTX 4090'), text), 'wrong or missing device'
+        assert re.search(settings.get('device_pattern', r'vk: device 0: NVIDIA GeForce RTX 3070 Ti'), text), 'wrong or missing device'
         assert kernel['kernel_errors'] is not None, 'kernel journal coverage is unknown'
         assert not result['fatal'] and kernel['kernel_errors'] == 0 and kernel['no_memory_events'] <= 3, 'run or kernel fault'
         assert stamp, 'the copy has no source stamp'

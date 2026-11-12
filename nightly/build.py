@@ -61,7 +61,7 @@ def toolchain(config):
     result = {'compiler': capture(['clang', '--version']).splitlines()[0],
               'linker': capture(['ld.lld', '--version']).strip(),
               'python': capture([config['python'], '--version']).strip(),
-              'workers': config['build_jobs'], 'lift_workers': 8, 'release': True,
+              'workers': config['build_jobs'], 'lift_workers': 2, 'release': True,
               'hot_optimization': 'O2 with recorded PGO', 'other_lifted_optimization': 'O1',
               'system': capture(['uname', '-srm']).strip()}
     cpu = re.search(r'^model name\s*:\s*(.+)$', text('/proc/cpuinfo'), re.M)
@@ -142,7 +142,7 @@ def run(config, out, commit=None):
             'git', '-C', wt, 'diff', '--name-only', config['dependency_reference_commit'], commit, '--',
             'scripts/linux/deps.sh', 'requirements.txt', 'nx2/prompt_requirements.txt']).splitlines()
     put(out / 'build.json', info)
-    suffix_values = {'LIFT_JOBS': '8', 'KEEP_BUILD_FILES': '1'}
+    suffix_values = {'LIFT_JOBS': '2', 'KEEP_BUILD_FILES': '1'}   # (this machine: 16 GB of RAM)
     if config.get('ngx_sdk'):
         if not Path(config['ngx_sdk']).is_dir():
             raise RuntimeError('Already accepted local upscaler SDK is missing; no license is accepted automatically')

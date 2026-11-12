@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Which open pull requests of NotRexed/Hookshot overlap with ours, and which of those really conflict.
 
-    pr_overlap.py                      every open pull request by mooki000
+    pr_overlap.py                      every open pull request by toniosim
     pr_overlap.py 2274 2306            only these
     pr_overlap.py --branch walk-key    a local branch that is not a pull request yet
 
@@ -17,7 +17,7 @@ import subprocess
 import sys
 
 REPO = "NotRexed/Hookshot"
-CLONE = "/home/mooki/Code/Hookshot"
+CLONE = "/home/tonesi/Hookshot"
 
 
 def gh(*args):
@@ -48,7 +48,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("numbers", nargs="*", type=int)
     ap.add_argument("--branch", help="a local branch instead of pull requests")
-    ap.add_argument("--author", default="mooki000")
+    ap.add_argument("--author", default="toniosim")
     args = ap.parse_args()
 
     prs = json.loads(gh("pr", "list", "--repo", REPO, "--state", "open", "--limit", "500", "--json",

@@ -51,6 +51,16 @@ local run files, never in this public skill or a tracker.
    "$P" -I -B "$H/playthrough/hsap.py" "$COPY" "$TAG" 450 --live "$LIVE" --save "$SAVE" --boot continue
    ```
 
+**This file is public (`toniosim/hookshot-workbench`) and holds the method only.** What was read from or learned about
+the game's content (places and coordinates, flag and step names, object names, routes, segment goals, counts from the
+world model) is game data: it goes into `/home/tonesi/Games/.hookshot-harness/playthrough/NOTES.md`, which stays on this
+PC, and never into this file, git, an issue or a pull request. The world model, the saves and the segment files stay
+under `/home/tonesi/Games/.hookshot-harness/` for the same reason.
+
+Written 2026-11-10; transport and driver selection updated 2026-11-12. The report
+`/home/tonesi/hookshot-wt/reports/PlayHarness.md` holds the evidence. **Marks:** [run] = exercised in the game
+(the report names the run); [offline] = checked without the game; [read] = read in the code only.
+
    For a fresh profile omit `--save` and use `--boot newgame`. For the legacy tap replace only `hsap.py` with
    `hsap_file.py`. The boot timer begins when the game log appears, not while queued.
 5. Require `gameplay` and fresh `state` events in `$LIVE/out.jsonl`; require the intended map and known-false event
@@ -190,3 +200,34 @@ Missing sampled-state freshness remains unknown. `broker stop` ends owned sessio
 | Copy/inspect save | Disposable save copy; `slots` | `save_clone(save_id, idempotency_key)`, `session_saves_list(run_id)` (session; integrated) | Registered-source copy and metadata only. No autosave or resume proof. |
 | Inspect route evidence | Run log, captures and labelled panels | `run_faults(run_id)`, `evidence_panels(images, label, idempotency_key)` (evidence; integrated) | Signature classification and private panel artifacts; inspect them yourself. |
 | Find previous proof | Read local notes/registered reports | `knowledge_search(query, collection="reports")`, `workbench://reports/{id}` (knowledge; integrated) | Bounded revision-pinned report access. The URI is a resource; private game data stays private. |
+
+## Traps seen on this machine
+
+- A `set -e` in the shared persistent shell stays on and cuts later commands short ("exit 1, no output"): use `set +e`.
+- The world builder's packed-index reader returned `KeyError` for a missing file and `navmesh.py` relies on it; a plain
+  folder reader must too (`world/game_files.py`).
+- The fast build path needs `RX_RELEASE=1` and `RX_PGO` at `<worktree>/work/build/hookshot_pieces.prof`; check the
+  `object keys:` line with `--dry-run` first.
+- The GPU gate queue on 2026-11-10 evening held 8 to 10 runs, 20 on 2026-11-11 morning: a segment may wait hours before
+  the game starts; the pilot waits up to 6 h for `gameplay`, so start it from a script with `setsid nohup`.
+- **One hold keeps the card for at most 8 minutes of game time** (Main, 2026-11-11): give a probe or segment `--wall 470`
+  or less and cut longer plans into pieces chained from one script, each its own hs-run (its own gate turn), each
+  continuing from the user folder the last one left (`<copy>/runs/<tag>/user`; example `PlayHarness-files/run-chain3.sh`).
+  No `--exclusive` without Main's word for that hold.
+- The full game-free checks go through the test gate: `/home/tonesi/Games/.hookshot-harness/hs-idle.sh <python> -I -B
+  tests/run_all.py` (idle class, core dumps off); a single test that may die by a signal through `hs-nocore.sh`.
+- Use `setsid --wait nohup` for a managed saved launcher, and the child's own completion receipt. Keep game PIDs:
+  `timeout` can move children into a different process group; stopping only the shell can strand games outside the gate.
+- Scope includes the whole acceptance checker, not only process exit: some old co-op scripts returned 0 with
+  failed assertions. A stuck/unreached action invalidates later claims. Record sent, accepted, state change and
+  inspected picture separately; do not weaken an assertion to rescue an earlier run.
+- `test_recorder_sync.py` and `test_display_pointer.py` are timing-dependent under load (one failed on origin/main
+  alone at load 98, the other in a loaded full run): compare at a quiet hour before blaming a branch.
+- A probe held by an event needs an explicit rule for resuming; a successful input reply does not prove control
+  returned. Keep watching fresh state samples.
+- **A straight `walk` is only for open ground.** If it ends stuck, later steps may run somewhere other than their
+  intended target and prove nothing. Use the local planner where appropriate, and inspect each step result and
+  capture before relying on what followed it.
+- **`save` can be refused.** Check the debug reply and a newly written save; finding any old slot is not proof that
+  the request succeeded. Keep build-specific timing observations in local notes.
+- A probe that ends with its script ends the game by SIGTERM: `exit=143` in the summary line is the normal end.

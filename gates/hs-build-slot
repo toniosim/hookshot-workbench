@@ -1,4 +1,6 @@
 #!/bin/bash
+# THIS MACHINE (tonesi, 2026-11-11): 20 threads but 16 GB of RAM, so ONE build slot (not four) and two lift workers by
+# default (each took ~4.8 GB on the original author's machine). The text below is the original author's.
 # Runs a CPU-only command (a compile-only rebuild: make_game.py --rebuild ... --until compile) while it holds one of
 # four build slots (two until the performance research began to build whole variants of the game, twenty minutes
 # each, behind which every thirteen-file rebuild waited). Builds wait while an exclusive GPU timing run holds the quiet
@@ -15,11 +17,12 @@ mkdir -p "$dir" "$gpu"
 # Two builds may lift at once (a changed patch table lifts the whole game again): 12 workers each keep both inside the
 # processor and the memory; a lift with every core, twice, has ended in a pool that waits forever.
 export HSGATE_LIFT_JOBS=${HSGATE_LIFT_JOBS:-12}
+export HOOKSHOT_LIFT_JOBS=${HOOKSHOT_LIFT_JOBS:-2}   # this machine: 16 GB of RAM (see the top)
 # Since upstream keeps the runtime's own shaders as source only, make_game.py run from a checkout finds no compiled
 # headers (upstream builds them in build_game.py and for kits). Build the missing and stale ones here, in the worktree
 # the build is started from, where git ignores them; two seconds, and nothing when they are current.
 if [ -f tools/build_shaders.py ] && git check-ignore -q runtime/wb_merge_spv.h 2>/dev/null; then
-    /home/mooki/Code/hookshot-wt/deps/python/bin/python3 -I tools/build_shaders.py > /dev/null 2>&1 || true
+    /home/tonesi/hookshot-wt/deps/python/bin/python3 -I tools/build_shaders.py > /dev/null 2>&1 || true
 fi
 while :; do
     wanted=0
@@ -32,14 +35,14 @@ while :; do
         fi
     done
     if [ "$wanted" = 0 ]; then
-        for i in 0 1 s2 s3; do
+        for i in 0; do   # this machine: one build at a time (originally 0 1 s2 s3)
             exec 9>"$dir/$i"
             if flock -n 9; then
                 exec 8>"$gpu/quiet"
                 flock -s 8
                 # (2026-11-11: through hs-nocore.sh: a compiler that crashes or is ended mid-build left a core dump,
                 # and each one is a "process crashed" notification on the user's desktop; the build still fails as before)
-                exec chrt --idle 0 nice -n 15 /home/mooki/Games/.hookshot-harness/hs-nocore.sh "$@"
+                exec chrt --idle 0 nice -n 15 /home/tonesi/Games/.hookshot-harness/hs-nocore.sh "$@"
             fi
         done
     fi

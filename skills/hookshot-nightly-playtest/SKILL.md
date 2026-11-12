@@ -30,8 +30,8 @@ Read retained state/report files or `nightly_status()` instead. Reports name ski
 Do not edit tools or local definitions while a watch/queued job uses them. Stage any proven repair and let Main
 replace it atomically between cycles; a file's presence is not evidence that no process still uses it.
 
-The public tool is `/home/mooki/Games/.hookshot-harness/nightly/`. Its private input and output are
-`/home/mooki/Games/.hookshot-harness/nightly-local/`. The code and this skill contain the method, never a route,
+The public tool is `/home/tonesi/Games/.hookshot-harness/nightly/`. Its private input and output are
+`/home/tonesi/Games/.hookshot-harness/nightly-local/`. The code and this skill contain the method, never a route,
 place, save, game value, or a private dump path. **Neither the local folder nor the save library is published.**
 
 ## Status and limits

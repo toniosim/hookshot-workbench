@@ -2,15 +2,22 @@
 # One unattended Hookshot or Longshot run on the RTX 4090 (or, with --intel, the Intel UHD 770), through its gate. Written
 # 2026-11-10 (HsWorkbench); --window 2026-11-11 (WindowRuns).
 #
+# THIS MACHINE (tonesi, 2026-11-11): RTX 3070 Ti (8 GB, also the COSMIC desktop's card), Intel UHD 770 beside it,
+# i7-12700K, 16 GB of RAM. Where the text below says "RTX 4090" read "RTX 3070 Ti" (the summary checks for it). The gate
+# lets one game in at a time here. --window on COSMIC: there is no window-rule interface like Hyprland's, so the game
+# opens an ordinary window on the desktop (it may take the focus) and nothing watches it (window=unmanaged); still only
+# while window-ok exists, and only when you are at the PC. --intel gets --mem-max 9G unless one is given (Intel's
+# driver took 23-28 GB preparing shaders on the original machine; this one has 16 GB).
+#
 #   hs-run.sh <copy> <tag> <seconds> [--window] [--exclusive] [--whole] [--priority] [--intel] [--from <s>]
 #             [--input '<presses>'] [--user <folder>] [--keep-user] [--prepare] [--perf] [--mem-max <v>] [NAME=VALUE ...]
 #
-#   <copy>      a built game folder /home/mooki/Games/.hookshot-h-<name> (hookshot OR longshot, image.bin, romfs/)
+#   <copy>      a built game folder /home/tonesi/Games/.hookshot-h-<name> (hookshot OR longshot, image.bin, romfs/)
 #   <tag>       the run's name: everything goes to <copy>/runs/<tag>/ (replaced if it exists)
 #   <seconds>   wall time from the game's start; then SIGTERM (SIGKILL 20 s later). Exit 124 = ended at the wall
 #   --window    a real window on the user's Hyprland instead of a headless run: for what needs a swapchain and the
 #               compositor (presentation, frame pacing, V-Sync, frame generation's output, the window's title). ONLY
-#               while the file /home/mooki/Games/.hookshot-harness/window-ok exists (the user's switch: the main
+#               while the file /home/tonesi/Games/.hookshot-harness/window-ok exists (the user's switch: the main
 #               session creates it while he is away and removes it when he is back); see "With --window" below.
 #               Not with --intel, --prepare or HOS_HEADLESS
 #   --exclusive the gate's exclusive hold (no build beside it, no other game on the card): for frame-rate measurements only
@@ -69,7 +76,7 @@
 # presentation measurement (no run starts with the screen locked or the monitor off; nothing ever wakes or unlocks it).
 # The switch is read when the run is asked and again when its turn comes; a run in progress finishes when it goes.
 #
-# Prints one line (also runs/<tag>/summary.txt and appended to /home/mooki/Games/.hookshot-harness/runs.log):
+# Prints one line (also runs/<tag>/summary.txt and appended to /home/tonesi/Games/.hookshot-harness/runs.log):
 #   exit, wall seconds, span (seconds from the first present to the last), frames (and their source), mean fps and 1%
 #   low fps (1000 / the mean of the slowest 1% frame times), frames over 16.7, 20 and 25 ms (at the 60 cap the game's
 #   intervals scatter around 16.67 ms, so over16.7 counts about half of them; over20 is the dropped-frame count), pictures (count, size of one,
@@ -78,7 +85,7 @@
 #   device and load average before/after. journal=complete|unknown records coverage; failed/partial reads print
 #   kernel=unknown nvrm=unknown, with the journal receipt in kernel-status.json and retained lines in kernel.txt.
 set -uo pipefail
-H=/home/mooki/Games/.hookshot-harness
+H=/home/tonesi/Games/.hookshot-harness
 source "$(dirname -- "${BASH_SOURCE[0]}")/hs-names.sh"
 NV_ICD=/usr/share/vulkan/icd.d/nvidia_icd.json
 INTEL_ICD=/usr/share/vulkan/icd.d/intel_icd.json
@@ -106,9 +113,16 @@ if [ "${1:-}" = --inner ]; then
         [ -e "$H/window-ok" ] || { window_refused | tee "$R/window-refused.txt" >&2; exit 5; }
         exec {wlock}> "$H/window.lock"
         flock "$wlock"
-        winfo=$(python3 -I "$H/hs-window.py" rules "$R") || exit 3
-        read -r _ wsock _ wlogical <<< "$winfo"
-        export HOS_WINDOW_SIZE=$wlogical
+        if pgrep -x Hyprland > /dev/null; then
+            winfo=$(python3 -I "$H/hs-window.py" rules "$R") || exit 3
+            read -r _ wsock _ wlogical <<< "$winfo"
+            export HOS_WINDOW_SIZE=$wlogical
+        else   # this machine: COSMIC, no window rules; an ordinary window on the caller's Wayland display
+            wsock=${WAYLAND_DISPLAY:-}
+            [ -n "$wsock" ] || { echo "hs-run.sh: --window needs WAYLAND_DISPLAY (run it from the desktop session)" | tee "$R/window-refused.txt" >&2; exit 5; }
+            : > "$R/unmanaged"
+            echo "window=unmanaged(compositor=$(pgrep -x cosmic-comp > /dev/null && echo cosmic || echo other))" > "$R/window.txt"
+        fi
     else
         unset WAYLAND_DISPLAY
         export HOS_HEADLESS=1
@@ -138,11 +152,16 @@ if [ "${1:-}" = --inner ]; then
     if [ -f "$R/window" ]; then
         "${pre[@]}" timeout --signal=TERM --kill-after=20 "$seconds" "./$HS_EXE" "${gargs[@]}" > "$R/$HS_LOG" 2>&1 < /dev/null &
         tpid=$!
-        python3 -I "$H/hs-window.py" watch "$R" "$tpid" > "$R/window-watch.log" 2>&1 < /dev/null &
-        wpid=$!
-        wait "$tpid"
-        rc=$?
-        wait "$wpid"
+        if [ -f "$R/unmanaged" ]; then
+            wait "$tpid"
+            rc=$?
+        else
+            python3 -I "$H/hs-window.py" watch "$R" "$tpid" > "$R/window-watch.log" 2>&1 < /dev/null &
+            wpid=$!
+            wait "$tpid"
+            rc=$?
+            wait "$wpid"
+        fi
     else
         "${pre[@]}" timeout --signal=TERM --kill-after=20 "$seconds" "./$HS_EXE" "${gargs[@]}" > "$R/$HS_LOG" 2>&1 < /dev/null
         rc=$?
@@ -161,7 +180,7 @@ usage() { sed -n '5,6p' "$0" >&2; exit 2; }
 copy=$(cd "$1" 2>/dev/null && pwd) || { echo "hs-run.sh: no folder $1" >&2; exit 2; }
 tag=$2 seconds=$3
 shift 3
-case "$copy" in /home/mooki/Games/.hookshot-h-*) ;; *) echo "hs-run.sh: $copy is not a harness copy (/home/mooki/Games/.hookshot-h-*)" >&2; exit 2 ;; esac
+case "$copy" in /home/tonesi/Games/.hookshot-h-*) ;; *) echo "hs-run.sh: $copy is not a harness copy (/home/tonesi/Games/.hookshot-h-*)" >&2; exit 2 ;; esac
 hs_names copy "$copy" || exit 2
 [ -x "$copy/$HS_EXE" ] && [ -f "$copy/image.bin" ] && [ -d "$copy/romfs" ] || { echo "hs-run.sh: $copy has no built game" >&2; exit 2; }
 [[ $tag =~ ^[A-Za-z0-9._-]+$ ]] || { echo "hs-run.sh: tag: letters, digits, . _ - only" >&2; exit 2; }
@@ -192,6 +211,7 @@ if [ "$window" = 1 ]; then
     done
     [ -e "$H/window-ok" ] || { window_refused >&2; exit 2; }
 fi
+[ "$intel" = 1 ] && [ -z "$memmax" ] && memmax=9G   # this machine: 16 GB of RAM (see the top)
 [ "$intel" = 1 ] && [ ${#excl[@]} -gt 0 ] && { echo "hs-run.sh: --exclusive, --whole and --priority are the card's; the Intel gate has none" >&2; exit 2; }
 # A picture larger than the game's own 2048x1152 takes more of the card (3840x2160: 9.8 to 11.6 GB with the desktop's
 # 1 GB, against 8.5 to 8.9 GB), and the gate lets a second game in beside one on the promise that both have the default
@@ -241,9 +261,9 @@ echo "# empty: hs-run.sh passes its switches in the environment" > "$R/env-file.
   echo "extra: ${extra[*]}"; } > "$R/args.txt"
 asked=$(date '+%F %T')
 if [ "$intel" = 1 ]; then
-    /home/mooki/Games/hs-intel-slot "$0" --inner "$R"
+    /home/tonesi/Games/hs-intel-slot "$0" --inner "$R"
 else
-    /home/mooki/Games/hs-gpu-slot "${excl[@]}" "$0" --inner "$R"
+    /home/tonesi/Games/hs-gpu-slot "${excl[@]}" "$0" --inner "$R"
 fi
 gate=$?
 if [ ! -f "$R/exit.txt" ]; then
@@ -295,8 +315,11 @@ size = "-"
 if shots:
     try:
         size = subprocess.run(["magick", "identify", "-format", "%wx%h", shots[-1]], capture_output=True, text=True).stdout.strip() or "?"
-    except OSError:
-        size = "?"
+    except OSError:   # (this machine: ImageMagick 6, no "magick" command)
+        try:
+            size = subprocess.run(["identify", "-format", "%wx%h", shots[-1]], capture_output=True, text=True).stdout.strip() or "?"
+        except OSError:
+            size = "?"
 mb = sum(os.path.getsize(p) for p in shots) / 1e6
 with log_path(R, required=True).open(errors="replace") as f:
     log = f.read()
@@ -314,7 +337,7 @@ nvrm = kernel_info["nvrm_lines"] if kernel_info["nvrm_lines"] is not None else "
 nocore = len(re.findall(r"ran without a core", log))
 devs = re.findall(r"vk: device (\d+): ([^,]+),", log)
 dev = "/".join("%s:%s" % d for d in devs) or "-"
-want = "Intel" if sys.argv[5] == "1" else "4090"
+want = "Intel" if sys.argv[5] == "1" else "3070 Ti"   # (this machine; originally "4090")
 gpu_ok = "" if devs and all(want in d[1] for d in devs) else " DEVICE?"
 win = ""
 if os.path.exists(os.path.join(R, "window")):   # (a windowed run: the swapchain, the game's own rate, hs-window.py's line)

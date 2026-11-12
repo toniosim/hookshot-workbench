@@ -8,7 +8,7 @@
 #    first such kernel line this guard kills every harness process that has the card open (SIGKILL: a hung client does
 #    not answer anything else), writes the file "closed" into the slot folder, which makes both gates refuse until the
 #    main session removes it, writes what it saw to reports/GUARD-TRIPPED.txt and reports/LOG.md, and writes 1 into
-#    the user's switch /home/mooki/Games/.hookshot-harness/gpu-slots (the gate then lets one game in at a time, not
+#    the user's switch /home/tonesi/Games/.hookshot-harness/gpu-slots (the gate then lets one game in at a time, not
 #    two, until someone writes 2 again).
 #
 # 2. Nothing of the harness uses the card outside the gate. The likeliest cause of that crash was a test program built
@@ -22,7 +22,7 @@
 #    ~/Games/Ocarina, ~/Games/Ocarina-linux-next and ~/Games/Hookshot) are never touched.
 #
 # (2026-11-10, HsWorkbench: Hookshot's game copies, worktrees and clone added; the reports moved from the other port's
-#    reports, now reference only, to Hookshot's /home/mooki/Code/hookshot-wt/reports: GUARD-TRIPPED.txt and lines in
+#    reports, now reference only, to Hookshot's /home/tonesi/hookshot-wt/reports: GUARD-TRIPPED.txt and lines in
 #    LOG.md.)
 # (2026-11-11, GateTwo: the gate has two slots; inside the gate is what holds slot 0's or slot 1's lock; a fault line
 #    also puts the switch back to 1.)
@@ -40,7 +40,7 @@
 # HSGATE_GUARD_LONG="<s> <s>" sets the seconds before a hold's first line and between its lines (480 and 300).
 set -u
 slots=${HSGATE_SLOT_DIR:-/tmp/hs-gpu-slots}
-reports=${HSGATE_GUARD_REPORTS:-/home/mooki/Code/hookshot-wt/reports}
+reports=${HSGATE_GUARD_REPORTS:-/home/tonesi/hookshot-wt/reports}
 lockfile=$slots/guard.lock
 closed=$slots/closed
 mkdir -p "$slots"
@@ -54,7 +54,7 @@ if [ -n "${1:-}" ] && [ "$slots" != /tmp/hs-gpu-slots ] && [ -z "${HSGATE_GUARD_
     echo "gpu-guard: ignoring HSGATE_SLOT_DIR=$slots (not the harness's slot folder)" >&2
     slots=/tmp/hs-gpu-slots; lockfile=$slots/guard.lock; closed=$slots/closed
 fi
-switch=/home/mooki/Games/.hookshot-harness/gpu-slots
+switch=/home/tonesi/Games/.hookshot-harness/gpu-slots
 [ "$slots" = /tmp/hs-gpu-slots ] || switch=$slots/gpu-slots   # (its own test: the test folder's switch)
 case "${1:-}" in
     --status)
@@ -80,8 +80,8 @@ flock -n 6 || exit 0   # one guard is enough
 
 harness_exe() {   # the executable is something the harness built or an agent wrote
     case "$1" in
-        /home/mooki/Games/Ocarina/*|/home/mooki/Games/Ocarina-linux-next/*|/home/mooki/Games/Hookshot/*) return 1 ;;   # the user's own games
-        /home/mooki/Games/.hookshot-h-*|/home/mooki/Code/hookshot-wt/*|/home/mooki/Code/Hookshot/*) return 0 ;;
+        /home/tonesi/Games/Ocarina/*|/home/tonesi/Games/Ocarina-linux-next/*|/home/tonesi/Games/Hookshot/*) return 1 ;;   # the user's own games
+        /home/tonesi/Games/.hookshot-h-*|/home/tonesi/hookshot-wt/*|/home/tonesi/Hookshot/*) return 0 ;;
         /tmp/*|/var/tmp/*|/dev/shm/*) return 0 ;;
     esac
     return 1

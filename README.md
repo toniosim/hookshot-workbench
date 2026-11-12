@@ -130,6 +130,27 @@ the whole cycle. Read the retained cycle report for what actually ran; offline c
 
 ## Using it on another machine
 
+### This branch (`tonesi-machine`): Pop!_OS 24.04, COSMIC, RTX 3070 Ti 8 GB, i7-12700K, 16 GB
+
+Tailored on 2026-11-11 from the author's `main`. What changed, and why:
+
+| Where | Change | Why |
+|---|---|---|
+| everywhere | `/home/mooki` -> `/home/tonesi`; clone `~/Hookshot`, worktrees and reports `~/hookshot-wt/` | this machine's layout |
+| `gates/hs-gpu-slot` | one game at a time whatever `gpu-slots` says; a game starts only with 6 GB available and calm memory pressure; "drained" below 2 GB, not 5 | 8 GB card that also drives the desktop; 16 GB of RAM, of which a game reserves ~9.8 GB |
+| `gates/*-slot` | desktop check accepts `cosmic-comp` (Hyprland's safe-mode check kept) | COSMIC, not Hyprland |
+| `gates/hs-build-slot`, `harness/hs-idle.sh` | one build slot (was four), `HOOKSHOT_LIFT_JOBS=2` by default; one run of the checks (was three) | 16 GB of RAM |
+| `harness/hs-run.sh` | expects the RTX 3070 Ti; ImageMagick 6 fallback; `--window` on COSMIC opens an unmanaged window (no rules, no watcher); `--intel` gets `--mem-max 9G` unless given | no Hyprland rules interface; Intel's driver used 23-28 GB preparing shaders |
+| `harness/hs-pr-check.sh`, skills, `pr_overlap.py`, `hs-watch-threads.py`, `nightly/report.py` | identity toniosim and its GitHub no-reply address | the author's identity |
+| `regress/`, `nightly/build.py` | device 3070 Ti, lift workers 2, jobs 12 | as above |
+| `skills/hookshot-pr-evidence/scripts/panels.sh` | works without `magick` | ImageMagick 6 |
+| `docs/agent-brief.md`, `skills/hookshot-workbench/SKILL.md` | rewritten / annotated for this machine and the AppImage toolchain (`~/Hookshot/build-linux/dev-env.sh`) | |
+| `install.sh` (new) | symlinks the harness, gates, guard and skills (all but the Discord one) into place; `--check` | |
+
+The author's numbers quoted in the skills (build times, loads, memory) are from their machine: measure here.
+
+### The original notes
+
 Everything was written for one machine: Arch Linux, Hyprland, an RTX 4090 on NVIDIA's driver with an Intel UHD 770
 beside it, and these places:
 

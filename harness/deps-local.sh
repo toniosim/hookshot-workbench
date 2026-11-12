@@ -12,12 +12,12 @@
 #   python/   python-build-standalone CPython 3.12 + requirements.txt (deps.sh's python step, same download and SHA-256)
 #   cpm/      Vulkan-Headers, SPIRV-Headers, VulkanMemoryAllocator in the CPM layout (deps.sh's cpm step, same tree hashes)
 #
-#   deps-local.sh <hookshot worktree> [<deps folder, default /home/mooki/Code/hookshot-wt/deps>]
+#   deps-local.sh <hookshot worktree> [<deps folder, default /home/tonesi/hookshot-wt/deps>]
 # Then: RX_CPM=<deps>/cpm and <deps>/python/bin/python3 for every nx2/ command.
 set -euo pipefail
 WT=$(cd "${1:?worktree}" && pwd)
-DEPS=${2:-/home/mooki/Code/hookshot-wt/deps}
-case "$DEPS" in /home/mooki/Code/hookshot-wt/*) ;; *) echo "deps folder must be inside /home/mooki/Code/hookshot-wt/"; exit 2 ;; esac
+DEPS=${2:-/home/tonesi/hookshot-wt/deps}
+case "$DEPS" in /home/tonesi/hookshot-wt/*) ;; *) echo "deps folder must be inside /home/tonesi/hookshot-wt/"; exit 2 ;; esac
 D=$WT/scripts/linux/deps.sh
 pin() { sed -n "s/^$1=\([^ ]*\).*/\1/p" "$D" | head -1; }
 PY_TAG=$(pin PY_TAG) PY_VER=$(pin PY_VER) PY_SHA256=$(pin PY_SHA256)

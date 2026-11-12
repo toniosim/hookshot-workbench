@@ -19,7 +19,7 @@ Intel/windowed nightly scenarios and nightly automatic confirmation paths remain
 ## Rolling test of each new main
 
 ```sh
-H=/home/mooki/Games/.hookshot-harness
+H=/home/tonesi/Games/.hookshot-harness
 P=$(jq -r .python "$H/nightly-local/config.json")
 "$P" -I -B "$H/nightly/hs-nightly.py" rolling
 "$P" -I -B "$H/nightly/hs-nightly.py" rolling --check
@@ -71,7 +71,7 @@ in force. The optional nightly timer remains disabled.
 ## Run the game-free workflow
 
 ```sh
-H=/home/mooki/Games/.hookshot-harness
+H=/home/tonesi/Games/.hookshot-harness
 P=$(jq -r .python "$H/nightly-local/config.json")
 "$P" -I -B "$H/nightly/hs-nightly.py" run --game-free
 ```

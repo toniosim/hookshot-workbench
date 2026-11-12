@@ -1,8 +1,13 @@
 #!/bin/bash
+# THIS MACHINE (tonesi, 2026-11-11): an RTX 3070 Ti with 8 GB that also drives the COSMIC desktop (~0.9 GB of it), and
+# 16 GB of RAM of which one game reserves ~9.8 GB. So: ONE game at a time, whatever the gpu-slots switch says
+# (max_slots below), and a game starts only when the system has mem_first MiB available and memory pressure is calm
+# (a full build's lift or a run of the checks beside a game would push the machine into swap). The text below is the
+# original author's, written for a 24 GB card and 96 GB of RAM; the two-slot parts never apply here.
 # Runs a command while it holds a GPU run slot, so the harness's test runs share the RTX 4090 (24.5 GB, and the user's
 # desktop is on it) without running it out of memory: two games at once ran another port into driver timeouts that
 # froze every game's frames. There are two slots (the lock files 0 and 1 of the slot folder). How many may be held at
-# once is the user's switch, the file /home/mooki/Games/.hookshot-harness/gpu-slots: "2" = two runs at once, anything
+# once is the user's switch, the file /home/tonesi/Games/.hookshot-harness/gpu-slots: "2" = two runs at once, anything
 # else or no file = one. It is read each time a run is about to be let in, so writing 1 holds from the next run on (a
 # second game that already runs finishes); the GPU guard writes 1 into it at a driver fault line.
 #
@@ -67,6 +72,8 @@ if [ "$dir" != /tmp/hs-gpu-slots ] && [ -z "${HSGATE_SLOT_TEST:-}" ]; then
 fi
 q=$dir/queue
 mkdir -p "$dir" "$q" "$dir/yielded"
+max_slots=1        # this machine: never two games on the 8 GB card (see the top)
+mem_first=6000     # MiB of MemAvailable before any game starts (this machine: 16 GB, a game reserves ~9.8 GB)
 card_need=10000    # MiB: what one game at the default picture may take on the card (measured: see reports/GateTwo.md)
 card_margin=2000   # MiB: kept free beyond that
 mem_need=30000     # MiB of system memory that must be available for a second game (a game takes about 14 GB)
@@ -76,7 +83,7 @@ settle=60          # seconds a run must have been going before another may start
 quiet_wait=600     # seconds an --exclusive run keeps the card and its mark while it waits for running builds to end
 quiet_retry=300    # seconds it then stays out of the queue before it tries again
 long_build=900     # seconds: while a holder of the quiet lock runs that this waiter has seen for longer, it does not try
-switch=/home/mooki/Games/.hookshot-harness/gpu-slots
+switch=/home/tonesi/Games/.hookshot-harness/gpu-slots
 meminfo=/proc/meminfo
 pressure=/proc/pressure/memory
 if [ "$dir" != /tmp/hs-gpu-slots ]; then   # a test of the gate: its own switch, and it may fake the readings and times
@@ -92,16 +99,18 @@ fi
 desktop_ok() {
     [ -n "${HSGATE_SLOT_NODESKTOP:-}" ] && return 0
     local p found=0
+    # this machine: COSMIC (cosmic-comp) has no safe mode; a running compositor is enough
+    if pgrep -x cosmic-comp > /dev/null; then return 0; fi
     for p in $(pgrep -x Hyprland || true); do
         found=1
         # one safe-mode instance may be allowed by the user: .hookshot-harness/safe-mode-ok holds its process id
         if grep -qz -x -- '--safe-mode' "/proc/$p/cmdline" 2>/dev/null &&
-           [ "$p" != "$(cat /home/mooki/Games/.hookshot-harness/safe-mode-ok 2>/dev/null | tr -d '[:space:]')" ]; then
+           [ "$p" != "$(cat /home/tonesi/Games/.hookshot-harness/safe-mode-ok 2>/dev/null | tr -d '[:space:]')" ]; then
             echo "hs-gpu-slot: Hyprland (pid $p) runs in safe mode; the command is not started" >&2
             return 1
         fi
     done
-    [ "$found" = 1 ] || { echo "hs-gpu-slot: no Hyprland is running; the command is not started" >&2; return 1; }
+    [ "$found" = 1 ] || { echo "hs-gpu-slot: no desktop compositor (cosmic-comp or Hyprland) is running; the command is not started" >&2; return 1; }
 }
 desktop_ok || exit 3
 # The GPU guard (.hookshot-harness/gpu-guard.sh): after a driver fault it kills the harness's programs on the card and
@@ -119,7 +128,7 @@ drained() {
     [ -n "${HSGATE_SLOT_NODRAIN:-}" ] && return 0
     for _ in $(seq 45); do
         used=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null | head -1 || echo 0)
-        [ "${used:-0}" -lt 5000 ] && return 0
+        [ "${used:-0}" -lt 2000 ] && return 0   # (this machine: the desktop alone takes ~0.9 GB)
         sleep 2
     done
     return 0
@@ -196,6 +205,19 @@ second_ok() {
     [[ ${used:-} =~ ^[0-9]+$ && ${total:-} =~ ^[0-9]+$ ]] || return 1
     [ $((total - used)) -ge $((card_need + card_margin)) ]
 }
+# This machine: may a game start on a free card? Enough memory available and no pressure (see the top). Says once why not.
+mem_said=0
+first_ok() {
+    local avail
+    avail=$(awk '/^MemAvailable:/ {print int($2 / 1024)}' "$meminfo" 2>/dev/null) || return 1
+    if [ "${avail:-0}" -ge "$mem_first" ] && pressure_ok; then return 0; fi
+    if [ "$mem_said" = 0 ]; then
+        echo "hs-gpu-slot: waiting: ${avail:-?} MiB available (a game needs $mem_first) or memory pressure is high; a build or the checks may be running" >&2
+        mem_said=1
+    fi
+    nap=3
+    return 1
+}
 # Tries to take what this run needs, without waiting. On success: held = the slot(s) it has now, second = 1 when
 # another run holds the other slot.
 take() {
@@ -203,12 +225,14 @@ take() {
     if [ "$whole" = 1 ]; then
         flock -n 9 || return 1
         flock -n 19 || { flock -u 9; return 1; }
+        first_ok || { flock -u 19; flock -u 9; return 1; }
         held="0 1"
         return 0
     fi
     if flock -n 9; then
         if flock -n 19; then   # nobody on slot 1 either: the card is free
             flock -u 19
+            first_ok || { flock -u 9; return 1; }
             held=0
             return 0
         fi
@@ -358,7 +382,7 @@ while :; do
             continue
         fi
         slots=1
-        if [ -r "$switch" ] && [ "$(tr -d '[:space:]' < "$switch" 2>/dev/null)" = 2 ]; then slots=2; fi
+        if [ "$max_slots" -ge 2 ] && [ -r "$switch" ] && [ "$(tr -d '[:space:]' < "$switch" 2>/dev/null)" = 2 ]; then slots=2; fi
         if take; then
             [ "$excl" = 1 ] || break
             : > "$dir/quiet-wanted.$$"   # the card is free and it is this run's turn: from here on no new build starts
@@ -391,7 +415,7 @@ trap - EXIT
 desktop_ok || exit 3   # again: the turn may have come hours after the command asked
 card_open || exit 4
 # the guard runs detached, without this gate's locks
-setsid /home/mooki/Games/.hookshot-harness/gpu-guard.sh 9>&- 19>&- 5>&- 7>&- 8>&- < /dev/null > /dev/null 2>&1 &
+setsid /home/tonesi/Games/.hookshot-harness/gpu-guard.sh 9>&- 19>&- 5>&- 7>&- 8>&- < /dev/null > /dev/null 2>&1 &
 export HSGATE_IN_GATE=$$   # the guard tells this command's children from programs outside the gate by it
 [ "$second" = 1 ] || drained   # (beside a run the card is never "drained": room was the condition for the start)
 mark_held   # again: the minute before a run may start beside this one counts from the command's start

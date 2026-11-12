@@ -15,7 +15,7 @@ and use supplied or guarded GET-only snapshots. No credential migration is autho
 
 **Use for:** team coordination, claims, update drafts and specifically authorized Discord messages.
 Read `hookshot-workbench`, `hookshot-pr-evidence`, and the project's authoritative
-`/home/mooki/Code/hookshot-wt/main-tools/.claude/skills/team-updates/SKILL.md` first.
+`/home/tonesi/hookshot-wt/main-tools/.claude/skills/team-updates/SKILL.md` first.
 Its forms and limits supersede the former browser-only Claiming/Progress forms; do not
 maintain a second form table here. Reports name the skills read and tools used.
 

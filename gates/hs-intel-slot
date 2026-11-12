@@ -23,16 +23,18 @@ mkdir -p "$dir" "$gpu"
 desktop_ok() {
     [ -n "${HSGATE_SLOT_NODESKTOP:-}" ] && return 0
     local p found=0
+    # this machine: COSMIC (cosmic-comp) has no safe mode; a running compositor is enough
+    if pgrep -x cosmic-comp > /dev/null; then return 0; fi
     for p in $(pgrep -x Hyprland || true); do
         found=1
         # one safe-mode instance may be allowed by the user: .hookshot-harness/safe-mode-ok holds its process id
         if grep -qz -x -- '--safe-mode' "/proc/$p/cmdline" 2>/dev/null &&
-           [ "$p" != "$(cat /home/mooki/Games/.hookshot-harness/safe-mode-ok 2>/dev/null | tr -d '[:space:]')" ]; then
+           [ "$p" != "$(cat /home/tonesi/Games/.hookshot-harness/safe-mode-ok 2>/dev/null | tr -d '[:space:]')" ]; then
             echo "hs-intel-slot: Hyprland (pid $p) runs in safe mode; the command is not started" >&2
             return 1
         fi
     done
-    [ "$found" = 1 ] || { echo "hs-intel-slot: no Hyprland is running; the command is not started" >&2; return 1; }
+    [ "$found" = 1 ] || { echo "hs-intel-slot: no desktop compositor (cosmic-comp or Hyprland) is running; the command is not started" >&2; return 1; }
 }
 desktop_ok || exit 3
 # The GPU guard (.hookshot-harness/gpu-guard.sh): after a driver fault it kills the harness's programs on the card and
@@ -64,7 +66,7 @@ while :; do
         desktop_ok || exit 3   # again: the turn may have come long after the command asked
         card_open || exit 4
         # the guard runs detached, without this gate's locks
-        setsid /home/mooki/Games/.hookshot-harness/gpu-guard.sh 9>&- 5>&- 7>&- 8>&- < /dev/null > /dev/null 2>&1 &
+        setsid /home/tonesi/Games/.hookshot-harness/gpu-guard.sh 9>&- 5>&- 7>&- 8>&- < /dev/null > /dev/null 2>&1 &
         export HSGATE_IN_INTEL_GATE=$$
         exec "$@"
     fi

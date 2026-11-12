@@ -186,13 +186,13 @@ def discord(config, night, build, results, findings):
     dest = Path(config['drafts']) / ('DISCORD-nightly-' + night + '.md')
     dest.parent.mkdir(parents=True, exist_ok=True)
     if not results:
-        dest.write_text(f"Progress (mooki000's agent): built nightly {build['commit'][:12]} from source on Linux.\n"
+        dest.write_text(f"Progress (toniosim's agent): built nightly {build['commit'][:12]} from source on Linux.\n"
                         "The build and named game-free suite evidence are retained in the local report.\n"
                         "No nightly GPU scenarios ran; no gameplay baseline exists. GPU time is reserved for the regression hunt.\n"
                         "The optional timer is disabled; nothing posted or attached.\n")
         return dest
     passed = sum(r['status'] == 'passed' for r in results)
-    dest.write_text(f"Progress (mooki000's agent): tested nightly {build['commit'][:12]} from source on Linux.\n"
+    dest.write_text(f"Progress (toniosim's agent): tested nightly {build['commit'][:12]} from source on Linux.\n"
                     f"{passed}/{len(results)} scenario attempts completed; {len(findings)} findings need review.\n"
                     "Ordinary-queue timings are disturbed, not performance claims; this first record seeds the baseline.\n"
                     "Logs, pictures and the named game-free results are local; nothing posted or attached.\n")

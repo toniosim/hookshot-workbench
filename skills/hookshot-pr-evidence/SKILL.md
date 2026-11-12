@@ -125,7 +125,7 @@ window, what the default is and who sets it, and what happens on Windows.
 ## Before work starts: the claim, the issue and the overlap search
 
 The work is claimed before it starts. Coordination now uses the project's `scripts/team_chat.py` from
-`/home/mooki/Code/hookshot-wt/main-tools`, under `hookshot-discord-updates`; Main alone posts, at most once an
+`/home/tonesi/hookshot-wt/main-tools`, under `hookshot-discord-updates`; Main alone posts, at most once an
 hour, after reading the room, in the project's current labelled form with full links. The user is signed in;
 agents never read/copy sessions under `~/.config/hookshot/` or `~/.config/longshot/`. Workers prepare drafts only.
 The worklist score remains severity S0 8, S1 5, S2 3, S3 1, times reach, times confidence 1.0/0.7/0.4.
@@ -160,7 +160,7 @@ A claim is dropped out loud when the work stops.
 1. **Nothing made from the game** in the branch: no dump, no `work/`, no built game, saves, lifted C, shader dumps,
    logic or lists read out of the game's files. `git status` clean of build output; no `.gitignore` bypass.
 2. **Licence**: only code that can be GPL-3.0-or-later. Nothing from the other port's repository (its additions are "all
-   rights reserved"); the user's own earlier files only as `/home/mooki/Code/hookshot-wt/reports/OURS.md` allows.
+   rights reserved"); the user's own earlier files only as `/home/tonesi/hookshot-wt/reports/OURS.md` allows.
    Third-party code keeps its notice.
 3. **One topic**, on a branch from current `main`; rebased before review is asked again.
 4. **Checks**: a game-free test that fails without the change, and the whole of `tests/run_all.py` (many tests cut
@@ -168,7 +168,7 @@ A claim is dropped out loud when the work stops.
 5. **In the game**, on this machine: what was done and seen, with a row in `docs/tested-configurations.md`
    for each measured run. Main's #2712 rule: when the game could not be run, say so and keep the PR a draft
    until someone has. Source-only/stand-in tests are not a replacement for the runtime evidence a change needs.
-6. **Commits**: author `Michael Schienbein <7663497+mooki000@users.noreply.github.com>`; new GPT-6 Astra messages end with
+6. **Commits**: author `toniosim <10343143+toniosim@users.noreply.github.com>`; new GPT-6 Astra messages end with
    `Assisted-by: GPT-6 Astra` and `Co-Authored-By: GPT-6 Astra <noreply@openai.com>`; preserve historical authors/trailers.
 7. **Windows before the push.** A changed C/C++ fixture (including generated fixtures), workflow, or Python file
    touching paths, files, processes or locking needs the project's checks on the user's fork first. **Main only**,
@@ -193,9 +193,9 @@ A claim is dropped out loud when the work stops.
 8. **The main session** reads every commit's diff, runs the test both ways itself, runs the gate script, and only
    then pushes:
 
-       /home/mooki/Games/.hookshot-harness/hs-pr-check.sh <branch> <title file>      # must print PASS
-       git -C /home/mooki/Code/Hookshot push --force-with-lease fork <branch>          # never to origin
-       gh pr create --repo NotRexed/Hookshot --head mooki000:<branch> --base main --title "$(cat <title file>)" --body-file <body file>
+       /home/tonesi/Games/.hookshot-harness/hs-pr-check.sh <branch> <title file>      # must print PASS
+       git -C /home/tonesi/Hookshot push --force-with-lease fork <branch>          # never to origin
+       gh pr create --repo NotRexed/Hookshot --head toniosim:<branch> --base main --title "$(cat <title file>)" --body-file <body file>
 
    An agent hands over three things: the branch with its head, `reports/drafts/<Topic>-title.txt`, and
    `reports/drafts/<Topic>-body.md` with no placeholder left; then it stops editing them.
@@ -247,7 +247,7 @@ crops each source before scaling. It overwrites its output: choose a new path, n
 - Nothing unpublished and nothing private in it: other tabs of a menu under work, paths with the home folder, a room
   secret that is still in use.
 - Frames come from `hs-run.sh`'s `shots/` folder; a contact sheet finds the right ones quickly:
-  `magick montage -label '%t' <every nth frame> -tile 6x -geometry 426x240+2+2 sheet.jpg`.
+  `montage -label '%t' <every nth frame> -tile 6x -geometry 426x240+2+2 sheet.jpg`.
 - Intel can show pre-existing false colours. For generic feature illustrations prefer the RTX 4090; for an
   Intel-specific fix, keep the required **Intel before/after** pictures and label that unrelated colour defect.
   Never substitute another GPU's picture for the hardware behavior the test is meant to prove.

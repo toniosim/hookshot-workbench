@@ -5,8 +5,15 @@
 # quiet lock shared while it runs, so a frame-rate measurement never has the checks beside it: an idle-class job still
 # takes the second thread of a core the game runs on. It takes no build slot. Written 2026-11-10, when six runs of the
 # checks beside four builds put the load at 170 during timing holds.
-#   hs-idle.sh /home/mooki/Code/hookshot-wt/deps/python/bin/python3 -I -B tests/run_all.py
+#   hs-idle.sh python3 -I -B tests/run_all.py --jobs 8     (this machine: after `source ~/Hookshot/build-linux/dev-env.sh`)
 set -euo pipefail
+# This machine (Pop!_OS 24.04): gcc-14 is installed without libstdc++-14-dev, and clang picks the newest GCC folder (14),
+# finds no C++ headers there and fails ~120 checks ('algorithm' file not found, -Wgcc-install-dir-libstdcxx). Point it at
+# GCC 13 (which has them) while that is so; `sudo apt install libstdc++-14-dev` makes this step do nothing.
+if [ -z "${CCC_OVERRIDE_OPTIONS:-}" ] && [ -d /usr/lib/gcc/x86_64-linux-gnu/14 ] && [ ! -d /usr/include/c++/14 ] &&
+   [ -d /usr/include/c++/13 ]; then
+    export CCC_OVERRIDE_OPTIONS='#+--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/13'
+fi
 dir=/tmp/hookshot-test-slots
 gpu=/tmp/hs-gpu-slots
 mkdir -p "$dir" "$gpu"
@@ -19,12 +26,12 @@ while :; do
         fi
     done
     if [ "$wanted" = 0 ]; then
-        for i in 0 1 2; do
+        for i in 0; do   # this machine (16 GB): one run of the checks at a time (originally three)
             exec 9>"$dir/$i"
             if flock -n 9; then
                 exec 8>"$gpu/quiet"
                 flock -s 8
-                exec chrt --idle 0 nice -n 15 /home/mooki/Games/.hookshot-harness/hs-nocore.sh "$@"
+                exec chrt --idle 0 nice -n 15 /home/tonesi/Games/.hookshot-harness/hs-nocore.sh "$@"
             fi
         done
     fi
