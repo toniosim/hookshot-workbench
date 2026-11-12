@@ -15,9 +15,9 @@ import sys
 import tempfile
 
 REPO = "NotRexed/Hookshot"
-STATE_DIR = Path("/home/mooki/Games/.hookshot-harness/pr-loop")
-CHECKOUT = "/home/mooki/Code/hookshot-wt/main-tools"
-CLONE = Path("/home/mooki/Code/Hookshot")
+STATE_DIR = Path("/home/tonesi/Games/.hookshot-harness/pr-loop")
+CHECKOUT = "/home/tonesi/hookshot-wt/main-tools"
+CLONE = Path("/home/tonesi/Hookshot")
 TRUSTED = {"OWNER", "MEMBER", "COLLABORATOR"}
 PRIORITY_GROUP = ["nullifyshot", "hckrman101", "sadtransgirl", "klimovich008", "madebyjordan"]
 WAITS = ("author-reply", "new-commits", "maintainer", "our-test", "our-reply")
@@ -110,11 +110,11 @@ def locked(directory):
 def defaults(authors, provenance, now):
     priority = []
     for author in [*PRIORITY_GROUP, "NotRexed", *sorted(authors, key=str.lower)]:
-        if author.lower() not in {a.lower() for a in priority} and author.lower() != "mooki000":
+        if author.lower() not in {a.lower() for a in priority} and author.lower() != "toniosim":
             priority.append(author)
     return {
-        "version": 1, "repo": REPO, "user": "mooki000", "checkout": CHECKOUT,
-        "priority_authors": priority + ["everyone else"], "skip_authors": ["mooki000"],
+        "version": 1, "repo": REPO, "user": "toniosim", "checkout": CHECKOUT,
+        "priority_authors": priority + ["everyone else"], "skip_authors": ["toniosim"],
         "round_robin_authors": list(PRIORITY_GROUP),
         "comment": 'User\'s list: "null", "hckrman101", "sadtransgirl", "klimovich008", "madebyjordan". '
                    '"null" is nullifyshot on GitHub; "Jordan" is madebyjordan. Rotate across these authors; listed order breaks ties.',
@@ -122,12 +122,12 @@ def defaults(authors, provenance, now):
                    "authors": list(PRIORITY_GROUP)}],
         "priority_source": {"at": now, "method": provenance}, "request_user": None,
         "hardware": {
-            "os": "Arch Linux", "cpu": "Intel Core i9-13900K", "display": "1920x1080, 60 Hz, no HDR",
+            "os": "Linux (Pop!_OS 24.04 LTS, COSMIC)", "cpu": "Intel Core i7-12700K", "display": "1920x1080, 75 Hz main display, no HDR",
             "gpus": [
-                {"vendor": "NVIDIA", "model": "RTX 4090", "vram_gib": 24,
-                 "driver": "NVIDIA 615.78.08", "mesh_shaders": True},
+                {"vendor": "NVIDIA", "model": "RTX 3070 Ti", "vram_gib": 8,
+                 "driver": "NVIDIA 595.104.02", "mesh_shaders": True},
                 {"vendor": "Intel", "model": "UHD 770", "vram_gib": None,
-                 "driver": "Mesa 26.2.5 (Arch package 1:26.2.5-1)", "mesh_shaders": False,
+                 "driver": "Mesa 26.1.6 (Pop!_OS package 26.1.6-1pop0)", "mesh_shaders": False,
                  "memory": "shared system RAM, not a fixed-size discrete VRAM card"}],
             "windowless_only": True,
         },

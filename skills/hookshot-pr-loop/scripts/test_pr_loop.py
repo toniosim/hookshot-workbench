@@ -33,7 +33,7 @@ def pr(number=1, author="nullifyshot", **changes):
     return value
 
 
-def event(number=1, author="mooki000", at=EARLIER, body="Built " + HEAD + "; tests pass.", kind="comment", **changes):
+def event(number=1, author="toniosim", at=EARLIER, body="Built " + HEAD + "; tests pass.", kind="comment", **changes):
     fragment = "discussion_r" if kind == "inline" else "pullrequestreview-" if kind == "review" else "issuecomment-"
     value = {"id": kind + ":1", "kind": kind, "author": author, "association": "CONTRIBUTOR",
              "at": at, "created_at": at, "body": body, "url": f"https://github.com/{loop.REPO}/pull/{number}#{fragment}1",
@@ -44,7 +44,7 @@ def event(number=1, author="mooki000", at=EARLIER, body="Built " + HEAD + "; tes
 
 def request(number=1, tid="T-ABCD", **changes):
     value = {"id": tid, "pr": number, "requester": "@author:example.invalid", "requested": loop.epoch(EARLIER),
-             "summary": "Test on Linux", "needs": "Linux NVIDIA RTX 4090", "notes": "Compare with main.",
+             "summary": "Test on Linux", "needs": "Linux NVIDIA RTX 3070 Ti", "notes": "Compare with main.",
              "status": "open", "approved": True, "pr_state": "open", "claims": {}, "results": {}}
     value.update(changes)
     return value
@@ -161,7 +161,7 @@ class QueueTests(unittest.TestCase):
 
     def test_not_tested_promise_is_not_a_result(self):
         for text in ("Not tested " + HEAD, "Will test " + HEAD, "Not built " + HEAD):
-            self.assertIsNone(loop.own_test(pr(events=[event(body=text)]), "mooki000"))
+            self.assertIsNone(loop.own_test(pr(events=[event(body=text)]), "toniosim"))
 
     def test_unapproved_priority_card_is_not_a_claim_or_pr_ban(self):
         for approved in (False, None):
@@ -285,7 +285,7 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(loop.next_action(state, self.config, NOW)["action"], "take")
 
     def test_skip_user_and_hardware_mismatch(self):
-        state = snapshot(pr(author="mooki000"), pr(2), requests=[request(2, needs="AMD RX 7000 or newer, or Intel Arc")])
+        state = snapshot(pr(author="toniosim"), pr(2), requests=[request(2, needs="AMD RX 7000 or newer, or Intel Arc")])
         text = "\n".join(loop.exclusions(state, self.config))
         self.assertIn("skip_authors", text)
         self.assertIn("no open request fits", text)
@@ -307,12 +307,12 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(loop.hardware_fit("any game controller on Windows or Linux", self.config["hardware"])[0], "unknown")
 
     def test_hardware_families_capacity_os_and_unknown(self):
-        cases = {"": "fit", "Linux": "fit", "NVIDIA RTX 4090, Linux": "fit", "NVIDIA RTX 20-50": "fit",
+        cases = {"": "fit", "Linux": "fit", "NVIDIA RTX 3070 Ti, Linux": "fit", "NVIDIA RTX 4090, Linux": "no", "NVIDIA RTX 20-50": "fit",
                  "Intel UHD 770 Mesa": "fit", "Intel Arc": "no", "AMD RX 6000 or newer": "no",
-                 "8 GB NVIDIA or AMD card, Windows": "no", "8 GB NVIDIA on Linux": "no",
-                 "24 GB NVIDIA on Linux": "fit", "without mesh shaders": "fit", "Windows": "no",
+                 "8 GB NVIDIA or AMD card, Windows": "no", "8 GB NVIDIA on Linux": "fit",
+                 "24 GB NVIDIA on Linux": "no", "without mesh shaders": "fit", "Windows": "no",
                  "Steam Deck": "no", "HDR Linux": "unknown", "windowed Linux": "no",
-                 "the odd device I mentioned": "unknown", "at least 16 GB NVIDIA": "fit"}
+                 "the odd device I mentioned": "unknown", "at least 16 GB NVIDIA": "no", "at most 8 GB NVIDIA": "fit"}
         for needs, expected in cases.items():
             with self.subTest(needs=needs):
                 self.assertEqual(loop.hardware_fit(needs, self.config["hardware"])[0], expected)
@@ -793,7 +793,7 @@ class StorageTests(unittest.TestCase):
     def test_next_report_default_summary_and_why_leave_state_untouched(self):
         config = loop.defaults([], "fixture", NOW)
         state = snapshot(pr(2566), pr(1, draft=True), pr(2, body="Parked. Do not test."),
-                         pr(3, files=["scripts/build.py"]), pr(4, author="mooki000"))
+                         pr(3, files=["scripts/build.py"]), pr(4, author="toniosim"))
         loop.take(state, config, 2566, EARLIER)
         loop.atomic_json(self.directory / "config.json", config)
         loop.atomic_json(self.directory / "state.json", state)

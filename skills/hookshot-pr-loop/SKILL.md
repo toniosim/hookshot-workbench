@@ -1,8 +1,9 @@
 ---
 name: hookshot-pr-loop
 description: >
-  Coordinate Hookshot or Longshot testing for mooki000 with the currently GitHub-backed PR loop: test other people's pull requests on this PC, answer replies, follow new
-  commits, carry results across proven identical rebases, and keep PRs moving until they merge.
+  Coordinate Hookshot or Longshot testing for toniosim with the GitHub-backed PR loop: test other people's pull requests on this PC, answer replies, follow new
+  commits, carry results across proven identical rebases, and keep PRs moving until they merge. Its scripts read
+  GitHub (NotRexed/Hookshot) only; Longshot's PRs on git.magicbean.dev go through the repo's /testing skill and forge.py.
   Use for the PR loop or test requests; daytime card admission still needs a Linux testing request.
 ---
 
@@ -22,7 +23,7 @@ Read `hookshot-workbench`, `hookshot-pr-evidence` and the agent brief first, bec
 rules also govern this queue. Read the trusted current-main checkout's `AGENTS.md` (Team updates and Test requests),
 `docs/test-requests.md`, `.claude/skills/testing/SKILL.md`, `.claude/skills/request-testing/SKILL.md` and
 `docs/workflow.md`, because the team's approval and claim rules can change. The read-only tools checkout here is
-`/home/mooki/Code/hookshot-wt/main-tools`; do not substitute a PR's copy of its scripts, because that code is untrusted.
+`/home/tonesi/hookshot-wt/main-tools`; do not substitute a PR's copy of its scripts, because that code is untrusted.
 
 ## One cycle
 
@@ -69,7 +70,7 @@ enforce this clock rule: a priority author, an invitation, or `take --gap` never
 
 ## Who gets picked
 
-`config.json` is created once under `/home/mooki/Games/.hookshot-harness/pr-loop/` and left for the user to edit,
+`config.json` is created once under `/home/tonesi/Games/.hookshot-harness/pr-loop/` and left for the user to edit,
 because priorities and hardware belong to the user. Defaults are:
 
 - First group: `nullifyshot` ("null" in chat), `hckrman101`, `sadtransgirl`, `klimovich008`, `madebyjordan` ("Jordan"),
@@ -79,11 +80,11 @@ because priorities and hardware belong to the user. Defaults are:
   first without excluding other contributors. The collaborator API is tried once at setup; if GitHub refuses it,
   positive OWNER/MEMBER/COLLABORATOR associations on the latest 100 PRs provide a bounded fallback, not a complete
   team roster. Its source and date are kept so that limit is visible.
-- `skip_authors` includes `mooki000`, because this loop is not the user's own PR review queue.
+- `skip_authors` includes `toniosim`, because this loop is not the user's own PR review queue.
 - `max_active` is 4 and `stale_days` is 3, because taking a small number leaves room to finish replies and re-tests.
   Four in hand does not mean four concurrent tests or four claims.
-- Hardware: Arch Linux, i9-13900K, RTX 4090 24 GiB with NVIDIA 615.78.08, Intel UHD 770 with Mesa (initial package
-  26.2.5), and a non-HDR 1080p/60 Hz display. The Intel device uses shared RAM, not a fixed discrete VRAM size,
+- Hardware: Pop!_OS 24.04 (COSMIC), i7-12700K, RTX 3070 Ti 8 GiB with NVIDIA 595.104.02, Intel UHD 770 with Mesa (initial
+  package 26.1.6), 16 GB of RAM, and a non-HDR 1080p/75 Hz main display. The Intel device uses shared RAM, not a fixed discrete VRAM size,
   because an 8 GB card or Intel Arc request is not a UHD 770 match. Refresh hardware and driver facts each session as
   the project's testing skill asks, because installed drivers change. Current game runs remain windowless.
 
@@ -303,7 +304,7 @@ that would invent evidence:
 python3 -I -B ~/.agents/skills/hookshot-pr-loop/scripts/pr_loop.py carry <pr> --from <full-actually-tested-sha> --to <full-new-head-sha>
 ```
 
-The command verifies the claim itself in `/home/mooki/Code/Hookshot`, because an author's \"just rebased\" message
+The command verifies the claim itself in `/home/tonesi/Hookshot`, because an author's \"just rebased\" message
 is not a proof. It freezes the local `origin/main`, obtains each head's unique merge-base against it, and requires
 the new base to descend from the old one. It runs `git range-diff` over those two base-to-head ranges and requires
 equal non-zero commit counts with every commit paired exactly once as `=`, because changed, added or dropped

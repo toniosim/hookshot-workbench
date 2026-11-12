@@ -145,6 +145,7 @@ Tailored on 2026-11-11 from the author's `main`. What changed, and why:
 | `regress/`, `nightly/build.py` | device 3070 Ti, lift workers 2, jobs 12 | as above |
 | `skills/hookshot-pr-evidence/scripts/panels.sh` | works without `magick` | ImageMagick 6 |
 | `docs/agent-brief.md`, `skills/hookshot-workbench/SKILL.md` | rewritten / annotated for this machine and the AppImage toolchain (`~/Hookshot/build-linux/dev-env.sh`) | |
+| `skills/hookshot-pr-loop/` | its paths, GitHub login, hardware profile (RTX 3070 Ti 8 GiB, i7-12700K, Mesa 26.1.6) and the tests' hardware cases | this machine; it needs a read-only `~/hookshot-wt/main-tools` worktree of current main (`git -C ~/Hookshot worktree add --detach ~/hookshot-wt/main-tools origin/main`) |
 | `install.sh` (new) | symlinks the harness, gates, guard and skills (all but the Discord one) into place; `--check` | |
 
 The author's numbers quoted in the skills (build times, loads, memory) are from their machine: measure here.
