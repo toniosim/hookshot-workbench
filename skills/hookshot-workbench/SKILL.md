@@ -154,6 +154,14 @@ unset HSGATE_SLOT_DIR HSGATE_INTEL_SLOT_DIR HSGATE_SLOT_TEST HSGATE_SLOT_NODESKT
    A successful launcher exit is not a child receipt. Use `setsid --wait nohup` for a saved long-running launcher,
    retaining its child PID, output and completion receipt. Do not restart a queued build because the launcher ended.
 
+**Full-build time here:**
+
+- **This machine (2026-11-12, PR #2871 head 8eb58a3a, lift jobs 2, `--jobs 12`): 17 min 52 s**: lift 86 s (emit 34 s;
+  more lift workers save seconds at most), compile ~15 min, bounded by a few slow hot files (only ~7 of 12 compiles
+  busy late on), each clang 0.5-1.4 GB, MemAvailable >= 5.6 GB at the one sample taken (peak not recorded).
+  First prebuild the lift's C++ helper against GCC 13's headers (`/home/tonesi/hookshot-wt/reports/pr2871/build.sh` shows how; the dev-build
+  memory note says why); without it the lift stops at `'algorithm' file not found`.
+
 ### Incremental host/renderer-only changes
 
 Prefer rebuilding with the same work/output/profile identity. A fast donor build is valid only when the selected
