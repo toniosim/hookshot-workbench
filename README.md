@@ -21,9 +21,11 @@ the scripts were written by them under those rules, then run and checked here. T
 | `skills/hookshot-scripted-play` | Playing the game without a controller: input scripts, the state line, saves at story points | `SKILL.md` |
 | `skills/hookshot-issue-triage` | Reading an issue or someone else's pull request and reproducing it on this hardware | `SKILL.md` |
 | `skills/hookshot-discord-updates` | Posting claims and pull request updates to the project's Discord as me, through my own signed-in browser tab: the fixed forms, the checks before a post, what I see first. Discord's terms do not allow automating a user account; I accepted that for a few short posts a day, and you should decide for yourself | `SKILL.md`, `scripts/discord_tab.mjs` |
+| `skills/hookshot-regression-hunt` | Finding which merged pull request made a build worse: show the difference first with the same measuring code in both builds, test named suspects by revert, then bisect | `SKILL.md` |
 | `harness/` | The run wrapper and its helpers | `hs-run.sh` |
 | `gates/` | Queues that let many test runs share one GPU and one CPU without hurting each other or the desktop | `nx2navi-gpu-slot` |
 | `play/` | A driver that plays steps on a running game from its state line | `hsap.py` |
+| `regress/` | The regression hunt's engine and its two adapters (build a candidate, run a scenario), with their game-free tests | `regress.py` |
 | `docs/agent-brief.md` | The rules every agent on my machine reads first | |
 
 ### The harness
@@ -74,6 +76,17 @@ place, facing and state from the state line of [Hookshot #2292](https://github.c
 (`HOS_OOT_STATE_FILE`). `walk <x> <z>` steers to a point and says whether it arrived, got stuck or was held by a
 scene. `play/tapcheck.py` puts a run's state lines beside its pictures. `play/test_hsap.py` tests the driver without
 a game.
+
+### Finding a regression
+
+`regress/regress.py plan` reads a commit range and lists it with the pull request numbers and the groups of commits
+that can share one long build step. `regress.py hunt` confirms the good and the bad end in one quiet hold (old, new,
+old, new), tests named suspects by reverting them, then bisects. It stops at the number of holds, steps and minutes it
+was given, and what it then reports is the smallest range the clean runs support, not a guess. The scene, the save and
+the bands that count as good and bad come from a scenario file that stays on the machine: none is here.
+`regress/build_case.py` and `regress/run_case.py` are the adapters for this workbench's build and run wrappers;
+`regress/test_regress.py` tests the engine on made-up histories without a game. First published as written, before a
+whole hunt had run through it on the game.
 
 ## What is not here, and why
 
