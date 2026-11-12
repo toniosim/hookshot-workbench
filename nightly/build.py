@@ -1,5 +1,6 @@
 """Full workbench build of an immutable nightly target, into an owned reflink snapshot."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import os
@@ -30,6 +31,8 @@ def run(config, out, commit=None):
     info = {'commit': commit, 'started': stamp(), 'warnings_suppressed_by_upstream': True,
             'copy': str(dest), 'worktree': str(wt), 'status': 'building'}
     put(out / 'build.json', info)
+    from monitor import wait_for_player_idle
+    wait_for_player_idle(config, out / 'player-idle.jsonl')
     if not wt.exists():
         capture(['git', '-C', config['repo'], 'worktree', 'add', '--detach', wt, commit])
     else:
@@ -38,6 +41,12 @@ def run(config, out, commit=None):
             raise RuntimeError('Owned nightly worktree has tracked changes; refusing to replace them')
         capture(['git', '-C', wt, 'checkout', '--detach', commit])
     assert capture(['git', '-C', wt, 'rev-parse', 'HEAD']).strip() == commit
+    for diagnostic in config.get('diagnostic_commits', []):
+        capture(['git', '-c', 'user.name=' + config['author_name'],
+                 '-c', 'user.email=' + config['author_email'], '-C', wt, 'cherry-pick', '-x', diagnostic])
+    info['source_commit'] = capture(['git', '-C', wt, 'rev-parse', 'HEAD']).strip()
+    info['diagnostic_commits'] = config.get('diagnostic_commits', [])
+    put(out / 'build.json', info)
     rc = command([HARN / 'tools/deps-local.sh', wt], out / 'deps.log')
     if rc:
         raise RuntimeError('Dependency setup failed; see deps.log')
@@ -50,8 +59,12 @@ def run(config, out, commit=None):
         profile_env.pop('GH_TOKEN', None)
         if rc:
             raise RuntimeError('Play profile setup failed; see profile.log')
-    argv = gated(['flock', config['full_build_lock'], config['build_gate'], 'env',
-                  'RX_CPM=' + config['cpm'], 'HOOKSHOT_LIFT_JOBS=8', 'HOOKSHOT_KEEP_BUILD_FILES=1',
+    build_env = ['RX_CPM=' + config['cpm'], 'HOOKSHOT_LIFT_JOBS=8', 'HOOKSHOT_KEEP_BUILD_FILES=1']
+    if config.get('ngx_sdk'):
+        if not Path(config['ngx_sdk']).is_dir():
+            raise RuntimeError('Already accepted local upscaler SDK is missing; no license is accepted automatically')
+        build_env.append('HOOKSHOT_NGX_SDK=' + config['ngx_sdk'])
+    argv = gated(['flock', config['full_build_lock'], config['build_gate'], 'env', *build_env,
                   config['python'], '-I', '-B', '-u', 'nx2/make_game.py',
                   '--romfs', config['romfs'], '--exefs', config['exefs'], '--out', staging,
                   '--work', wt / 'work/build', '--jobs', str(config['build_jobs']),
@@ -85,5 +98,10 @@ def run(config, out, commit=None):
 
 
 if __name__ == '__main__':
-    config = json.loads((LOCAL / 'config.json').read_text())
-    print(json.dumps(run(config, Path(sys.argv[1])), indent=2), flush=True)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('output')
+    parser.add_argument('--config', type=Path, default=LOCAL / 'config.json')
+    parser.add_argument('--commit', help='already fetched immutable commit; avoids a second fetch during a resumed cycle')
+    args = parser.parse_args()
+    config = json.loads(args.config.read_text())
+    print(json.dumps(run(config, Path(args.output), args.commit), indent=2), flush=True)

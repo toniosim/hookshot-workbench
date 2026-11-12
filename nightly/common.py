@@ -29,10 +29,14 @@ def text(path):
     return Path(path).read_text(errors='replace') if Path(path).is_file() else ''
 
 
-def env_clean(extra=None):
+def env_clean(extra=None, *, game=False):
     env = os.environ.copy()
     for key in (*GATE_VARS, 'GH_TOKEN', 'GITHUB_TOKEN', 'OPENAI_API_KEY'):
         env.pop(key, None)
+    if game:
+        for key in list(env):
+            if key.startswith(('HOS_', 'RX_', 'HOOKSHOT_', 'SDL_', 'VK_', 'MESA_', '__GL_')):
+                del env[key]
     env.update(extra or {})
     return env
 

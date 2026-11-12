@@ -1,22 +1,58 @@
 # Hookshot nightly playtest
 
-A local, non-posting workflow for the published `nightly` tag: full source build, named game-free checks,
-private scenario definitions, preserved evidence, and empirical regression comparisons.
+A local, non-posting workflow for the published `nightly` tag and rolling tests of pinned `origin/main`:
+full source builds, named game-free checks, private scene definitions, preserved evidence and regression comparisons.
 
 ## Current proof and authorization
 
-The source-build path has run. Ten comparison tests and nine orchestration tests pass without a game; three
-comparison mutations are rejected. The protected-play-folder stop rule stopped the first real suite when that game
-appeared. A CPU-only resume retains that interrupted attempt and requires two continuously observed idle minutes.
-The local night report records the suite's final outcome.
+Source builds, the project game-free suite and tool tests have run; no rolling GPU cycle has run yet.
+The protected-play-folder rule stopped the first real suite when that game appeared, and its resumed CPU-only
+attempt completed with the named outcomes retained privately. Stand-ins and synthetic measurements are not game proof.
 
-**No GPU scenario has run through this tool.** Its control-driven play, live metric collection, screenshots,
-Intel/windowed execution, crash capture, confirmation runs and shared-hunt execution are implemented but not
-live-validated. There is no gameplay baseline, picture proof or frame-rate claim. Test stand-ins are not game evidence.
+The user has authorized rolling GPU comparisons with the regression investigator's scenes and adapters. Ordinary
+catalogue scenarios remain disabled and unrun. The optional timer stays off until explicitly requested; no rolling
+watcher or timer is installed or started automatically. Live metric collection, image comparisons, Intel/windowed
+nightly scenarios and automatic confirmation paths remain unvalidated by this tool.
 
-On the user's current instruction, the GPU belongs to the regression investigation. Private
-`gpu_scenarios_enabled`, `hunt_game_checks` and `timer_enabled` are false. The optional timer stays off until the
-user explicitly asks; do not arm it simply because a build or a game-free suite completed.
+## Rolling test of each new main
+
+```sh
+H=/home/mooki/Games/.hookshot-harness
+P=$(jq -r .python "$H/nightly-local/config.json")
+"$P" -I -B "$H/nightly/hs-nightly.py" rolling
+"$P" -I -B "$H/nightly/hs-nightly.py" rolling --check
+"$P" -I -B "$H/nightly/hs-nightly.py" rolling --watch
+```
+
+Manual `rolling` starts one cycle. `--check` starts one only when main moved and three hours have passed since the
+previous cycle's start; it is not a read-only status command. `--watch` repeats that check every five minutes as a
+managed foreground command for the agent's job runner, not a timer. It stops on a confirmed regression or failure.
+An unchanged head writes `unchanged` and spends no build/GPU time. The same lock covers both modes.
+
+One cycle pins a single fetch of main, uses the existing full-build path and lock, records builder/gate-inclusive
+times and binary identity, then makes an owned reflink copy. It uses the shared `regress/run_case.py` and private
+scenes, not a new benchmark implementation. Any identical opt-in logging aid and accepted local SDK are recorded.
+
+GPU budget: one ordinary preparation hold, one ordinary unmeasured warm-up hold, then up to three exclusive
+**non-priority** measuring holds. Every hold is at most eight minutes; compatible cached preparation and warm-ups
+share one ordinary hold when they fit. Each scene is new / previous / new / previous. The supplied first reference
+is read-only input to an owned, hash-checked reflink; it is never run from the original folder. The report records
+actual GPU occupancy per build, including unmeasured work. Warm-up numbers are never counted as measurements.
+
+The shared quiet rule requires other work below three cores on average, no five-second sample above six, and arm
+repeats within 5%. Both paired gaps must agree outside the observed repeat spread; the shared classifier confirms
+the resulting bands. Tables include frame/CPU/readback/memory statistics, loads and eligibility. Fixed reference
+values keep the dates they were measured, not a fiction that they were rerun. A confirmed regression produces a
+local handoff to `regress.py` and stops; no hunt, issue or message is started automatically.
+
+The handoff uses per-copy `regress-source.txt` checks rather than one stamp shared by different builds; it requires
+the source-aware shared build/run adapters. Every game/save/scene/reference path is in private `rolling.json` and
+`rolling-build.json`. Nothing under `nightly-local/rolling/` is publishable. The player-folder stop rule below stays
+in force. The optional nightly timer remains disabled.
+
+```sh
+"$H/hs-nocore.sh" "$P" -I -B "$H/nightly/test_rolling.py" -v
+```
 
 ## Run the game-free workflow
 

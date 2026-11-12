@@ -15,18 +15,16 @@ place, save, game value, or a private dump path. **Neither the local folder nor 
 
 ## Status and limits
 
-**Current scope, 2026-11-11, the user's main session:** GPU time is reserved for the regression hunt. The nightly's
-own GPU scenarios and its timer are disabled. Do not arm a timer tonight or later until the user asks for it.
+**Current scope, 2026-11-11, the user's main session:** the ordinary catalogue night remains paused, but a rolling
+test of new main builds is authorized below. The optional nightly timer remains disabled until the user asks.
 
-The game-free workflow is usable: the published nightly was built from source, ten comparison tests passed, and nine
-orchestration tests passed without a game. Three deliberate comparison mutations were rejected. The first actual
-project suite was cut short when the protected play-folder game appeared; its evidence is retained and a resumed
-CPU-only suite waits for two continuously observed player-idle minutes. Read the private report for its final result.
+Source builds, the project game-free suite and the tool's game-free tests have run; no rolling GPU cycle has run yet.
+The suite's named result and its earlier player-protection stop are retained privately. Offline stand-ins are not
+game results. The rolling comparisons have been checked on made-up numbers against the shared regression rules.
 
 Implementation also exists for catalogue scenarios, the control runner, trace/resource/log/image collection, SQLite
-metrics, one confirmation rerun, issue drafts and the shared hunt adapter. **None of those game-facing paths has run
-on a real game through this tool. No gameplay baseline, picture proof or performance comparison exists.** Offline
-stand-ins test orchestration only; they are not game results.
+metrics, confirmation reruns, issue drafts and the shared hunt handoff. The catalogue-driven game-facing paths are
+not live-validated, and no catalogue gameplay baseline or picture proof exists.
 
 The initial local definitions cover catalogue loads with standing/movement/camera steps, two title starts, a video
 sequence and a second-GPU scene. The catalogue supplies all actual saves and places. Those definitions remain unrun.
@@ -48,10 +46,75 @@ allows them. Do not relabel short samples as a 30-minute leak test.
 - One two-game stress hold per night, at most eight minutes: the second starts only after the first has run a minute,
   at least 12 GB of GPU memory is free and at least 30 GB of system memory is available. This family is designed, not built.
 - Outside 02:00–07:00 every hold is at most eight minutes. The optional timer is off by default and requires the
-  user's explicit word; the later instruction reserving tonight's GPU for the regression hunt takes precedence.
+  user's explicit word. Those longer-run families remain design-only; rolling has its separate short-hold budget.
 
-Priority/exclusive holds belong to the separately authorized regression investigation. The nightly grants itself
-no quiet-measurement authorization. Both `gpu_scenarios_enabled` and `timer_enabled` are false in the local config.
+The nightly grants itself no quiet-measurement authorization. `gpu_scenarios_enabled` and `timer_enabled` remain
+false for ordinary nights; the user's explicit rolling authorization is recorded separately in `rolling.json`.
+
+## Rolling test of each new main
+
+This mode is the ongoing performance tester requested by the user. It reuses the full nightly builder and
+`regress/run_case.py` with local scenes supplied by the regression investigator; it does not create a second
+measurement or bisect implementation.
+
+```sh
+H=/home/mooki/Games/.hookshot-harness
+P=$(jq -r .python "$H/nightly-local/config.json")
+"$P" -I -B "$H/nightly/hs-nightly.py" rolling
+"$P" -I -B "$H/nightly/hs-nightly.py" rolling --check
+"$P" -I -B "$H/nightly/hs-nightly.py" rolling --watch
+```
+
+The first command is a manually requested cycle. `--check` is **not read-only**: it starts a cycle when main has
+moved and at least three hours have passed since the preceding cycle's start. `--watch` is the same check every
+five minutes, as a managed long-running command while the agent runs, **not a timer or unit file**. It stops on a
+confirmed regression or a safety/build failure. Do not launch an unmanaged background shell. A shared lock prevents
+overlap with an ordinary night. No watcher or timer is started merely by installing the tool.
+
+One cycle fetches `origin/main` once and pins its head. The same head as the last completed cycle writes
+`unchanged` and stops without a build or a GPU request. Otherwise it uses the full workbench build path and lock,
+records both the builder's duration and elapsed time including its gate wait, and creates an owned reflink copy.
+Identical opt-in logging aids are recorded separately from the pinned upstream commit; an already accepted local
+SDK may be reused, but the tool accepts no license or download prompt.
+
+**Authorized GPU cost per cycle:** one ordinary shader-preparation hold, one ordinary unmeasured warm-up hold for
+the new build's scene/mode definitions, then at most three exclusive measuring holds, each at most eight minutes,
+**never `--priority`**. The regression investigator's priority holds go first. Each measured scene runs
+new / previous / new / previous in its own hold. The first previous build is an owned, hash-checked reflink of the
+configured reference; the supplied reference folder itself is never run or changed. Later cycles compare with the
+previous completed cycle's build. A conservative source-compatibility check permits warmed-cache reuse; when cached
+preparation and all warm-ups fit, they share one ordinary hold. Warm-up values are never reported as measurements.
+Every report states actual GPU gate occupancy per build; unavailable hold durations stay unavailable, not zero.
+
+The player-folder rule applies to the whole cycle and every gate wait. Two continuously observed player-idle minutes
+are required before work starts; a game appearing there stops owned work, with incomplete runs excluded. A disturbed
+or invalid hold is retained, never silently replaced by a favorable sample or repeated outside the approved budget.
+
+The quiet rule is the regression tool's: everything except the game uses **under three cores on average**, no
+five-second sample exceeds **six cores**, and each judged arm repeats within **5%**. One-minute load averages remain
+in the table but do not substitute for these counters. Both pairs must point the same way, their ranges must not
+overlap, and the smallest paired gap must exceed the sum of the two arms' repeat ranges; the shared paired
+classifier must confirm the bad band. The local scene names its judged metric. Other columns support the diagnosis,
+not independent unconfirmed regression claims.
+
+Each scene table shows fps, mean frame ms, 1% low, frames over 20/25 ms, all-thread game CPU ms/frame from the shared
+adapter, readback wait/frame, peak RSS, competing CPU use, loads and whether each run counts. Fixed reference rows
+retain their actual measurement dates and are not rerun every cycle; a reference not yet built/measured says so.
+Source-stamp checks are per arm. A confirmed range is handed to `regress.py` with its real scene and observed bands;
+the tool stops and **starts no hunt**. Hunt endpoints carry `regress-source.txt`, and the shared source-aware build/run
+adapters validate each midpoint against its own stamp. An older shared adapter must be upgraded before that handoff
+is used.
+
+All definitions, references, results and reports are private under `nightly-local/rolling/`; measurements also enter
+the existing results database. Raw/copies retain seven calendar dates, while dated fixed-reference values persist.
+`--resume-cycle ID` reuses a completed build and completed holds; it never queues a duplicate or exceeds the hold
+budget. Reports go to the user through the main session. The tool **posts nothing and has no timer**.
+
+Game-free rolling checks (the shared regression tools must provide the current quiet/repeat API):
+
+```sh
+"$H/hs-nocore.sh" "$P" -I -B "$H/nightly/test_rolling.py" -v
+```
 
 ## Run a night
 
@@ -217,6 +280,6 @@ No timer has been armed or exercised by this lane.
 ## Public sync list
 
 Publish only `nightly/hs-nightly.py`, `build.py`, `common.py`, `scenario.py`, `monitor.py`, `metrics.py`, `compare.py`,
-`store.py`, `report.py`, `hunt.py`, `test_compare.py`, `test_driver.py`, `README.md`, and this skill's `SKILL.md`.
+`store.py`, `report.py`, `hunt.py`, `rolling.py`, `test_compare.py`, `test_driver.py`, `test_rolling.py`, `README.md`, and this skill's `SKILL.md`.
 Never sync configuration, JSON scenarios, baselines, databases, raw runs, reports, drafts, images, saves, game copies,
 caches or generated client data.

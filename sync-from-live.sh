@@ -25,7 +25,7 @@ cp "$H/playthrough/hsap.py" "$H/playthrough/hsap_file.py" "$H/playthrough/tapche
    "$H/playthrough/test_hsap_file.py" "$here/play/"
 cp "$H/regress/regress.py" "$H/regress/build_case.py" "$H/regress/run_case.py" "$H/regress/test_regress.py" "$here/regress/"
 for f in hs-nightly.py build.py common.py scenario.py monitor.py metrics.py compare.py store.py report.py hunt.py \
-         test_compare.py test_driver.py README.md; do
+         rolling.py test_compare.py test_driver.py test_rolling.py README.md; do
     cp "$H/nightly/$f" "$here/nightly/$f"
 done
 cp /home/mooki/Code/hookshot-wt/reports/AGENT-BRIEF.md "$here/docs/agent-brief.md"

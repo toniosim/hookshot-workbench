@@ -27,7 +27,7 @@ the scripts were written by them under those rules, then run and checked here. T
 | `gates/` | Queues that let many test runs share one GPU and one CPU without hurting each other or the desktop | `nx2navi-gpu-slot` |
 | `play/` | Step drivers that play on a running game: one for the control bridge's state samples, one for older builds with the state file; the driver is chosen explicitly | `hsap.py`, `hsap_file.py` |
 | `regress/` | The regression hunt's engine and its two adapters (build a candidate, run a scenario), with their game-free tests | `regress.py` |
-| `nightly/` | The nightly's driver: build, the checks, the comparison with earlier nights, the report; its game scenarios are written but have never run on the game | `hs-nightly.py`, `README.md` |
+| `nightly/` | The nightly's driver (build, the checks, the comparison with earlier nights, the report) and a rolling test of each new main; its game scenarios are written but have never run on the game | `hs-nightly.py`, `rolling.py`, `README.md` |
 | `docs/agent-brief.md` | The rules every agent on my machine reads first | |
 
 ### The harness
@@ -104,6 +104,18 @@ are tested on made-up numbers by `nightly/test_compare.py`. The part that plays 
 times, memory, log lines and pictures, and hands a confirmed regression to `regress/` is written and tested against
 stand-ins only: it has never run on the game. It stops, and counts nothing, whenever a game is started from the
 player's own folder. Saves, scenarios and results stay on the machine.
+
+### A rolling test of each new main
+
+`nightly/hs-nightly.py rolling` is one cycle: fetch main once and pin its head (the same head as the last cycle: write
+"unchanged" and stop), build it in full with the build's time recorded, prepare its shaders, give each scene one
+unmeasured run, then measure new, previous, new, previous in one exclusive hold per scene with the regression tool's
+adapter and quiet rule. It calls something a regression only when both pairs point the same way and the gap is
+outside the repeats' spread; then it writes the hand-over file for `regress/` and stops. It starts no hunt, posts
+nothing and installs no timer: `rolling --check` starts a cycle when main has moved and three hours have passed, and
+`rolling --watch` repeats that check while it runs. The player's-folder rule holds for the whole cycle. Its decisions
+are tested on made-up numbers (`nightly/test_rolling.py`); the builds have run, a measuring cycle on the game has
+not yet.
 
 ## What is not here, and why
 

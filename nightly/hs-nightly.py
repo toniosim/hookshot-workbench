@@ -297,11 +297,19 @@ def main():
     p.add_argument('--resume', action='store_true', help='continue an interrupted night without repeating its build, complete suite or completed scenarios')
     p.add_argument('--game-free', action='store_true', help='build and complete suite only; never launch a GPU scenario or timer')
     p.add_argument('--rearm', action='store_true', help='approved scheduled run: arm the next night only after clean completion')
+    p = sub.add_parser('rolling', help='pin main, reuse the full builder and shared paired benchmark protocol')
+    group = p.add_mutually_exclusive_group()
+    group.add_argument('--check', action='store_true', help='one cadence check; run only after three hours and a changed main')
+    group.add_argument('--watch', action='store_true', help='managed process, not a timer; check every five minutes')
+    group.add_argument('--resume-cycle', help='continue this immutable cycle without rebuilding or repeating completed holds')
     p = sub.add_parser('arm')
     p.add_argument('--at')
     p.add_argument('--user-authorized', action='store_true', required=True, help='the user explicitly asked to enable this optional timer')
     args = parser.parse_args()
     config = json.loads((LOCAL / 'config.json').read_text())
+    if args.command == 'rolling':
+        import rolling
+        return rolling.main(args)
     if args.command == 'arm':
         state = json.loads((LOCAL / 'state.json').read_text())
         if not state.get('clean'):

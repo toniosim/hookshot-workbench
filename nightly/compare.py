@@ -106,3 +106,43 @@ def compare_image(current, history):
     distance = image_distance(current, history[-1])
     return {'state': 'regression' if distance > tolerance else 'within-band',
             'distance': distance, 'tolerance': tolerance, 'nights': len(history)}
+
+
+def compare_paired(runs, scenario, shared):
+    """Rolling N/P/N/P: shared quiet/repeat rules, then a gap beyond both arms' spread."""
+    if [r.get('role') for r in runs] != ['candidate', 'reference', 'candidate', 'reference']:
+        return {'state': 'not-judged', 'reason': 'requires exactly new/previous/new/previous'}
+    values = [r['result'].get('value') for r in runs]
+    if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in values):
+        return {'state': 'not-judged', 'reason': 'missing or non-finite judged metric'}
+    direction = scenario['measure']['direction']
+    if direction not in ('higher-worse', 'lower-worse'):
+        raise ValueError('rolling comparisons need a numeric direction')
+    sign = 1 if direction == 'higher-worse' else -1
+    worse = [sign * v for v in values]
+    # A neutral band exercises the shared validity/quiet checks without making a speed claim.
+    ceiling = max(worse)
+    neutral = {**scenario, 'measure': {**scenario['measure'], 'good_max': ceiling,
+                                      'bad_min': math.nextafter(ceiling, math.inf)}}
+    classes = [shared.classification(r['result'], neutral) for r in runs]
+    if any(c != 'good' for c in classes):
+        return {'state': 'not-judged', 'reason': 'shared validity/quiet rule', 'classes': classes}
+    new, previous = [values[0], values[2]], [values[1], values[3]]
+    tolerance = scenario.get('repeat_tolerance', 0.05)
+    if not shared.repeats_agree(new, tolerance) or not shared.repeats_agree(previous, tolerance):
+        return {'state': 'not-judged', 'reason': 'an arm differs by more than the repeat tolerance',
+                'new': new, 'previous': previous, 'tolerance': tolerance}
+    n, p = [sign*x for x in new], [sign*x for x in previous]
+    gaps = [n[i] - p[i] for i in range(2)]
+    spread = (max(n) - min(n)) + (max(p) - min(p))
+    evidence = {'new': new, 'previous': previous, 'paired_gaps_worse_units': gaps,
+                'combined_repeat_spread': spread, 'repeat_tolerance': tolerance}
+    if min(gaps) > spread and min(n) > max(p):
+        measure = {**scenario['measure'], 'good_max': max(p), 'bad_min': min(n)}
+        verdict = shared.paired_decision(runs, {**scenario, 'measure': measure}, 'good')
+        if verdict != 'bad':
+            return {'state': 'not-judged', 'reason': 'shared paired decision did not confirm', **evidence}
+        return {'state': 'regression', 'measure': measure, **evidence}
+    if max(gaps) < -spread and max(n) < min(p):
+        return {'state': 'improvement', **evidence}
+    return {'state': 'within-repeat-spread', **evidence}
