@@ -22,10 +22,12 @@ the scripts were written by them under those rules, then run and checked here. T
 | `skills/hookshot-issue-triage` | Reading an issue or someone else's pull request and reproducing it on this hardware | `SKILL.md` |
 | `skills/hookshot-discord-updates` | Posting claims and pull request updates to the project's Discord as me, through my own signed-in browser tab: the fixed forms, the checks before a post, what I see first. Discord's terms do not allow automating a user account; I accepted that for a few short posts a day, and you should decide for yourself | `SKILL.md`, `scripts/discord_tab.mjs` |
 | `skills/hookshot-regression-hunt` | Finding which merged pull request made a build worse: show the difference first with the same measuring code in both builds, test named suspects by revert, then bisect | `SKILL.md` |
+| `skills/hookshot-nightly-playtest` | Building the project's nightly tag from source each night, running its checks, and comparing the result with the nights before; what a first night can and cannot say | `SKILL.md` |
 | `harness/` | The run wrapper and its helpers | `hs-run.sh` |
 | `gates/` | Queues that let many test runs share one GPU and one CPU without hurting each other or the desktop | `nx2navi-gpu-slot` |
 | `play/` | A driver that plays steps on a running game from its state line | `hsap.py` |
 | `regress/` | The regression hunt's engine and its two adapters (build a candidate, run a scenario), with their game-free tests | `regress.py` |
+| `nightly/` | The nightly's driver: build, the checks, the comparison with earlier nights, the report; its game scenarios are written but have never run on the game | `hs-nightly.py`, `README.md` |
 | `docs/agent-brief.md` | The rules every agent on my machine reads first | |
 
 ### The harness
@@ -87,6 +89,16 @@ the bands that count as good and bad come from a scenario file that stays on the
 `regress/build_case.py` and `regress/run_case.py` are the adapters for this workbench's build and run wrappers;
 `regress/test_regress.py` tests the engine on made-up histories without a game. First published as written, before a
 whole hunt had run through it on the game.
+
+### A nightly build and its checks
+
+`nightly/hs-nightly.py run --game-free` builds the project's `nightly` tag from source, runs its game-free checks and
+compares the named results with the night before. The comparison's rules (a band from the last three to seven good
+nights, a disturbed run never feeding a timing baseline, one confirming rerun before anything is called a regression)
+are tested on made-up numbers by `nightly/test_compare.py`. The part that plays scenarios on the game, collects frame
+times, memory, log lines and pictures, and hands a confirmed regression to `regress/` is written and tested against
+stand-ins only: it has never run on the game. It stops, and counts nothing, whenever a game is started from the
+player's own folder. Saves, scenarios and results stay on the machine.
 
 ## What is not here, and why
 
