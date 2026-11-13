@@ -161,6 +161,8 @@ unset HSGATE_SLOT_DIR HSGATE_INTEL_SLOT_DIR HSGATE_SLOT_TEST HSGATE_SLOT_NODESKT
   busy late on), each clang 0.5-1.4 GB, MemAvailable >= 5.6 GB at the one sample taken (peak not recorded).
   First prebuild the lift's C++ helper against GCC 13's headers (`/home/tonesi/hookshot-wt/reports/pr2871/build.sh` shows how; the dev-build
   memory note says why); without it the lift stops at `'algorithm' file not found`.
+- **Longshot main 91a1ae8b (2026-11-12, same settings): 25 min 10 s** (compile 22 min). Its first `--prepare` took two
+  holds: 450 s to the wall (programs 248.7 s), then 332 s to `@@done shaders`.
 
 ### Incremental host/renderer-only changes
 
