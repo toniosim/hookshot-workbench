@@ -109,7 +109,7 @@ class PortTests(unittest.TestCase):
         self.assertIn("Assisted-by: Original Model", message)
         self.assertEqual(len(receipt["message_changes"]), 5)
         self.assertEqual(self.git("show", "-s", "--format=%cn <%ce>", "longshot/topic").decode().strip(),
-                         "Michael Schienbein <7663497+mooki000@users.noreply.github.com>")
+                         "toniosim <10343143+toniosim@users.noreply.github.com>")
 
     def test_special_file_is_three_way_not_replaced(self):
         self.put("readme.md", "# Hookshot\n\nmain description\n\nunchanged spacer\n\nbranch uses hookshot_options.ini\n")

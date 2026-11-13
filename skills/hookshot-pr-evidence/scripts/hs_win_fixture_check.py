@@ -27,7 +27,7 @@ _root = HERE.parents[2]
 if not (_root / 'hs_names.py').is_file():
     _root = _root / 'harness'
 if not (_root / 'hs_names.py').is_file():
-    _root = Path('/home/mooki/Games/.hookshot-harness')
+    _root = Path('/home/tonesi/Games/.hookshot-harness')
 sys.path.insert(0, str(_root))
 from hs_names import PROJECTS, Names, NameError as ProjectNameError, environment_header, environment_value
 
@@ -403,7 +403,7 @@ def main():
             p.error(str(error))
         sysroot = Path(value) if value else None
     if sysroot is None:
-        candidates = sorted((Path.home() / 'Code/hookshot-wt/deps/llvm-mingw').glob('*/include/windows.h'))
+        candidates = sorted((Path.home() / 'hookshot-wt/deps/llvm-mingw').glob('*/include/windows.h'))
         sysroot = candidates[-1].parent.parent if candidates else None
     if not sysroot or not (sysroot / 'include/windows.h').is_file():
         p.error('set HOOKSHOT_MINGW, LONGSHOT_MINGW or --sysroot to llvm-mingw with include/windows.h')

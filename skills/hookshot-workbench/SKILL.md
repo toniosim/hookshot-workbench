@@ -104,7 +104,7 @@ unset HSGATE_SLOT_DIR HSGATE_INTEL_SLOT_DIR HSGATE_SLOT_TEST HSGATE_SLOT_NODESKT
 1. Pin the commit. Create an owned worktree, not a moving donor:
 
    ```sh
-   git -C "$HOME/Code/Hookshot" worktree add --detach "$WT" "$COMMIT"
+   git -C "$HOME/Hookshot" worktree add --detach "$WT" "$COMMIT"
    hs_names checkout "$WT" || exit
    ```
 

@@ -20,7 +20,7 @@ Set `WT` to the selected owned Hookshot or Longshot worktree before deriving the
 
 ```sh
 H="$HOME/Games/.hookshot-harness"
-W="$HOME/Code/hookshot-wt"
+W="$HOME/hookshot-wt"
 P="$W/deps/python/bin/python3"
 source "$H/hs-names.sh"
 hs_names checkout "$WT" || exit

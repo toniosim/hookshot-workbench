@@ -16,8 +16,8 @@ cycles to Forgejo. Require matching source/profile provenance; never create a re
 Set paths before using the commands:
 
 ```sh
-H=/home/mooki/Games/.hookshot-harness
-P=/home/mooki/Code/hookshot-wt/deps/python/bin/python3
+H=/home/tonesi/Games/.hookshot-harness
+P=/home/tonesi/hookshot-wt/deps/python/bin/python3
 L="$H/nightly-local"
 "$P" -I -B "$H/nightly/hs-nightly.py" --help
 "$P" -I -B "$H/nightly/hs-nightly.py" rolling --help

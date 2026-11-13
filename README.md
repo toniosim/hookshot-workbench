@@ -147,6 +147,7 @@ Tailored on 2026-11-11 from the author's `main`. What changed, and why:
 | `docs/agent-brief.md`, `skills/hookshot-workbench/SKILL.md` | rewritten / annotated for this machine and the AppImage toolchain (`~/Hookshot/build-linux/dev-env.sh`) | |
 | `skills/hookshot-pr-loop/` | its paths, GitHub login, hardware profile (RTX 3070 Ti 8 GiB, i7-12700K, Mesa 26.1.6) and the tests' hardware cases | this machine; it needs a read-only `~/hookshot-wt/main-tools` worktree of current main (`git -C ~/Hookshot worktree add --detach ~/hookshot-wt/main-tools origin/main`) |
 | `install.sh` (new) | symlinks the harness, gates, guard and skills (all but the Discord one) into place; `--check` | |
+| 2026-11-12: Longshot | rebased onto the author's name-table `main` (backup branch `backup-tonesi-machine-2`); `hs-pr-check.sh` compares with remote `forge` (Longshot; `HS_UPSTREAM=origin` for legacy Hookshot); `longshot-port.py` commits as toniosim; skills say where PRs live now (`scripts/forge.py` on git.magicbean.dev) and use `~/hookshot-wt/deps/{python,cpm}`, which link to the AppImage toolchain; tests expect lift workers 2 and the 3070 Ti; `install.sh` links `perf/` | development moved to git.magicbean.dev/MagicBeanDev/Longshot; `main-tools` now follows `forge/main` |
 
 The author's numbers quoted in the skills (build times, loads, memory) are from their machine: measure here.
 

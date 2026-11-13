@@ -181,7 +181,7 @@ class BuilderNames(unittest.TestCase):
                 self.assertEqual(observed['argv'][0], 'flock')
                 self.assertIn('fixture-build-gate', observed['argv'])
                 self.assertIn('--no-prepare-shaders', observed['argv'])
-                for suffix, value in {'LIFT_JOBS': '8', 'KEEP_BUILD_FILES': '1', 'NGX_SDK': 'fixture-sdk'}.items():
+                for suffix, value in {'LIFT_JOBS': '2', 'KEEP_BUILD_FILES': '1', 'NGX_SDK': 'fixture-sdk'}.items():
                     self.assertEqual(observed['env'][names.env_key(suffix)], value)
                     other = Names('longshot' if project == 'hookshot' else 'hookshot').env_key(suffix)
                     self.assertNotIn(other, observed['env'])

@@ -119,7 +119,7 @@ class NamesTests(unittest.TestCase):
         base = HERE if (HERE / 'skills').is_dir() else HERE.parent
         script = base / 'skills/hookshot-pr-evidence/scripts/hs_win_fixture_check.py'
         if not script.is_file():
-            script = Path('/home/mooki/.agents/skills/hookshot-pr-evidence/scripts/hs_win_fixture_check.py')
+            script = Path('/home/tonesi/.claude/skills/hookshot-pr-evidence/scripts/hs_win_fixture_check.py')
         checker = module('compat_windows_fixture', script)
         with tempfile.TemporaryDirectory() as td:
             source = Path(td) / 'fake.c'

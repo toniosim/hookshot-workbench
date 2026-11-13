@@ -29,18 +29,20 @@ done
 fail=0
 say() { printf '%-5s %s\n' "$1" "$2"; [ "$1" = FAIL ] && fail=1; return 0; }
 
-git -C "$repo" fetch -q origin 2>/dev/null || say WARN "could not fetch origin; comparing with the last fetched main"
+# this machine: the project lives on Longshot (remote "forge"); HS_UPSTREAM=origin checks against legacy NotRexed/Hookshot
+up=${HS_UPSTREAM:-forge}
+git -C "$repo" fetch -q "$up" 2>/dev/null || say WARN "could not fetch $up; comparing with the last fetched main"
 git -C "$repo" rev-parse -q --verify "$branch" > /dev/null || { say FAIL "no branch $branch in $repo"; echo FAIL; exit 1; }
-main=$(git -C "$repo" rev-parse --short origin/main)
-base=$(git -C "$repo" merge-base origin/main "$branch")
+main=$(git -C "$repo" rev-parse --short "$up/main")
+base=$(git -C "$repo" merge-base "$up/main" "$branch")
 n=$(git -C "$repo" rev-list --count "$base..$branch")
-behind=$(git -C "$repo" rev-list --count "$base..origin/main")
-say INFO "branch $branch: $n commits on $(git -C "$repo" rev-parse --short "$base"); origin/main is $main"
+behind=$(git -C "$repo" rev-list --count "$base..$up/main")
+say INFO "branch $branch: $n commits on $(git -C "$repo" rev-parse --short "$base"); "$up/main" is $main"
 
 # 1. on current main (a pull request that does not merge cleanly waits)
 if [ "$behind" -eq 0 ]; then say OK "based on current main"
 else
-    if git -C "$repo" merge-tree --write-tree origin/main "$branch" > /dev/null 2>&1; then
+    if git -C "$repo" merge-tree --write-tree "$up/main" "$branch" > /dev/null 2>&1; then
         say WARN "main has moved by $behind commits; the branch still merges cleanly (rebase before review is asked)"
     else
         say FAIL "main has moved by $behind commits and the branch no longer merges: rebase"

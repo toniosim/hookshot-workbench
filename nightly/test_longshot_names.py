@@ -346,7 +346,7 @@ class BuildAndReportNames(unittest.TestCase):
                 self.assertIn('--no-prepare-shaders', commands[0])
                 self.assertIn('fixture-gate', commands[0])
                 self.assertIn('flock', commands[0])
-                for suffix, value in {'LIFT_JOBS': '8', 'KEEP_BUILD_FILES': '1', 'NGX_SDK': str(sdk)}.items():
+                for suffix, value in {'LIFT_JOBS': '2', 'KEEP_BUILD_FILES': '1', 'NGX_SDK': str(sdk)}.items():
                     self.assertIn(names.env_key(suffix) + '=' + value, commands[0])
                     other = Names('longshot' if project == 'hookshot' else 'hookshot').env_key(suffix)
                     self.assertFalse(any(str(arg).startswith(other + '=') for arg in commands[0]))

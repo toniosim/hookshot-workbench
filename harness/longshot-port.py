@@ -19,7 +19,7 @@ import subprocess
 import sys
 import tempfile
 
-IDENTITY = ("Michael Schienbein", "7663497+mooki000@users.noreply.github.com")
+IDENTITY = ("toniosim", "10343143+toniosim@users.noreply.github.com")  # this machine's user
 PAIRS = (("hookshot", "longshot"), ("Hookshot", "Longshot"), ("HOOKSHOT", "LONGSHOT"))
 OLD = re.compile("hookshot", re.I)
 URL = re.compile(r"(?:https?://|git@)[^\s<>\"'`)\]]+")

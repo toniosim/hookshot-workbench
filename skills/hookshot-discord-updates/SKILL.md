@@ -22,10 +22,10 @@ maintain a second form table here. Reports name the skills read and tools used.
 Set the pinned Python, then inspect command help without touching the account:
 
 ```sh
-P=/home/mooki/Code/hookshot-wt/deps/python/bin/python3
-"$P" -I -B /home/mooki/Code/hookshot-wt/main-tools/scripts/team_chat.py --help
-"$P" -I -B /home/mooki/Code/hookshot-wt/main-tools/scripts/team_chat.py read --help
-"$P" -I -B /home/mooki/Code/hookshot-wt/main-tools/scripts/team_chat.py post --help
+P=/home/tonesi/hookshot-wt/deps/python/bin/python3
+"$P" -I -B /home/tonesi/hookshot-wt/main-tools/scripts/team_chat.py --help
+"$P" -I -B /home/tonesi/hookshot-wt/main-tools/scripts/team_chat.py read --help
+"$P" -I -B /home/tonesi/hookshot-wt/main-tools/scripts/team_chat.py post --help
 ```
 
 ## Current authorization (2026-11-12)

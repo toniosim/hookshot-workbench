@@ -513,8 +513,9 @@ class GapTests(unittest.TestCase):
         self.assertEqual(state["active"]["2564"]["why"]["kind"], "not-tested")
 
     def test_other_nvidia_cards_exclude_the_exact_already_tested_model(self):
-        for model, matches in (("RTX 5080", True), ("RTX 4090", False), ("rtx4090", False),
-                               ("a 4090", False), ("RTX 40900", True)):
+        # (this machine: RTX 3070 Ti; originally RTX 4090)
+        for model, matches in (("RTX 5080", True), ("RTX 3070 Ti", False), ("rtx3070", False),
+                               ("a 3070", False), ("RTX 30700", True)):
             with self.subTest(model=model):
                 body = f"## Tested\nTested on {model}.\nNot tested: other NVIDIA cards."
                 self.assertEqual(bool(loop.not_tested_gap(body, self.config["hardware"])), matches)
@@ -586,7 +587,7 @@ class GapTests(unittest.TestCase):
     def test_gap_override_does_not_bypass_other_safety_exclusions(self):
         cases = [pr(body="Parked. Not for testing.\n" + self.QUOTE),
                  pr(draft=True, body=self.QUOTE),
-                 pr(author="mooki000", body=self.QUOTE),
+                 pr(author="toniosim", body=self.QUOTE),
                  pr(body=self.QUOTE, events=[event()]),
                  pr(body=self.QUOTE, files=["scripts/unexplained.py"])]
         for item in cases:

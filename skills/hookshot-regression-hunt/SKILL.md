@@ -20,7 +20,7 @@ is disabled without explicit authorization. Workers never push or post.
 
 ```sh
 H="$HOME/Games/.hookshot-harness"
-P="$HOME/Code/hookshot-wt/deps/python/bin/python3"
+P="$HOME/hookshot-wt/deps/python/bin/python3"
 ```
 
 The live tools are in `$H/regress`; the public workbench copy uses `regress/`. The four scripts are `regress.py`,

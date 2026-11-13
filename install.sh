@@ -37,6 +37,7 @@ done
 for f in "$here"/play/*.py; do link "$f" "$H/playthrough/$(basename "$f")"; done
 for f in "$here"/regress/*.py; do link "$f" "$H/regress/$(basename "$f")"; done
 for f in "$here"/nightly/*; do link "$f" "$H/nightly/$(basename "$f")"; done
+link "$here/perf" "$H/perf"                   # hs_perf.py, read by hookshot-perf-monitor
 for g in hs-gpu-slot hs-intel-slot hs-build-slot; do link "$here/gates/$g" "$G/$g"; done
 link "$here/gates/gpu-guard.sh" "$H/gpu-guard.sh"
 for s in "$here"/skills/hookshot-*; do

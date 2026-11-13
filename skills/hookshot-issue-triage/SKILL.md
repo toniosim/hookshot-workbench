@@ -19,7 +19,7 @@ are not approved login, claim or posting routes.
 ```sh
 gh issue view <n> --repo NotRexed/Hookshot --comments
 gh pr list --repo NotRexed/Hookshot --state all --search "<words>" --json number,title,state,headRefOid
-/home/mooki/Games/.hookshot-harness/hs-pr-ci.sh <pr>
+/home/tonesi/Games/.hookshot-harness/hs-pr-ci.sh <pr>
 ```
 
 Read `reports/POSTED.md` and the **whole** thread, including its latest description, reviews and attachments,

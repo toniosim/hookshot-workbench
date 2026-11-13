@@ -21,7 +21,7 @@ significance or a speed verdict; the authorized paired worker remains the timing
 
 ```sh
 H="$HOME/Games/.hookshot-harness"
-P="$HOME/Code/hookshot-wt/deps/python/bin/python3"
+P="$HOME/hookshot-wt/deps/python/bin/python3"
 ```
 
 ## 1. Pin a question and plan without running a game

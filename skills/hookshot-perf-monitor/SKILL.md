@@ -26,7 +26,7 @@ The name-compatible wrapper detects the owned executable; collect with:
 
 ```sh
 H="$HOME/Games/.hookshot-harness"
-P="$HOME/Code/hookshot-wt/deps/python/bin/python3"
+P="$HOME/hookshot-wt/deps/python/bin/python3"
 unset HSGATE_SLOT_DIR HSGATE_INTEL_SLOT_DIR HSGATE_SLOT_TEST HSGATE_SLOT_NODESKTOP HSGATE_IN_GATE HSGATE_IN_INTEL_GATE
 "$H/hs-run.sh" "$COPY" "$TAG" 120 --user "$SAVE" --perf
 RUN="$COPY/runs/$TAG"

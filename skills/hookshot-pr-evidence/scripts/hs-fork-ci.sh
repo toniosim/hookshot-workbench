@@ -19,7 +19,7 @@
 # which says nothing about the commit). Exit 3: timed out. Prints one line per job either way.
 # It uses the gh command the user is signed in with and reads no token itself.
 set -euo pipefail
-fork=${HS_FORK_REPO:-mooki000/Hookshot}
+fork=${HS_FORK_REPO:-toniosim/Hookshot}
 remote=${HS_FORK_REMOTE:-fork}
 keep=0 minutes=30
 [ $# -ge 2 ] || { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 64; }

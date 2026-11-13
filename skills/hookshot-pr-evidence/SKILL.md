@@ -24,9 +24,9 @@ Set these paths once. Run checks only on reviewed code; the fixture checker exec
 Preflight and overlap checks may fetch Git objects. None of these three commands publishes anything.
 
 ```sh
-H=/home/mooki/Games/.hookshot-harness
-P=/home/mooki/Code/hookshot-wt/deps/python/bin/python3
-E=/home/mooki/.agents/skills/hookshot-pr-evidence/scripts
+H=/home/tonesi/Games/.hookshot-harness
+P=/home/tonesi/hookshot-wt/deps/python/bin/python3
+E=/home/tonesi/.claude/skills/hookshot-pr-evidence/scripts
 gh pr view <n> --repo NotRexed/Hookshot --json body,comments,reviews,headRefOid,baseRefOid,state,isDraft
 "$H/hs-pr-ci.sh" <n>
 "$H/hs-idle.sh" "$H/hs-win-fixture-check.sh" <worktree> <base> --sysroot <llvm-mingw-sysroot>
@@ -38,9 +38,32 @@ Use the corresponding `issues/<n>/comments` and `pulls/<n>/reviews` endpoints wh
 If head, description or newest comment moved, read the new state before allocating work. A parked or “hold off”
 description stops testing. A local branch name is not the pushed PR head.
 
-The legacy GitHub upstream is `NotRexed/Hookshot` (GPL-3.0-or-later); the user's fork is `mooki000/Hookshot` (remote `fork` in
-`/home/mooki/Code/Hookshot`). Everything is posted as the user (mooki000) and **only by the main session**; agents
-write drafts and never push or post. The project's own rules come first: `docs/workflow.md`, `AGENTS.md`,
+**Where PRs live now (this machine, 2026-11-12):** the project moved to Longshot,
+`https://git.magicbean.dev/MagicBeanDev/Longshot` (Forgejo; GPL-3.0-or-later). The `gh` commands above and the
+GitHub CI readers apply only to old `NotRexed/Hookshot` threads. For Longshot, from `/home/tonesi/Hookshot` (remote
+`forge` = Longshot, fetch only; `forge-fork` = `tonesi/Longshot`, push here), following the clone's `AGENTS.md` and
+`docs/forge.md`:
+
+```sh
+python3 -I scripts/forge.py pr view <n> --comments          # read the thread (pr list --mine, pr status <n>)
+python3 -I scripts/forge.py pr checkout <n>                 # its head as branch pr/<n>
+git push forge-fork <branch>                                # never push to forge
+python3 -I scripts/forge.py pr create <branch> --title "fix(vk): ..." --body-file <file>   # opens as WIP
+python3 -I scripts/forge.py pr update <n> --body-file <file> --comment "what changed and why"
+python3 -I scripts/forge.py pr ready <n>                    # refuses until the description check passes
+python3 -I scripts/forge.py pr comment <n> --body-file <file>
+```
+
+Longshot's description template (`.forgejo/pull_request_template.md`) and `scripts/check_pr_description.py` decide
+the sections: fill the template, and fit the standard below inside it. Measurements name `main @ <hash>` and
+`this PR @ <hash>`. Forgejo runs no CI: run `tests/run_all.py` yourself and say so. Test requests go through the
+clone's `/request-testing` and `/testing` skills (`scripts/test_requests.py`).
+
+The user is toniosim on GitHub and `tonesi` on git.magicbean.dev (signed in with `scripts/forge.py login`; the
+credentials are in `~/.config/longshot/`, never printed or copied). Legacy GitHub: upstream `NotRexed/Hookshot`,
+fork `toniosim/Hookshot` (remote `fork`). Everything is posted as the user and **only by the main session**; agents
+write drafts and never push or post. Pictures for PR comments go to toniosim's own gist
+`https://gist.github.com/toniosim/a804ef7211b2c6695db6641f1bd86ef0`, never another person's. The project's own rules come first: `docs/workflow.md`, `AGENTS.md`,
 `CONTRIBUTING.md`. Read `skill://hookshot-workbench` for building and running.
 
 ## The standard
@@ -320,7 +343,7 @@ for an actual Linux testing need/request; defer unrequested game checks until 22
 continue. Read `hookshot-pr-loop` for the full lane rule; author priority is not daytime GPU authorization.
 
 1. Read the current thread/description, then fetch the head:
-   `git -C /home/mooki/Code/Hookshot fetch origin +pull/<n>/head:refs/remotes/pr/<n>`.
+   `git -C /home/tonesi/Hookshot fetch origin +pull/<n>/head:refs/remotes/pr/<n>`.
    Main reads the executable diff before any build/test. Note what the author already measured.
 2. First check whether the result carries across an identical rebase (`hookshot-pr-loop`, `carry`); do not spend
    another build/hold on unchanged patches. Otherwise build separate owned head/base copies. Use the existing
