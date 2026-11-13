@@ -75,7 +75,8 @@ card out of memory and took the desktop down. The gates are small shell scripts 
 - **`gates/hs-intel-slot <command>`**: one run at a time on the integrated GPU.
 - **`gates/hs-build-slot <command>`**: four builds at a time in the idle scheduling class.
 - **`gates/gpu-guard.sh`**: watches the kernel log; at a driver fault line it ends every test run and closes the gate.
-  It also ends anything of the harness that uses the card outside the gate.
+  It also ends anything of the harness that uses the card outside the gate. The gates start it with each run, and it
+  ends by itself after 15 minutes with no slot held.
 
 
 ### Playing without a controller

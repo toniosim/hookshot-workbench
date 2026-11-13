@@ -33,11 +33,22 @@
 #    long-holds.log in the slot folder (time, pid, slot or slots, minutes, command), and again every 5 minutes while
 #    it lasts. The main session's watchdog reads that file.
 #
+# 4. It ends when the harness is idle. Busy is a lock held on a slot of either gate (the GPU gate's files 0 and 1, the
+#    Intel gate's /tmp/hs-intel-slot/0), read from /proc/locks without taking one: a waiting gate tries the slots with
+#    flock -n, and a lock held by the guard even for a moment would look like a game to it. After 15 minutes without
+#    one the guard lets go of guard.lock, looks once more and ends; a gate that took a slot in between is caught by
+#    that second look (the guard takes guard.lock back and stays) or has started a guard of its own that got the lock
+#    (this one ends). Each gate starts a guard when it hands out a slot, so the next run has one. A closed card stays
+#    closed: the file "closed" outlives the guard, and the gates refuse while it is there.
+#    (2026-11-13: one guard had run since the evening before with nothing to watch, and killed the user's own
+#    launcher; see harness_exe's AppImage note.)
+#
 #   gpu-guard.sh            run in the foreground (the gate starts it detached)
 #   gpu-guard.sh --status   say whether it runs and whether the card is closed
 #   gpu-guard.sh --reopen   remove the "closed" file (main session, after telling the user what happened)
 # HSGATE_GUARD_SOURCE=<file> makes it read that file's new lines instead of the kernel log (its own test); then
-# HSGATE_GUARD_LONG="<s> <s>" sets the seconds before a hold's first line and between its lines (480 and 300).
+# HSGATE_GUARD_LONG="<s> <s>" sets the seconds before a hold's first line and between its lines (480 and 300),
+# HSGATE_GUARD_IDLE=<s> the idle seconds before it ends (900) and HSGATE_INTEL_SLOT_DIR the Intel gate's folder.
 set -u
 slots=${HSGATE_SLOT_DIR:-/tmp/hs-gpu-slots}
 reports=${HSGATE_GUARD_REPORTS:-/home/tonesi/hookshot-wt/reports}
@@ -190,6 +201,29 @@ long_holds() {
     done
 }
 
+# 4. idle (see the top)
+idle_after=900 intel=/tmp/hs-intel-slot
+if [ -n "${HSGATE_GUARD_SOURCE:-}" ]; then
+    idle_after=${HSGATE_GUARD_IDLE:-$idle_after}
+    intel=${HSGATE_INTEL_SLOT_DIR:-$slots/intel}
+fi
+# Some slot of either gate is locked: its file's device and inode (major:minor in hex, as /proc/locks writes them) on
+# a FLOCK line of /proc/locks. Waiting gates hold no lock, so they don't count; the gate's brief probes of a free slot
+# do, which only keeps the guard a little longer.
+slots_held() {
+    local f maj min ino ids=" " line
+    for f in "$slots/0" "$slots/1" "$intel/0"; do
+        read -r maj min ino < <(stat -c '%Hd %Ld %i' "$f" 2>/dev/null) || continue
+        printf -v line '%02x:%02x:%s' "$maj" "$min" "$ino"
+        ids+="$line "
+    done
+    [ "$ids" = " " ] && return 1
+    while read -r _ kind _ _ _ id _; do
+        [ "$kind" = FLOCK ] && [[ "$ids" == *" $id "* ]] && return 0
+    done < /proc/locks
+    return 1
+}
+
 note "started, pid $$"
 # 1. the kernel log, from now on
 ( if [ -n "${HSGATE_GUARD_SOURCE:-}" ]; then tail -F -n 0 "$HSGATE_GUARD_SOURCE" 2>/dev/null; else journalctl -k -f -n 0 -o cat 2>/dev/null; fi |
@@ -199,9 +233,11 @@ note "started, pid $$"
       esac
   done ) > "$slots/guard.fifo.$$" &
 jpid=$!
-trap 'kill $jpid 2>/dev/null; rm -f "$slots/guard.fifo.$$"' EXIT
+# (the reader's own processes too: journalctl -f, or tail -F, would wait on an idle log long after its subshell went)
+trap 'pkill -P $jpid 2>/dev/null; kill $jpid 2>/dev/null; rm -f "$slots/guard.fifo.$$"' EXIT
 seen=0
 looked=0
+printf -v busy_at '%(%s)T' -1   # (a gate starts the guard as it hands out a slot: count from now)
 # 2. the loop: new kernel lines, and harness programs on the card outside the gate
 while :; do
     n=$(wc -l < "$slots/guard.fifo.$$" 2>/dev/null || echo 0)
@@ -219,5 +255,16 @@ while :; do
     done < <(card_clients)
     printf -v now '%(%s)T' -1
     if [ $((now - looked)) -ge 5 ]; then looked=$now; long_holds; fi   # (by the clock: a pass takes seconds under load)
+    if slots_held; then
+        busy_at=$now
+    elif [ $((now - busy_at)) -ge "$idle_after" ]; then
+        flock -u 6   # first let go: a gate that hands out a slot from here on starts a guard that gets the lock
+        if ! slots_held; then
+            note "ended: no slot held for $(( (now - busy_at) / 60 )) minutes (the next gated run starts a guard)"
+            exit 0
+        fi
+        if ! flock -n 6; then note "ended: a run took a slot and its guard took over"; exit 0; fi
+        busy_at=$now   # a run took a slot just then and its guard found this one still there: stay
+    fi
     sleep 1
 done
