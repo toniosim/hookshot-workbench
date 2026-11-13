@@ -31,9 +31,11 @@ withdrawn, even if `window-ok` remains on disk. A swapchain-only question is unt
 
 ## The project and who we work for
 
-- **Hookshot** (`NotRexed/Hookshot`, GPL-3.0-or-later): a static recompilation of the Switch 2 remake of *The Legend of
-  Zelda: Ocarina of Time* for Windows and Linux. The user (GitHub `toniosim`, fork `toniosim/Hookshot`) contributes to
-  it and tests it on Linux.
+- **Longshot** (`git.magicbean.dev/MagicBeanDev/Longshot`, Forgejo, GPL-3.0-or-later; until 2026-11-12 **Hookshot**,
+  `NotRexed/Hookshot` on GitHub, same history): a static recompilation of the Switch 2 remake of *The Legend of
+  Zelda: Ocarina of Time* for Windows and Linux. The user (`tonesi` on git.magicbean.dev, `toniosim` on GitHub)
+  contributes to it and tests it on Linux. Pull requests, comments and test requests go through the clone's
+  `scripts/forge.py` and `scripts/test_requests.py` (its `AGENTS.md`, `docs/forge.md`), not `gh`.
 - **This machine:** Pop!_OS 24.04 LTS, COSMIC desktop (Wayland, `cosmic-comp`), Intel Core i7-12700K (8P+4E, 20
   threads) with its Intel UHD 770 (enabled, Vulkan device 1, Mesa), NVIDIA GeForce RTX 3070 Ti 8 GB (driver 595.104.02,
   Vulkan device 0) which also drives the desktop (~0.9 GB of it in use), 16 GB DDR5 (15.7 GB usable) and 19 GB swap.
@@ -71,12 +73,14 @@ In the clone `/home/tonesi/Hookshot`: `docs/workflow.md`, `AGENTS.md`, `CONTRIBU
   its log is fine; `Hookshot/work/dump` links into it, so never write through `work/dump` either), `~/.config`,
   `~/Downloads`, global git config, system packages (no apt, no sudo, no `pip install` outside a venv). Never send input
   to or reconfigure the compositor.
-- **Paths**: clone `/home/tonesi/Hookshot` (remotes `origin` = NotRexed, `fork` = toniosim); worktrees under
+- **Paths**: clone `/home/tonesi/Hookshot` (remotes `forge` = Longshot, fetch only, `main` tracks it; `forge-fork` =
+  `tonesi/Longshot` once made, push here; legacy `origin` = NotRexed, `fork` = toniosim); worktrees under
   `/home/tonesi/hookshot-wt/<name>`; reports under `/home/tonesi/hookshot-wt/reports/`; built game copies under
   `/home/tonesi/Games/.hookshot-h-<name>`; harness under `/home/tonesi/Games/.hookshot-harness/` (symlinks into the
   workbench checkout `/home/tonesi/hookshot-workbench`, made by its `install.sh`). The toolchain comes from the
   unpacked v2.1.0 AppImage: `source /home/tonesi/Hookshot/build-linux/dev-env.sh` before any build or test (it puts that
-  Python, emsdk's clang, `RX_CPM` and the libraries on the environment).
+  Python, emsdk's clang, `RX_CPM` and the libraries on the environment, under both `HOOKSHOT_*` and `LONGSHOT_*`
+  names); `~/hookshot-wt/deps/python` and `deps/cpm` link to the same toolchain.
 - **Memory is the tight resource.** 16 GB: one game reserves ~9.8 GB, a full build's lift ~4.8 GB per worker. So
   **one thing heavy at a time**: one game (the GPU gate never lets in a second, and waits for 6 GB available before a
   game starts), one build (`hs-build-slot` has one slot, two lift workers by default), one run of the checks
