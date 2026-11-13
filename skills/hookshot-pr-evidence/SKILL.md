@@ -191,8 +191,10 @@ A claim is dropped out loud when the work stops.
 5. **In the game**, on this machine: what was done and seen, with a row in `docs/tested-configurations.md`
    for each measured run. Main's #2712 rule: when the game could not be run, say so and keep the PR a draft
    until someone has. Source-only/stand-in tests are not a replacement for the runtime evidence a change needs.
-6. **Commits**: author `toniosim <10343143+toniosim@users.noreply.github.com>`; new GPT-6 Astra messages end with
-   `Assisted-by: GPT-6 Astra` and `Co-Authored-By: GPT-6 Astra <noreply@openai.com>`; preserve historical authors/trailers.
+6. **Commits**: author `tonesi <tonesi@noreply.git.magicbean.dev>` (set in `/home/tonesi/Hookshot`'s own git config, so every worktree
+   has it; it links Longshot commits to the `tonesi` account). Legacy GitHub branches used
+   `toniosim <10343143+toniosim@users.noreply.github.com>`. End messages with the attribution trailer of the model that
+   wrote them; preserve historical authors/trailers.
 7. **Windows before the push.** A changed C/C++ fixture (including generated fixtures), workflow, or Python file
    touching paths, files, processes or locking needs the project's checks on the user's fork first. **Main only**,
    from the trusted clone containing the commit:

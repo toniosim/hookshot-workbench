@@ -13,8 +13,9 @@
 set -u
 repo=/home/tonesi/Hookshot
 usage='usage: hs-pr-check.sh <branch> [<title file>] [--imported <commit>=<original>]... [--imported-files <commit>=<source>]...'
-# this machine: toniosim's GitHub no-reply address (keeps the private e-mail out of public commits); HS_GIT_EMAIL overrides
-me=${HS_GIT_EMAIL:-10343143+toniosim@users.noreply.github.com}
+# this machine: tonesi's git.magicbean.dev no-reply address (links Longshot commits to the account, keeps the private
+# e-mail out of public commits); HS_GIT_EMAIL=10343143+toniosim@users.noreply.github.com for legacy GitHub branches
+me=${HS_GIT_EMAIL:-tonesi@noreply.git.magicbean.dev}
 me_re=$(printf '%s' "$me" | sed 's/[.+]/\\&/g')
 branch=; title_file=; imported=(); imported_files=()
 while [ $# -gt 0 ]; do

@@ -114,9 +114,10 @@ In the clone `/home/tonesi/Hookshot`: `docs/workflow.md`, `AGENTS.md`, `CONTRIBU
 
 ## Git
 
-- Author: commits for Hookshot use the GitHub no-reply address so the private e-mail never becomes public:
-  `-c user.name=toniosim -c user.email=10343143+toniosim@users.noreply.github.com` on each commit (never change git
-  config). `harness/hs-pr-check.sh <branch>` checks this (`HS_GIT_EMAIL` overrides) along with the base, the trailers,
+- Author: commits for Longshot are `tonesi <tonesi@noreply.git.magicbean.dev>`, the git.magicbean.dev no-reply address, so they link to
+  the user's account there and the private e-mail never becomes public. It is set in the clone's own git config
+  (`/home/tonesi/Hookshot/.git/config`, shared by its worktrees; the global config is untouched): nothing to pass per
+  commit. Legacy GitHub commits used `toniosim <10343143+toniosim@users.noreply.github.com>`. `harness/hs-pr-check.sh <branch>` checks this (`HS_GIT_EMAIL` overrides) along with the base, the trailers,
   no game files and a Conventional Commit title.
 - **Agents never push, never open or comment on an issue or pull request, never post to Discord** unless the user asks
   for that one action.
