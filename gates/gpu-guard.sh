@@ -104,12 +104,21 @@ holds_slot() { holds_lock "$1" "$slots/0" || holds_lock "$1" "$slots/1"; }   # s
 # Prints "pid exe gate" (gate: 1 when it runs inside the gate) for each process of this user that has an NVIDIA
 # device node open and whose executable is the harness's.
 card_clients() {
-    local p exe gate holder theirs
+    local p exe gate holder theirs appimage
     for p in /proc/[0-9]*; do
         [ -O "$p" ] || continue
         exe=$(readlink "$p/exe" 2>/dev/null) || continue
         exe=${exe% (deleted)}
-        harness_exe "$exe" || continue
+        # An AppImage runs from its mount in /tmp (/tmp/.mount_<name><random>): judge it by the AppImage file it came
+        # from (the runtime puts APPIMAGE=<that file> into its environment), so the user's own launcher in ~/Games is
+        # theirs. One with no APPIMAGE, or whose file lies in /tmp or a harness folder, stays the harness's.
+        # (2026-11-13: the guard killed every start of ~/Games/LongshotLauncher-*.AppImage within a second.)
+        case "$exe" in
+            /tmp/.mount_*)
+                appimage=$(tr '\0' '\n' < "$p/environ" 2>/dev/null | sed -n 's/^APPIMAGE=//p' | head -n 1)
+                harness_exe "${appimage:-$exe}" || continue ;;
+            *) harness_exe "$exe" || continue ;;
+        esac
         # only processes of this guard's slot folder: the folder is in their environment, or nowhere (the default)
         theirs=$(tr '\0' '\n' < "$p/environ" 2>/dev/null | sed -n 's/^HSGATE_SLOT_DIR=//p' | head -n 1)
         [ "${theirs:-$default_slots}" = "$slots" ] || continue
