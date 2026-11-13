@@ -51,7 +51,8 @@ kernel <uname -r>, i7-12700K (20 threads), only 15 GB RAM. <free disk>.
    host code with `-Wno-everything`: to say anything about warnings, compile the PR's changed C/C++ files separately
    with the same flags plus `-Wall -Wextra`, and compare with main's copy of the same files.
 5. Game-free checks: the checks the PR adds or changes, then `tests/run_all.py` through the checks gate (--jobs 8).
-   For each failure, check whether it also fails on main (~/hookshot-wt/main-tools or ls-main) and say which.
+   For each failure, check whether it also fails on main (a temporary `git worktree add --detach` of forge/main,
+   removed afterwards) and say which.
 6. A game copy for the PR as the workbench says. When the PR leaves the renderer source (gpu/) unchanged, copy the
    idle ls-main copy's shader caches and options file into it: preparation then takes one short run instead of two
    long holds. Otherwise expect two holds (~12.6 min).
@@ -79,7 +80,7 @@ kernel <uname -r>, i7-12700K (20 threads), only 15 GB RAM. <free disk>.
      Result: ... (a small main-vs-PR table; the log lines in a code block; warnings in the PR's files or "none"; the checks, naming failures that also fail on main)
      Not checked: ...
      ```
-     Pictures as `![<caption>](IMG:<filename>)`; the main session uploads them. No local paths, user names, machine
+     Pictures as `![<caption>](attach:<filename>)`; the main session uploads them. No local paths, user names, machine
      names or anything personal; no game files or anything made from them except pictures and log lines; GitHub
      items by full URL; no bare @name.
 9. Leave the worktree and game copies in place. Make sure no game, build or check you started is still running.

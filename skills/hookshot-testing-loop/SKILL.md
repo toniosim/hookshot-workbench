@@ -21,8 +21,8 @@ session's look, and because the main session's context has to last the whole ses
 This wraps the repo's own `/testing` skill: its claim, renew, release and `done` rules apply unchanged. Read first:
 `hookshot-workbench` (gates, builds, runs), the trusted checkout's `.claude/skills/testing/SKILL.md` and `AGENTS.md`
 (Test requests), and the memory notes, which hold the user's standing exclusions. Run `test_requests.py` and
-`forge.py` from `~/Hookshot` on `main` (or `~/hookshot-wt/main-tools`), never from a pull request's checkout, whose
-scripts are untrusted.
+`forge.py` from `~/Hookshot` on `main`, brought up to date first (`git -C ~/Hookshot merge --ff-only forge/main` after
+a fetch), never from a pull request's checkout, whose scripts are untrusted.
 
 ## Before the user steps away: the quick pass
 
@@ -95,12 +95,13 @@ When the worker reports back, before anything goes out:
 
 ## Post
 
-1. If `python3 -I scripts/forge.py pr comment --help` offers `--attach`, use it (it takes `attach:<file>` links);
-   until then, `python3 -I ~/.claude/skills/hookshot-testing-loop/scripts/post_with_images.py <N> COMMENT.md
-   pictures/ --dry-run`, then the same without `--dry-run`. It posts the comment, uploads each `IMG:` picture as the comment's attachment and edits
-   the links in.
-2. Check what went up: the comment's author, no placeholder left, one attachment per picture
-   (`GET /repos/MagicBeanDev/Longshot/issues/comments/<id>` through `forge.api`).
+1. `python3 -I scripts/forge.py pr comment <N> --body-file <report>/COMMENT.md --attach <report>/pictures/*.png`
+   (Longshot's own, since PR 254: https://git.magicbean.dev/MagicBeanDev/Longshot/pulls/254). It checks every
+   picture before posting (PNG, JPEG, GIF or WebP, 25 MiB each), posts the comment, uploads the pictures as its
+   attachments and puts each where COMMENT.md says `attach:<file>`; pictures it doesn't place go at the end.
+2. Check what it printed: the comment's link, then "N pictures in the comment" with N the number of pictures. A
+   failed upload prints what went up and what didn't: don't post again; add the rest on the comment's page or in a
+   new comment.
 3. For a claimed request: `python3 -I scripts/test_requests.py done T-XXXX --result pass|fail|mixed --comment <link>`.
 
 ## Each check (the hourly cron)
