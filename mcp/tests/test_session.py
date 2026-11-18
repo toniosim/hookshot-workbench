@@ -60,6 +60,7 @@ async def sandbox(monkeypatch):
         root = Path(folder)
         for name in ("state", "build", "harness", "clones", "seed", "protected"):
             (root/name).mkdir()
+        (root / "harness/hs_names.py").write_bytes((Path(__file__).parents[2] / "harness/hs_names.py").read_bytes())
         (root / "build/romfs").mkdir()
         (root / "build/image.bin").write_bytes(b"synthetic")
         (root / "build/hookshot").write_text("#!/bin/sh\nexit 99\n")
@@ -99,8 +100,11 @@ async def attach(root, deps, service, *, debug=True):
     job = deps.registry.create_job("session_fixture")
     directory = root / run.run_id
     directory.mkdir()
-    bridge = await FAKE.FakeBridge(directory/"control.sock").start()
-    session = Session(run.run_id, job.job_id, directory, directory/"control.sock", SessionProfile(debug=debug), {})
+    from src.effects import session_runtime
+    socket = session_runtime.allocate(deps, run.run_id)
+    (directory / "control-socket.json").write_text(json.dumps({"run_id": run.run_id, "socket": str(socket)}))
+    bridge = await FAKE.FakeBridge(socket).start()
+    session = Session(run.run_id, job.job_id, directory, socket, SessionProfile(debug=debug), {"socket": str(socket)})
     service.sessions[run.run_id] = session
     return run.run_id, bridge
 
@@ -115,7 +119,10 @@ async def test_session_catalogue(config, monkeypatch, profile, extras):
             "session_wait": ["run_id", "predicate", "idempotency_key"],
             "session_options_set": ["run_id", "values"], "session_teleport": ["run_id", "destination_id", "idempotency_key"],
             "session_age": ["run_id", "age", "idempotency_key"], "save_clone": ["save_id", "idempotency_key"],
-            "session_stop": ["run_id", "reason", "idempotency_key"]}
+            "session_stop": ["run_id", "reason", "idempotency_key"],
+            "session_debug": ["run_id", "action", "idempotency_key"], "session_warp": ["run_id", "x", "y", "z", "idempotency_key"], "session_flags": ["run_id", "names"],
+            "session_flag_set": ["run_id", "name", "value", "idempotency_key"],
+            "session_snapshot": ["run_id", "idempotency_key"]}
         for spec in tools.SPECS:
             selected = profile == "operate" or spec.safety.value == "READ" or spec.name in extras
             assert (spec.name in actual) is selected
@@ -148,7 +155,7 @@ async def test_bridge_dispatch_bounds_and_uncertain_quit(tmp_path):
             await bridge.request("status")
         assert len(bridge.events) == 256 and bridge.events_lost == 5  # includes the silent quit's event
         with pytest.raises(WorkbenchError):
-            await bridge.request("mem_write")
+            await bridge.request("mem_poke")  # only the typed commands are dispatchable
     finally:
         await bridge.close()
         await fake.close()
@@ -318,8 +325,10 @@ async def test_clone_manifest_dedup_and_source_unchanged(sandbox):
 
 
 @pytest.mark.parametrize("quit_mode,forced", [("reply", False), ("silent", True)])
-async def test_launch_stop_and_owned_child_receipt(sandbox, quit_mode, forced):
+@pytest.mark.parametrize("project", ["hookshot", "longshot"])
+async def test_launch_stop_and_owned_child_receipt(sandbox, quit_mode, forced, project):
     root, deps, service, client = sandbox
+    (root / "build/hookshot").rename(root / "build" / project)
     (root/"quit-mode").write_text(quit_mode)
     args = {"build_id": "synthetic", "profile_id": "ordinary", "wall_seconds": 30, "save_id": "seed", "idempotency_key": "launch"}
     began = time.monotonic()
@@ -338,9 +347,35 @@ async def test_launch_stop_and_owned_child_receipt(sandbox, quit_mode, forced):
     await finished(deps, launch)
     assert all(identity(pid) is None for pid in pids.values())
     run = deps.registry.get_run(run_id)
-    assert any(deps.registry.artifact_path(a, deps.paths).name == "hookshot_log.txt" for a in run.artifacts)
+    assert any(deps.registry.artifact_path(a, deps.paths).name == project + "_log.txt" for a in run.artifacts)
+    from src.effects.evidence_logs import run_logs_impl, run_faults_impl
+    assert run_logs_impl(deps, run_id).lines
+    assert (await run_faults_impl(deps, run_id))["fatal"] == 0
     assert run.exit == 0 and run.timing_valid is False
     assert any(e.kind == "bridge_ready" for e in deps.registry.events(launch.job_id).events)
+
+
+@pytest.mark.parametrize("configured", [None, True, False])
+async def test_operator_precompile_profile_is_explicit(sandbox, configured):
+    root, deps, service, client = sandbox
+    cat = json.loads((root / "catalogue.json").read_text())
+    if configured is not None:
+        cat["profiles"]["ordinary"]["precompile"] = configured
+    (root / "catalogue.json").write_text(json.dumps(cat))
+    assert SessionProfile().precompile is True
+    with pytest.raises(ValueError):
+        SessionProfile(precompile="false")
+    launch = await service.launch_impl("synthetic", None, "ordinary", 30, "standard", "startup-option")
+    run_id = deps.registry.get_job(launch.job_id).run_ids[0]
+    await observed(lambda: deps.registry.get_run(run_id).state == State.RUNNING)
+    session = service.sessions[run_id]
+    settings = (session.root / "extra-env.txt").read_text()
+    assert ("RX_VK_PRECOMPILE=0\n" in settings) is (configured is False)
+    assert "RX_VK_PRECOMPILE=1" not in settings
+    assert session.plan["precompile"] is (configured is not False)
+    stop = await service.stop_impl(run_id, "profile fixture", "profile-stop")
+    await finished(deps, stop)
+    await finished(deps, launch)
 
 
 async def test_one_waiter_admission_recheck_and_cancellation(sandbox):
@@ -469,3 +504,34 @@ async def test_restoration_respects_intervening_changes(sandbox):
         assert not any(c["cmd"] == "quit" for c in fake.commands)
     finally:
         await fake.close()
+
+
+@pytest.mark.parametrize("project", ["hookshot", "longshot"])
+async def test_long_build_path_uses_private_socket_and_pointer(sandbox, project):
+    root, deps, service, client = sandbox
+    (root / "build/hookshot").rename(root / "build" / project)
+    copy = root / "registered-builds" / ("deep-build-" + "x" * 90)
+    copy.parent.mkdir()
+    (root / "build").rename(copy)
+    cat = json.loads((root / "catalogue.json").read_text())
+    cat["builds"]["synthetic"]["path"] = str(copy)
+    (root / "catalogue.json").write_text(json.dumps(cat))
+    launch = await service.launch_impl("synthetic", None, "ordinary", 30, "standard", "long-copy")
+    run_id = deps.registry.get_job(launch.job_id).run_ids[0]
+    await observed(lambda: deps.registry.get_run(run_id).state == State.RUNNING)
+    session = service.sessions[run_id]
+    pointer = json.loads((session.root / "control-socket.json").read_text())
+    socket = Path(pointer["socket"])
+    assert len(os.fsencode(session.root / "control.sock")) >= 108
+    assert len(os.fsencode(socket)) < 108 and socket.name == "c.sock"
+    assert socket.parent.stat().st_mode & 0o777 == 0o700
+    assert "HOS_CONTROL=" + str(socket) in (session.root / "extra-env.txt").read_text()
+    await session.bridge.close()
+    session.socket = root / "invalid-cache.sock"
+    assert (await service.state_impl(run_id)).protocol == 1
+    assert session.socket == socket
+    stop = await service.stop_impl(run_id, "short socket fixture", "long-copy-stop")
+    await finished(deps, stop)
+    await finished(deps, launch)
+    assert not socket.parent.exists()
+    assert (session.root / "control-socket.json").exists()

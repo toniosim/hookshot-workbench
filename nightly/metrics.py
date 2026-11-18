@@ -1,5 +1,5 @@
 """Readers for preserved traces and sampled process data; unsupported sources stay missing."""
-from collections import Counter, deque
+from collections import Counter
 from pathlib import Path
 import csv
 import importlib.util
@@ -7,13 +7,17 @@ import json
 import math
 import re
 import statistics
-from compare import signature
+from compare import SIGNATURE_VERSION, signature
 from common import text
 from hs_names import log_path
 
 WARNING = re.compile(r'\b(?:warn(?:ing)?|error|fatal|crash|failed|failure|unsupported|timeout)\b|VK_ERROR_|ran without a core', re.I)
 ACTIVITY = re.compile(r'(?:pipeline|shader|program).*(?:compil|translat|built|pending|wait)|(?:compil|translat).*(?:pipeline|shader|program)', re.I)
 VRAM = re.compile(r'vram|memory budget|texture cache|(?:device|card).*memory|memory.*(?:used|budget)', re.I)
+
+# Version 1 sampled arrival-ending seconds. Version 2 minimizes every complete
+# open-left/closed-right second, including the exact initial support boundary.
+WORST_SECOND_VERSION = 2
 
 
 def frame_stats(rows):
@@ -32,19 +36,48 @@ def frame_stats(rows):
         over = [x for x in values if x > limit]
         result[f'over_{limit:g}_count'] = len(over)
         result[f'over_{limit:g}_longest_ms'] = max(over, default=0)
-    # Fewest completions in a rolling second; a stall over one second has a zero-frame
-    # window before it ends. This is not scanout or a GPU-completion measurement.
-    spans = deque()
+    # Binary floats have power-of-two denominators. A common integer lattice
+    # also needs the factor 125 (and three binary places) for ms / 1000.
+    # Keep the first window exact: rounding its start can change its count.
+    ratios = [t.as_integer_ratio() for t, _ in rows]
+    ms_n, ms_d = rows[0][1].as_integer_ratio()
+    scale = max(ms_d * 8, max(d for _, d in ratios)) * 125
+    times = [n * (scale // d) for n, d in ratios]
+    first = times[0] - ms_n * (scale // (ms_d * 1000))
+    last = times[-1]
+    size = len(times)
     worst_fps, worst_start = math.inf, None
-    first = rows[0][0] - rows[0][1] / 1000
-    for t, ms in rows:
-        spans.append(t)
-        if ms >= 1000:
-            worst_fps, worst_start = 0, t - 1
-        while spans and spans[0] <= t - 1:
-            spans.popleft()
-        if t - first >= 1 and len(spans) < worst_fps:
-            worst_fps, worst_start = len(spans), t - 1
+    end = first + scale
+    right = 0
+    if end <= last:
+        while right < size and times[right] <= end:
+            right += 1
+        worst_fps = right
+        try:
+            worst_start = first / scale
+        except OverflowError:
+            # Finite inputs can put the initial support below the float range.
+            # Saturate only its diagnostic location, never its exact count.
+            worst_start = math.nextafter(-math.inf, 0.0)
+        # Counts decrease only when the open left edge reaches a completion.
+        # At a tie exclude the entire group. The right index advances n times
+        # in total; integer comparisons never round start + one second.
+        initial = True
+        for left, start in enumerate(times, 1):
+            end = start + scale
+            if end > last:
+                break
+            if left < size and times[left] == start:
+                continue
+            while right < size and times[right] <= end:
+                right += 1
+            count = right - left
+            if count < worst_fps or (initial and count == worst_fps):
+                worst_fps, worst_start = count, rows[left - 1][0]
+                initial = False
+        # Prefer an exact completion location on a tied minimum. Otherwise the
+        # initial location can be lossy; only the count is guaranteed exact.
+    # This is a completion count, not scanout or a GPU-completion measurement.
     result['worst_second_fps'] = worst_fps if worst_start is not None else None
     result['worst_second_start_s'] = worst_start
     return result
@@ -132,7 +165,7 @@ def system_telemetry(run, *, start=None, end=None):
         return None
     try:
         path = Path(__file__).resolve().parent.parent / 'perf' / 'hs_perf.py'
-        spec = importlib.util.spec_from_file_location('hookshot_system_telemetry', path)
+        spec = importlib.util.spec_from_file_location('ls_system_telemetry', path)
         reader = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(reader)
         return reader.attach(run, start=start, end=end)
@@ -146,7 +179,7 @@ def collect(run, evidence, metadata):
     run, evidence = Path(run), Path(evidence)
     log = text(log_path(run))
     lines = log.splitlines()
-    signatures = Counter(signature(s) for s in lines if WARNING.search(s))
+    signatures = Counter(signature(s, roots=metadata.get('signature_roots')) for s in lines if WARNING.search(s))
     samples = [json.loads(s) for s in text(evidence / 'samples.jsonl').splitlines() if s]
     samples = [s for s in samples if s.get('own_pids')]
     events = [json.loads(s) for s in text(evidence / 'log-events.jsonl').splitlines() if s]
@@ -193,7 +226,8 @@ def collect(run, evidence, metadata):
             a, b, c = (ordered[j][1]['luma_mean'] for j in (i-1, i, i+1))
             if abs(a-c) <= 5 and abs(b-(a+c)/2) >= 40:
                 flash_candidates.append(ordered[i][0])
-    result = {'metrics': scalars, 'signatures': dict(signatures), 'images': images, 'missing': missing,
+    result = {'metrics': scalars, 'signatures': dict(signatures), 'signature_version': SIGNATURE_VERSION,
+            'images': images, 'missing': missing,
             'device_lines': [s for s in lines if re.search(r'vk: device \d|Vulkan.*driver', s)],
             'vram_log_lines': [s for s in lines if VRAM.search(s)], 'nocore_lines': nocore,
             'shader_pipeline_lines': [s for s in lines if ACTIVITY.search(s)],

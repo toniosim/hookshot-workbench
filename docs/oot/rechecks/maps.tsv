@@ -1,0 +1,121 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+maps	f_8122add0	function	agrees	read	read	Strings GameBancInfo, game__GameBancInfoTable, Work/Banc/GameBancParam and game__banc__GameBancParam found among the registered tables	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80fcebc0	function	partly	read	read	Sets the vtable 0x84c14f48 but also every default: BancUseStatic/Dynamic 1, BancUnitSize 0, byte +842 1, default file names (WorldParam Viewer, foliage DefaultBase)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_8083b770	function	agrees	read	read	Slot 19 of 0x84c14f48 (+152) confirmed; the fields listed are all declared (also WorldAabbMin/Max); the $parent walk through +16/+24 is the pattern of the field getters	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_81227610	function	agrees	read	read	Slot 18 (+144) confirmed; each field with its set flag at +877 and up (NormalizedBancName +424 flag +877, BancUseStatic flag +878, BancUseDynamic +879, BancUnitSize +880); it lacks WorldAabbMin/Max	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d05160	function	partly	read	read	This is slot 7 of the unit vtable (0x84b59438): it reads each field through the $parent-fallback getters (f_82d05430, f_82d05580, f_82d057c0); the raw fields with set flags are f_82d04a50	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d04a50	function	partly	read	read	This is slot 6 (0x84b59430), the raw visit: each field with its set flag (flags from +136, e.g. +137 for the path, +143 for LoadRadius)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d059a0	function	agrees	read	read	String game__banc__OptimizeChangeBancUnitParam; slot 0 of the vtable region at 0x84b59400	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d05430	function	agrees	read	read	Returns +72, or the $parent's through f_80fe3690 when the flag at +137 bit 0 is clear; callers f_810a44e0 and f_82d05160	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d05580	function	agrees	read	read	Same pattern for HasMQ (+132) with the flag byte; callers f_810a44e0 and f_82d05160	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d057c0	function	agrees	read	read	Returns +124 or the $parent's, flag at +143 bit 0; callers f_810a44e0 and f_82d05160	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_810a4390	function	partly	read	read	Node name and slot 39 (0x84bd3eb0) confirmed; it fetches one object with f_810a43e0(manager, 0x17) and calls f_810a44e0 once: the walk over units is not in this function	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_810a44e0	function	partly	read	read	HasMQ check, 3-character insert at the first '.', f_811f4040 and f_832baf30 calls confirmed; it also tests the path for Child/Adult/_Alternative and reads LoadRadius; the rest is deep	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_832baf30	function	agrees	guess	guess	It takes the first free of eight 296-byte slots (+1032 … +3104), marks it used and fills it; also called by the ChangeBancName node (f_82938f00), so 'to preload' is not certain	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_8002f7a0	function	agrees	read	read	Strings .bcett.json, _Static, _Dynamic, OptimizeChangeBancMgr, Model/%s.%s.bfres, Pack/Actor/, .pack found; calls f_80036c20 and f_8002f220	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_805d7660	function	agrees	read	read	Same field names as f_83b12ea0 (Gyaml, Hash, Name, SRTHash, Dynamic, Phive, Placement, Translate, Rotate, Scale, Bakeable, GroupGUID)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809de840	function	agrees	read	read	Slot 24 of the vtable 0x84bc0a40 (0x84bc0b00); string 'BancLoadMgr'	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d6bf0	function	agrees	read	read	Strings _Static, _DebugIdTable, %c-%c, _DistanceView found; it calls f_809d72f0 (UseStatic) and f_809d8780 (AddSuffix)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d8150	function	agrees	read	read	Slot 12 of 0x84bc0a40 (0x84bc0aa0); calls f_809d8780, f_809d80a0, f_83298000; string _Dynamic	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d8780	function	agrees	read	read	Searches for '.' (46) and '/' (47) in the path	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d72f0	function	agrees	read	read	Reads +833 or the $parent's when bit 0 of +878 is clear; callers f_809d6bf0, f_809d8150	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d80a0	function	agrees	read	read	Calls f_809d7d10 only; called by f_809d6bf0 and f_809d8150	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d7d10	function	agrees	read	read	Calls f_83b13110 only	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83b13110	function	agrees	read	read	Calls f_80036c20 then f_8002f220; string 'BancEntity'	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80036c20	function	agrees	read	read	Compares 16 bytes ('Work/Banc/Scene/') and 5 ('.json'), strings 'Banc/', 'Banc/%s.byml' (0x83caff15) and '.byml' found; callers f_8002f7a0, f_83b13110	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_8002f220	function	agrees	guess	guess	Called with the path and type by f_83b13110 and f_8002f7a0; the string 'Load' is the only name in it; role not contradicted	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83298000	function	agrees	read	read	Strings %c-%c and _Dynamic; reads floats at +440..+452 as the unit's position	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80ed6a60	function	agrees	read	read	String BancModule at 0x83e0a68b, priority 24 as an argument, delegate f_80c1ac20 as an address constant, vtable constant 0x84c7dbc0; the list of other threads made the same way was not checked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80c1ac20	function	agrees	read	read	Walks slots of 0x2f0 bytes at +344 (count at +336) as written	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80c1ba50	function	agrees	read	read	Names FilePath, AiGroups, Actors, Links, Rails, Hash, Dst found; registry [0x84eb1940] through the GOT; the sorted table uses +680 and +696	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80c1b7d0	function	agrees	read	read	Strings PhiveHeader and PlacementGroups	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83b12ea0	function	agrees	read	read	Reads Gyaml, Name, Hash, SRTHash, Dynamic, Phive, GroupGUID, Translate, Rotate, Scale, Bakeable; no Presence; fields at the offsets of the structure table	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_806876c0	function	agrees	read	read	String FarDeleteGroups; slot 10 of 0x84c7dbc0 (0x84c7dbc0+80)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80688120	function	agrees	read	read	String SimultaneousGroups; slot 9 of 0x84c7dbc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_81145b00	function	agrees	read	read	Strings PlgGdTable, PlgGuid, GameDataType, GameDataPath, Int, Bool, BoolExp	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80cc0160	function	agrees	read	read	String Rails	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83b072b0	function	agrees	read	read	Calls f_802dbd90, skips an archetype when +84 is 0 or bit 3 of +190 is set, links an instance node under a lock	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_802dbd90	function	agrees	read	read	Table at +160/+168, 0xd8 stride, calls f_801939e0 for the hash	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_802d5480	function	partly	read	read	Also used by f_8114b3b0 to make the current map's name (+416 of the per-map manager) from a path, so it is not specific to actors	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82ddfad0	function	agrees	read	read	Strings Pack/Actor/%s.pack and Actor/%s	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83afa980	function	agrees	read	read	Strings Actor/%s, engine__actor__ActorParam, ActorNameRef, SystemSetting, UsePreActorRenderer, IsFarActor; calls f_801a9540	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_805cb760	function	agrees	read	read	All twelve named fields are among its strings (class names and radii)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80d7aa80	function	agrees	read	read	Allocates 0x178 bytes and stores the manager in the variable at 0x84eb1930; its radii-based create/delete role is not shown here	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80d7ac00	function	agrees	read	read	String PlacementMgr; called by the same function as f_80d7aa80 (f_80d7a900)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80844740	function	agrees	read	read	Strings Work/Banc/Scene, Main, Phive/StaticCompoundBody/, %s/, %s.%s.bphsc, Nin_Ounce_NVN2; caller f_832f6360 is slot 39 of SeqOneShotInitializeStaticCompoundBodyMgr	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80715ae0	function	partly	read	read	Also builds the tiled path Phive/StaticCompoundBody/%s/%s_X%d_Z%d.%s.bphsc and names StaticCompoundBodyMgr; it calls f_832cc540	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_832cc540	function	agrees	read	read	Format %s/%s.%s.bphsc with Nin_Ounce_NVN2; called by f_80715ae0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_809d6110	function	agrees	read	read	Format %s.%s.bphsc; called by the nodes SeqExecuteFinishSetupStaticCompoundBodyMgr (slots 29 and 30)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80a06fa0	function	agrees	read	read	Format %s/%s.tscb and TerrainArc	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80b0c4e0	function	agrees	read	read	Format %s/%s.tscb; strings terrain::TerrainModule, Terrain, Ground, Water	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_832f4230	function	agrees	read	read	Format Phive/NavMesh/%s.%s.bphnm with Nin_Ounce_NVN2	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82e13ac0	function	agrees	read	read	Same format plus the name DynamicNavMesh	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80718040	function	agrees	read	read	Formats Phive/VolumeStats/%s/%s_X%d_Z%d (tiled) and Phive/VolumeStats/%s/	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_832c3480	function	agrees	read	read	Strings Work/Banc/Scene, Main, Phive/VolumeStats/, %s/, _TrialMarch; caller f_832f60b0 is a node	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80e55520	function	agrees	read	read	Allocates 0x220 bytes and stores the manager in the variable at 0x84e49448 (its GOT slot 0x84ca10a8 holds that address); calls f_80c63720	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80c63720	function	agrees	read	read	Stores the empty string (0x83cfdd43) pointer at +0, then sets up the seven 56-byte table slots	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80e55600	function	agrees	read	read	Calls f_80e55520 (create) first; the string in it is noise; role as a starter is not contradicted	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80e55d20	function	agrees	read	read	Format, seven table names and '.120' found; +404 is 1 when add-on byte [..+216] bit 0 is set and the version is not below the threshold at 0x84e49438 (master-quest.md: the parsed '120'); else 0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_8113b7a0	function	agrees	read	read	Calls f_8113b9d0 and a path builder (f_805a1b40); it reads the MQ mode inline (hash 0x605e5df8, IsLastSelectedMQMode)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_8113b9d0	function	agrees	read	read	All listed fields found as strings except 'TBox' (maybe an inline compare); extras seen: ChainLockHash, StoneTablet, WaterLevelChange, ShadowTemple	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_805ccb20	function	agrees	read	read	Strings FloorNum, MinFloor, Room, Floor, TransY	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_805aa0d0	function	agrees	read	read	Strings %s_Adult, %s_Child, HyruleField_Child/Adult, LonLonRanch, IngoRanch, LakeHylia	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_829e1170	function	agrees	read	read	Slot 39 (0x84a8e970) of a node whose name function f_829e14f0 is at 0x84a8e8d0 (slot 19)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_832a57b0	function	agrees	read	read	Strings StartPos and StartRot; reads +416 and +496 of the manager	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d065d0	function	agrees	read	read	Four-line function that calls f_82d062d0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d062d0	function	agrees	read	read	String Shape	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_8114b3b0	function	agrees	read	read	Writes +400 and +408 and sets +416 through f_802d5480 from the matched entry's path (or empties it); tiny wrapper f_8114b3a0 calls it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_82d061d0	function	agrees	read	read	Sets the vtable, clears the holder 0x84e49448 and the one at 0x84e49440, frees the manager (f_82d06260); slot 0 of the vtable at 0x84b59530	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83050450	function	agrees	read	read	Looks the entry up by the current map name (+416); called by the ExecuteAutoSaveMgrTemporarySave node	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_83322490	function	agrees	read	read	Twin of f_83050450 (vtable 0x84bef6a8)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_802d1520	function	agrees	read	read	TargetRestPointInstanceName, AnchorAction1..10, AnchorSleep, AnchorSleep2, AnchorGoBackHome found; called by the NPC schedule code	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	f_80413540	function	agrees	read	read	Twin of f_802d1520; called by the QueryAIScheduleGetTargetAnchor node	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x84e49448	data	agrees	read	read	Variable at 0x84e49448; GOT slot 0x84ca10a8 holds this address	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x83e21d01	data	agrees	read	read	String Banc/BancBasedResource/%s%s%s.byml confirmed at 0x83e21d01	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x84c14f48	data	agrees	read	read	Slots 18 and 19 are f_81227610 and f_8083b770	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x84eb1940	data	agrees	read	read	Read through GOT 0x84c9e238 by f_80c1ba50	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x84eb1930	data	agrees	read	read	The variable is written by f_80d7aa80 (allocation 0x178)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x84bc0a40	data	agrees	read	read	Slot 12 is f_809d8150; slot 24 is f_809de840	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x84c7dbc0	data	agrees	read	read	Slot 9 is f_80688120, slot 10 is f_806876c0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x83caff15	data	agrees	read	read	String confirmed at 0x83caff15	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x83cfa29f	data	agrees	read	read	String confirmed at 0x83cfa29f	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x83d2037d	data	agrees	read	read	String confirmed at 0x83d2037d	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x83cc9bd9	data	agrees	read	read	String confirmed at 0x83cc9bd9	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	0x83e0a68b	data	agrees	read	read	String confirmed at 0x83e0a68b	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +0	field	agrees	read	read	The constructor stores the empty string's pointer at +0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +48	field	agrees	read	read	Seven 56-byte slots; StartPos first (the load order is StartPos, LocationArea, StaticGameDataArea, AlternativeAnchor, NoEscapeRangeArea, MapParam, GmdReset)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +104	field	agrees	read	read	Second slot (+104)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +160	field	agrees	read	read	Third slot (+160)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +216	field	agrees	read	read	Fourth slot (+216)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +272	field	agrees	read	read	Fifth slot (+272)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +328	field	agrees	read	read	Sixth slot (+328)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +384	field	agrees	read	read	Seventh slot (+384)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +400, +408	field	agrees	read	read	f_8114b3b0 writes +400 and +408	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +404	field	agrees	read	read	f_80e55d20 stores a byte at +404 (0 or 1)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	BancBasedResourceMgr +416	field	agrees	read	read	f_8114b3b0 builds it at +416 through f_802d5480	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +0	field	agrees	read	read	Three floats at +0, +4, +8 read by f_83b12ea0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +12	field	agrees	read	read	Floats at +12, +16, +20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +24	field	agrees	read	read	Floats at +24, +28, +32	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +40	field	agrees	read	read	Stored at +40	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +48	field	agrees	read	read	Stored at +48	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +56	field	agrees	read	read	Read into +56	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +64	field	agrees	read	read	Read into +64	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +72	field	agrees	read	read	Stored at +72	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +80	field	agrees	read	read	Read into +80	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +96	field	agrees	read	read	Read into +96	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +112	field	agrees	read	read	A bit at +112 is set from Bakeable	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +116	field	agrees	read	read	Set at +116 from the comparison with 'Work/'	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	LayoutEntry +117	field	agrees	read	read	Cleared at the start and set at the end (+117)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	GameBancParam +680	field	partly	read	read	Field at +680, flag +880; the constructor's default is 0 (the page says defaults not found)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	GameBancParam +832	field	partly	read	read	+832 and flag +879 confirmed; the constructor's default is 1 (true)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	GameBancParam +833	field	partly	read	read	+833 and flag bit 0 of +878 confirmed; the constructor's default is 1 (true)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	GameBancParam +842	field	partly	read	read	The field is IsChildWhenInitializingScene (flag +929), default 1; f_809d76a0 reads it through f_809d77d0 and writes Sequence_IsChildhood (hash 0xcea220d3)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +56	field	agrees	read	read	Flag byte at +136 + index; the path getter uses +137, LoadRadius +143 (so the order follows the field order)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +64	field	agrees	read	read	BancParamName follows in field order	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +72	field	agrees	read	read	+72, flag +137 bit 0 (f_82d05430)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +120	field	agrees	read	read	Part of the field run (+120)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +124	field	agrees	read	read	+124, flag +143 bit 0 (f_82d057c0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +128	field	agrees	read	read	Field order: Priority after LoadRadius	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +132	field	agrees	read	read	+132 read by f_82d05580; its byte is compared with 1 by f_810a44e0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +133	field	agrees	read	read	Follows HasMQ	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+maps	OptimizeChangeBancUnitParam +134	field	agrees	guess	guess	No reader found; the name is the last field of the visitor	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

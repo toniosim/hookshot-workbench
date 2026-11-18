@@ -1,0 +1,8 @@
+#!/bin/sh
+# `magick` for ImageMagick 6 (Ubuntu/Pop!_OS 24.04 ships convert/identify/montage, not the version 7 `magick` command).
+# install.sh links it to ~/.local/bin/magick only when no real `magick` exists. The author's play/, regress/ and skills call
+# `magick`, `magick identify`, `magick montage` and `magick <input> <options> <output>`.
+case "${1:-}" in
+    identify|montage|mogrify|compare|composite|convert|display|stream|import) tool=$1; shift; exec "$tool" "$@" ;;
+    *) exec convert "$@" ;;
+esac

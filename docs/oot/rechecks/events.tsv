@@ -1,0 +1,75 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+events	f_80d99f10	function	agrees	tested	tested	Stores at +0x1950, +0x1968, +6800 and +6808 as the structure rows say	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	f_829df380	function	agrees	read	read	Class and slot 39 confirmed (vtable 0x84a8e1a8); hashes 0xcea220d3 and 0x605e5df8, the "_MQ", "_Alternative", "_Child", "_Adult" and castle strings and offsets +6976 and +6984 are all in the code	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	f_802dc440	function	agrees	tested	tested	Stores the actor into a link; 0x1950 is the caller's choice of link	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	f_80d9a820	function	agrees	tested	tested	Single choke point; called from f_80f81460, f_80bf1670 and the request nodes; 5 callees	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	f_8022b6f0	function	agrees	tested	tested	Releases a link; 0x84994b20 is a vtable (functions 0x8262cbd0, 0x8262cbe0, 0x80efb5a0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	f_83b5bfb0	function	partly	read	read	Main flow matches; sole caller f_80eab5f0 (call at 0x80eaba00, return 0x80eaba04); hook in the build and in forge/main patch_opening. f_83b5aac0 only builds the buffer: the append is in this function	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+events	f_80de6cb0	function	agrees	read	read	The lifted text of the retained build carries hos_oot_opening(c, 2); forge/main patch_opening targets f_80de6cb0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+events	f_8022e220	function	agrees	read	read	Shape only, as the row says; not traced	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80813ea0	function	agrees	guess	guess	Empty link (generation -1) is false; thread fast path through the manager tables, TLS check, lock calls and +72 generation compare present; the state 7 to 11 test not located in the first half	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_809575f0	function	agrees	guess	guess	Same lookup pair as f_80813ea0 (tables, lock, TLS); what the two flags choose not worked out	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80bec100	function	agrees	read	read	53 direct callers; +104, the entry address [[player+0xeb8]+8*[player+0xf18]], count +0xeb0 and playback +0x220 slot 8 are in the code; strict users f_8285fab0, f_82865b10, f_828612c0 call it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80bec0b0	function	agrees	read	read	Offsets +0xeb0, +0xeb8, +0xf18 and +8; static empty string object in the page 0x849a1000	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80f0dd80	function	agrees	read	read	Callers match the five named	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b6c300	function	agrees	read	read	Table at +608/+616 with 0xa8-byte records	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b6b870	function	agrees	read	read	+8 step store, request list +768/+784/+792, players list +624/+632, +181 bit 0, +104 store and bit 9 (0x200) clear at +184, [mgr+72] passed to f_80c3f480 are all there	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b6c1d0	function	agrees	read	read	Tests +0xf24, calls f_83b5bb60, removes from +632 and frees (0xf78), clears +104	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b5bb60	function	agrees	read	read	Callees f_83b5bf30 and f_80c40370; counters at +0xf1c, +0xf20 and +0xf25 present; callee f_80c40370 not read, as the row says	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b5bf30	function	agrees	read	read	Entry search by name, called by the starter and the updater	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b5af30	function	agrees	read	read	Calls slot 11 of entry+0x220 when not null (indirect call, no direct callees)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83b61630	function	agrees	read	read	Calls f_83b60640; the +955 and +0x20 reads are there; both playback vtables (0x84b41610, 0x84c82f20) hold it in slot 11	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_82bfe3b0	function	agrees	read	read	Both playback vtables hold it in slot 8; the state name table at 0x83f8f9f0 lists idle, resource loading, setup, playing, delete, restore, end, continue in that order (Japanese text)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_832f1890	function	agrees	read	read	Class vtable 0x84bd0970 slot 39 is this function; calls f_80bec100 and f_83b5af30	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_832df870	function	agrees	read	read	Calls the same two functions, stage word at +0x20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_832df8e0	function	agrees	read	read	Counter at +0x20, a multiplicative-inverse divisibility test for every 60th update (constants 0xa4fa4fa5 and 0x16c16c0), skip re-issue through f_83b5af30, ends on no event or bit 14 of +184	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_804ca890	function	agrees	read	read	14 callers; calls f_80f81460 and f_80d99f10 (the performer state set to 1 is in f_80f81460)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80f81460	function	agrees	read	read	Calls f_80d9a820; state at +0x28 tested against 3 and set; 9 callers; the starter-validation branch not traced, as the row says	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80bf1670	function	agrees	read	read	Calls f_804ca890 and f_80d9a820; offsets +0x168, +0x16c, +0x270 and +0x88 present; 2 callers as named	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_802de720	function	agrees	read	read	Calls f_804ca890 at the two named sites; offsets +0x160, +0xd8, +0x98, +0xb0 present	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_8281e410	function	agrees	read	read	Calls f_80c90560 then f_804ca890, else tail-calls f_8060d3d0; the event name not string-checked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_80c90560	function	agrees	read	read	Reads [[actor+0x270]+0x90] (36 callers); f_80e77080 is the +0x88 twin	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_828f4fe0	function	agrees	read	read	Calls f_80c90560 and f_804ca890	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_828f44f0	function	agrees	read	read	Calls f_80d99f10 and f_80f81460; ByEventName caller f_828f4c20 not checked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_83bdc4a0	function	agrees	read	read	Calls f_80bec100 with strict 0 behind the manager check	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	f_834722d0	function	agrees	tested	tested	Reaches f_80f0e640 (Clock_SetTime) via world+0x510; the holder chain [[0x84c9e898]] confirmed in the image	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	0x84c9e090	data	agrees	tested	tested	Image cell holds 0x84eb4840, so [[0x84c9e090]] is the manager	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	0x84c9e898	data	agrees	tested	tested	Image cell holds 0x84e9eab0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	0x84994b20	data	agrees	guess	guess	Holds code pointers (0x8262cbd0, 0x8262cbe0, 0x80efb5a0): a vtable-like table, consistent with the guess	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	0x84eb4840	data	agrees	read	read	Zero in the image; 0x84c9e090 holds its address; 0x84eb4840 minus 0x80020000 is 0x4e94840	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventMgr+104	field	agrees	tested	tested	f_83b6b870 stores it when a player becomes current and f_83b6c1d0 clears it when that player is freed	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventMgr+8	field	agrees	read	read	f_83b6b870 stores the step	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventMgr+184	field	agrees	read	read	Bit 1 tested to skip the pending pass, bit 9 (0x200) cleared when a player becomes current, bit 14 tested by f_832df8e0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventMgr+608,+616	field	agrees	read	read	Read by f_83b6c300	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventMgr+624,+628,+632	field	agrees	read	read	Used by f_83b6b870 and f_83b6c1d0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventMgr+768,+784,+792	field	agrees	read	read	Pending list head, count and free list used by f_83b6b870	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+8,+16	field	agrees	read	read	Read by f_80f0dd80 as the player's own name	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xeb0	field	agrees	read	read	Read by f_80bec100 as the entry count	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xeb4	field	cannot-check	read	read	deep: the capacity word was not seen used in the functions read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xeb8	field	agrees	read	read	Entry pointer array read by f_80bec100 and f_832df8e0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xf08	field	cannot-check	read	read	deep: the constructor f_80c3f480 was not read; the argument [mgr+72] is passed to it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xf18	field	agrees	read	read	Index of the current entry, read and incremented by f_83b5bfb0 and read by f_80bec100	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xf1c	field	agrees	read	read	Counter at +0xf1c in f_83b5bb60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xf20	field	agrees	read	read	Float at +0xf20 in f_83b5bb60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xf24	field	agrees	read	read	Tested by f_83b6c1d0 before calling f_83b5bb60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventPlayer+0xf25	field	agrees	read	read	Set to 1 by f_83b5bfb0 and used by f_83b5bb60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:entry+8,+16	field	agrees	read	read	Entry name used by the entry search	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	TimelineEntry:entry+0x98,+0xa0	field	agrees	read	read	Read by f_83b5bb60 to chain to the next entry	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:entry+0x218,+0x220	field	agrees	read	read	+0x220 is the playback object (slot calls in f_83b5af30 and f_80bec100)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:entry+0x3b8	field	agrees	read	read	f_83b5bfb0 ORs 0x2_0000_0000 for mode 1 and 0x4_0000_0000 for mode 2 and copies bit 28	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:playback+0x10	field	agrees	read	read	f_83b61630 reads the definition byte +955	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:playback+0x20	field	agrees	read	read	f_83b61630 passes [obj+0x20] to f_83b60640	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:playback+0x28	field	agrees	read	read	Bit 5 set by the skip request in f_83b61630	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:playback+0x29	field	cannot-check	read	read	deep: the readers in slots 9 and 10 were not read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	TimelineEntry:playback+0x2c	field	agrees	read	read	State 3 tested by f_82bfe3b0; the debug names are in the image	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+events	EventRequestArg+0	field	agrees	tested	tested	Set by the init at +0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventRequestArg+8	field	agrees	tested	tested	Set by the init at +8	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventRequestArg+16	field	agrees	tested	tested	Set by the init at +16	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventRequestArg+0x1950	field	agrees	tested	tested	Offset used by the init and by the starter link calls	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventRequestArg+0x1968	field	agrees	tested	tested	Offset present in the init; released by the requesters	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventRequestArg+6800	field	agrees	tested	tested	Offset present in the init	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventRequestArg+6808	field	agrees	tested	tested	Offset present in the init	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventArgument+0	field	agrees	tested	tested	Entry layout used by the requesters; not re-derived	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventArgument+8	field	agrees	tested	tested	Entry layout used by the requesters; not re-derived	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventArgument+16	field	agrees	tested	tested	Entry layout used by the requesters; not re-derived	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+events	EventArgument+152	field	agrees	tested	tested	Entry layout used by the requesters; not re-derived	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

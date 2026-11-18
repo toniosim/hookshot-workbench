@@ -8,6 +8,7 @@ from fastmcp import Client
 from src.config import Config
 from src.deps import Deps
 from src.errors import WorkbenchError
+from src.game_literals import HS_GAME
 from src.main import build_server, configure_logging
 from src.models import State, Receipt, Producer, utc_now
 from src.policy import DENIED_TOOLS, Safety, ToolSpec, check_spec, PathGuards, Policy, child_environment
@@ -35,13 +36,16 @@ REQUIRED = {
     "session_teleport": ["run_id", "destination_id", "idempotency_key"],
     "session_age": ["run_id", "age", "idempotency_key"], "session_saves_list": ["run_id"],
     "save_clone": ["save_id", "idempotency_key"], "session_stop": ["run_id", "reason", "idempotency_key"],
+    "session_destinations": ["run_id"], "session_debug": ["run_id", "action", "idempotency_key"], "session_warp": ["run_id", "x", "y", "z", "idempotency_key"],
+    "session_flags": ["run_id", "names"], "session_flag_set": ["run_id", "name", "value", "idempotency_key"],
+    "session_snapshot": ["run_id", "idempotency_key"],
 }
 READ_TOOLS = {
     "workbench_status", "queue_status", "jobs_list", "job_read", "job_wait", "ci_read",
     "system_telemetry",
     "run_logs", "run_faults", "evidence_compare", "github_thread_read", "prloop_next",
     "test_requests_read", "team_read", "nightly_status", "knowledge_search",
-    "session_state", "session_wait", "session_options_get", "session_saves_list",
+    "session_state", "session_wait", "session_options_get", "session_saves_list", "session_destinations", "session_flags",
 }
 
 
@@ -49,6 +53,7 @@ READ_TOOLS = {
 async def test_catalogue(config, profile, extra):
     deps = Deps(replace(config, profile=profile, extra_tools=extra))
     server = build_server(deps=deps)
+    assert server.name == "ls-workbench"
     async with Client(server) as client:
         tools = {tool.name: tool for tool in await client.list_tools()}
         assert set(tools) == (set(REQUIRED) if profile == "operate" else READ_TOOLS | set(extra))
@@ -61,6 +66,12 @@ async def test_catalogue(config, profile, extra):
             assert tool.annotations.idempotent_hint == spec.idempotent
             assert tool.annotations.open_world_hint == spec.open_world
             assert set(tool.input_schema.get("required", [])) == set(REQUIRED[name])
+        wait_schema = tools["job_wait"].input_schema["properties"]["timeout_seconds"]
+        assert (wait_schema["minimum"], wait_schema["maximum"]) == (0, 30)
+        assert "0–30 seconds" in tools["job_wait"].description
+        if profile == "operate":
+            assert "bridge_ready" in tools["session_launch"].description
+            assert "pr_check_checkout" in tools["checks_pr"].description
         result = await client.call_tool("workbench_status")
         assert result.structured_content["protected_player_active"] is None
         assert result.structured_content["capabilities"]["harness"]["status"] == "unavailable"
@@ -72,6 +83,32 @@ async def test_catalogue(config, profile, extra):
         assert {p.name for p in await client.list_prompts()} == {
             "prove_fix", "compare_builds", "reproduce_issue", "test_requested_pr",
             "recover_or_cancel", "prepare_evidence_handoff"}
+
+
+async def test_completed_text_artifact_resource_pages_and_redacts(config):
+    deps = Deps(config)
+    async with Client(build_server(deps=deps)) as client:
+        path = config.state_root / "result.json"
+        path.write_text(json.dumps({"value": "é" * 70000, "token": "never-return", "path": "/private/source/file"}))
+        art = deps.registry.add_artifact(path, guards=deps.paths, mime="application/json",
+            producer=Producer(tool="checks_source"), complete=True)
+        uri = "workbench://artifacts/" + art.id
+        cursor = None
+        parts = []
+        while True:
+            page = json.loads((await client.read_resource(uri + "?limit=16384" + ("&cursor=" + cursor if cursor else "")))[0].text)
+            assert len(page["text"]) <= 16384
+            parts.append(page["text"])
+            cursor = page["next_cursor"]
+            if cursor is None:
+                assert page["complete"]
+                break
+        content = "".join(parts)
+        assert "never-return" not in content and "/private/source" not in content
+        assert json.loads(content)["value"] == "é" * 70000
+        path.write_text("changed after registration")
+        with pytest.raises(Exception):
+            await client.read_resource(uri)
 
 
 def test_unknown_profile_and_extras(config):
@@ -129,19 +166,23 @@ async def test_events_runs_and_wait(deps):
 
 def test_logging_keeps_stdout_clean(capsys):
     configure_logging()
-    logging.getLogger("hookshot_workbench").warning("fixture message")
+    logging.getLogger("ls_workbench").warning("fixture message")
     captured = capsys.readouterr()
     assert captured.out == ""
     assert "fixture message" in captured.err
 
 
 def test_config_explicit_environment(tmp_path):
-    config = Config.from_env({"HOME": str(tmp_path), "HOOKSHOT_WB_READ_ROOTS": json.dumps([str(tmp_path / "owned")])})
-    assert config.state_root == tmp_path / ".local/state/hookshot-workbench"
+    config = Config.from_env({"HOME": str(tmp_path), "LS_WB_READ_ROOTS": json.dumps([str(tmp_path / "owned")])})
+    assert config.state_root == tmp_path / ".local/state/ls-workbench"
     assert config.read_roots == (tmp_path / "owned",)
     assert tmp_path / ".config" in config.protected_roots
     with pytest.raises(ValueError):
-        Config.from_env({"HOOKSHOT_WB_STATE_ROOT": "relative"})
+        Config.from_env({"LS_WB_STATE_ROOT": "relative"})
+
+
+def test_external_game_literals_remain_exact():
+    assert HS_GAME == {"framelog_mime": "application/x-hookshot-framelog"}
 
 
 def test_path_guards(config, tmp_path):

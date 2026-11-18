@@ -7,14 +7,20 @@ lost mutation reply is uncertain, not grounds to retry or invent a quit reply.
 import asyncio
 import json
 import math
+import re
+import time
 from collections import deque
 from pathlib import Path
 from src.errors import fail
 
+# mem_read/mem_read_many/mem_write exist only when the game was started with the memory opt-in; the game answers
+# `forbidden` otherwise. Reads change nothing; mem_write is a mutation and is never replayed.
 COMMANDS = frozenset({"status", "press", "stick", "sequence", "release", "shot", "wait", "option_get",
-                      "option_set", "teleport", "age", "saves", "quit", "subscribe", "unsubscribe"})
-READS = frozenset({"status", "wait", "option_get", "saves", "subscribe", "unsubscribe"})
+                      "option_set", "teleport", "age", "saves", "quit", "subscribe", "unsubscribe",
+                      "mem_read", "mem_read_many", "mem_write"})
+READS = frozenset({"status", "wait", "option_get", "saves", "subscribe", "unsubscribe", "mem_read", "mem_read_many"})
 MAX_REPLY = 524288
+FLAG_NAME = re.compile(r"^(?:0x[0-9a-fA-F]{8}|[A-Za-z0-9_.]{1,47})$")
 
 
 class Bridge:
@@ -109,7 +115,8 @@ class Bridge:
                     raise fail("unavailable", "session_input_not_consumed", retryable=True)
                 mapped = {"unknown_cmd": "unavailable", "unavailable": "unavailable", "busy": "busy",
                           "refused": "refused_by_policy", "forbidden": "refused_by_policy", "not_found": "not_found",
-                          "bad_request": "invalid_argument", "timeout": "uncertain_outcome" if mutating else "timeout"}
+                          "bad_request": "invalid_argument", "out_of_range": "backend_failed",
+                          "timeout": "uncertain_outcome" if mutating else "timeout"}
                 raise fail(mapped.get(code, "uncertain_outcome" if mutating else "backend_failed"), operation)
             return reply
         except (TimeoutError, OSError):
@@ -125,6 +132,49 @@ class Bridge:
         self.events.clear()
         self.changed.clear()
         return events
+
+    async def sample_flags(self, names: list[str], timeout: float = 5, *, max_age_ms: float = 1000,
+                           operation: str = "session_flags") -> dict:
+        """One-shot flag read: subscribe on this DEDICATED connection and take the first fresh ``oot`` event.
+
+        A subscription can retain an old snapshot, so an event counts only when its game sample is recent
+        (``game.t`` on this host's monotonic clock). Needs no memory opt-in. The caller owns and closes the
+        connection: nothing else may share it, because every event on it is taken to be this subscription's.
+        """
+        if not 1 <= len(names) <= 64 or any(not isinstance(n, str) or not FLAG_NAME.fullmatch(n) for n in names) \
+                or not math.isfinite(timeout) or not 0 < timeout <= 120:
+            raise fail("invalid_argument", operation)
+        deadline = time.monotonic() + timeout
+        first = self.next_id + 1
+        ack = await self.request("subscribe", timeout=min(timeout, 5), events=["oot"], every=1, flags=names, changes=False)
+        sub = ack.get("sub") if isinstance(ack.get("sub"), int) and not isinstance(ack.get("sub"), bool) else first
+        found = None
+        while found is None:
+            for event in self.drain_events():
+                game = event.get("game") if event.get("event") == "oot" else None
+                if not isinstance(game, dict) or not isinstance(game.get("flags"), dict):
+                    continue
+                frame, sampled = game.get("frame"), game.get("t")
+                if isinstance(frame, int) and not isinstance(frame, bool) and isinstance(sampled, (int, float)) \
+                        and not isinstance(sampled, bool) and 0 <= (time.monotonic() - sampled) * 1000 <= max_age_ms:
+                    found = event
+                    break
+            if found is not None:
+                break
+            remaining = deadline - time.monotonic()
+            if self.closed:
+                raise fail("unavailable", operation)
+            if remaining <= 0:
+                raise fail("timeout", operation)
+            try:
+                await asyncio.wait_for(self.changed.wait(), remaining)
+            except TimeoutError:
+                pass
+        try:
+            await self.request("unsubscribe", timeout=1, sub=sub)
+        except Exception:
+            pass  # Best effort: closing the dedicated connection ends the subscription anyway.
+        return found
 
     async def close(self):
         self.writer.close()

@@ -42,6 +42,21 @@ def _page(limit: int, cursor: int) -> None:
     if not 1 <= limit <= MAX_PAGE or not 0 <= cursor <= 9223372036854775807:
         raise fail("invalid_argument", "registry_read")
 
+# How long a registry call waits for a busy or overloaded database. A stalled machine (a disk stall, load around 14) held the lock for
+# more than the old 5 seconds, and a registry error in the launch job's own bookkeeping ended a healthy session.
+BUSY_SECONDS = 30.0
+# SQLite's primary result codes that mean "try again": BUSY, LOCKED, and PROTOCOL (the WAL index lock could not be taken under
+# contention). The extended codes (BUSY_RECOVERY 261, BUSY_SNAPSHOT 517, BUSY_TIMEOUT 773) carry the primary code in their low byte.
+TRANSIENT_CODES = frozenset({sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED, 15})
+# What an initialized registry holds: an open that finds all of it (and its owner) writes nothing.
+SCHEMA_NAMES = ("meta", "jobs", "events", "events_job", "runs", "run_owners", "artifacts")
+
+
+def _transient(exc: sqlite3.OperationalError) -> bool:
+    code = getattr(exc, "sqlite_errorcode", None)
+    return isinstance(code, int) and (code & 0xFF) in TRANSIENT_CODES
+
+
 
 class Registry:
     def __init__(self, state_root: Path):
@@ -57,18 +72,31 @@ class Registry:
         if write and self._readonly:
             raise fail("refused_by_policy", "registry")
         target = self.path.as_uri() + "?mode=ro" if self._readonly else self.path
-        db = sqlite3.connect(target, uri=self._readonly, timeout=5, isolation_level=None)
-        db.row_factory = sqlite3.Row
+        deadline, delay = time.monotonic() + BUSY_SECONDS, 0.05
+        while True:
+            db = sqlite3.connect(target, uri=self._readonly, timeout=BUSY_SECONDS, isolation_level=None)
+            db.row_factory = sqlite3.Row
+            try:
+                db.execute("PRAGMA foreign_keys=ON")
+                db.execute("PRAGMA synchronous=FULL")
+                db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
+                break
+            except sqlite3.OperationalError as exc:
+                db.close()
+                if _transient(exc) and time.monotonic() < deadline:
+                    time.sleep(delay)    # (nothing has been written yet: the start of a transaction can simply be tried again)
+                    delay = min(delay * 2, 1.0)
+                    continue
+                raise fail("busy" if _transient(exc) else "backend_failed", "registry", retryable=_transient(exc)) from None
+            except BaseException:
+                db.close()
+                raise
         try:
-            db.execute("PRAGMA foreign_keys=ON")
-            db.execute("PRAGMA synchronous=FULL")
-            db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
             yield db
             db.commit()
         except sqlite3.OperationalError as exc:
             db.rollback()
-            busy = getattr(exc, "sqlite_errorcode", None) in {sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED}
-            raise fail("busy" if busy else "backend_failed", "registry", retryable=busy) from None
+            raise fail("busy" if _transient(exc) else "backend_failed", "registry", retryable=_transient(exc)) from None
         except BaseException:
             db.rollback()
             raise
@@ -82,7 +110,7 @@ class Registry:
         # first opens despite busy_timeout. Serialize only registry initialization.
         fd = os.open(self.state_root / "registry.init.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
         try:
-            deadline = time.monotonic() + 5
+            deadline = time.monotonic() + BUSY_SECONDS
             while True:
                 try:
                     fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -99,8 +127,34 @@ class Registry:
         # Never follow a pre-planted registry link.
         if self.path.is_symlink():
             raise fail("refused_by_policy", "registry")
-        db = sqlite3.connect(self.path, timeout=5)
+        # Every one-shot CLI call and every server start opens the registry. With a slow writer around, a plain connect-and-write failed as
+        # SQLite's raw "database is locked" after 5 seconds (a one-shot `call` printed `backend_failed`): the wait is the registry's own
+        # (BUSY_SECONDS) and the transient codes are retried, as for every other registry call.
+        deadline, delay = time.monotonic() + BUSY_SECONDS, 0.05
+        while True:
+            try:
+                self._initialize_once()
+                break
+            except sqlite3.OperationalError as exc:
+                if _transient(exc) and time.monotonic() < deadline:
+                    time.sleep(delay)
+                    delay = min(delay * 2, 1.0)
+                    continue
+                raise fail("busy" if _transient(exc) else "backend_failed", "registry", retryable=_transient(exc)) from None
+        self.path.chmod(0o600)
+
+    def _initialize_once(self) -> None:
+        db = sqlite3.connect(self.path, timeout=BUSY_SECONDS)
         try:
+            # An existing registry (every process after the first) needs reads only: any write statement, even `INSERT OR IGNORE`, waits for
+            # whoever holds the write lock.
+            if db.execute("PRAGMA journal_mode").fetchone()[0] == "wal":
+                marks = ",".join("?" * len(SCHEMA_NAMES))
+                present = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE name IN (%s)" % marks, SCHEMA_NAMES)}
+                row = db.execute("SELECT value FROM meta WHERE key='owner'").fetchone() if present >= set(SCHEMA_NAMES) else None
+                if row is not None:
+                    self.owner = row[0]
+                    return
             db.execute("PRAGMA journal_mode=WAL")
             db.execute("PRAGMA synchronous=FULL")
             db.executescript("""
@@ -129,7 +183,6 @@ class Registry:
             db.commit()
         finally:
             db.close()
-        self.path.chmod(0o600)
 
     def open_readonly(self) -> bool:
         """Inspect existing state without creating a registry or initialization lock."""

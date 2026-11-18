@@ -1,5 +1,7 @@
 """Registry observation without launching or probing optional backends."""
 import asyncio
+import os
+from src.errors import WorkbenchError
 from importlib.metadata import version
 from typing import Annotated, Literal
 from pydantic import Field
@@ -13,7 +15,7 @@ SPECS = (
     ToolSpec("queue_status", Safety.READ, "Observe GPU, Intel and build locks and tickets without acquiring a lock or creating files; wait estimates stay unknown.", shell_route="Manual queue/holder files and procfs lock inspection"),
     ToolSpec("jobs_list", Safety.READ, "List this registry's jobs with a bounded cursor page.", shell_route="Ad-hoc background process and topic job lists"),
     ToolSpec("job_read", Safety.READ, "Read one owned job, bounded events and its final child receipt.", shell_route="Manual progress logs and completion-receipt lookup"),
-    ToolSpec("job_wait", Safety.READ, "Wait for observed terminal state under a deadline; cancelling this wait never cancels work.", shell_route="Repeated bounded completion checks without cancelling work"),
+    ToolSpec("job_wait", Safety.READ, "Wait 0–30 seconds per call for observed terminal state; repeat within an overall deadline. Cancelling this wait never cancels work.", shell_route="Repeated bounded completion checks without cancelling work"),
     ToolSpec("job_cancel", Safety.WRITE_LOCAL, "Request cancellation of one registry-owned worker; preserve its output and receipt.", destructive=True, shell_route="Hand-managed scoped cancellation and child receipts"),
 )
 
@@ -25,25 +27,100 @@ JobId = Annotated[str, Field(pattern=r"^job_[0-9a-f]{32}$")]
 def status(deps) -> dict:
     config = deps.config
     def available(path, kind):
-        present = path is not None and (path.is_dir() if kind == "directory" else path.is_file())
+        try:
+            checked = deps.paths.read(path) if path is not None else None
+            present = checked is not None and (checked.is_dir() if kind == "directory" else checked.is_file())
+            if present and kind == "executable":
+                present = os.access(checked, os.X_OK)
+        except (WorkbenchError, OSError):
+            present = False
         return {"status": "configured" if present else "unavailable",
-                "reason": None if present else "not_configured_or_missing", "connectivity": None}
+                "reason": None if present else "not_configured_missing_or_unreadable", "connectivity": None}
     capabilities = {name: available(path, kind) for name, path, kind in (
         ("harness", config.harness_dir, "directory"), ("trusted_checkout", config.checkout, "directory"),
-        ("gpu_gate", config.gpu_gate, "file"), ("intel_gate", config.intel_gate, "file"),
-        ("build_gate", config.build_gate, "file"), ("idle_gate", config.idle_gate, "file"),
-        ("dependency_python", config.dependency_python, "file"), ("session_catalogue", config.session_catalogue, "file"),
-        ("checks_catalogue", config.checks_catalogue, "file"), ("panels_script", config.panels_script, "file"),
-        ("journal_reader", config.journal_reader, "file"))}
+        ("gpu_gate", config.gpu_gate, "executable"), ("intel_gate", config.intel_gate, "executable"),
+        ("build_gate", config.build_gate, "executable"), ("idle_gate", config.idle_gate, "executable"),
+        ("dependency_python", config.dependency_python, "executable"), ("session_catalogue", config.session_catalogue, "file"),
+        ("checks_catalogue", config.checks_catalogue, "file"), ("panels_script", config.panels_script, "executable"),
+        ("journal_reader", config.journal_reader, "executable"))}
     capabilities["knowledge"] = {"status": "configured" if config.knowledge is not None else "unavailable",
         "reason": config.knowledge_unavailable_reason if config.knowledge is None else None, "connectivity": None}
+    def verify(name, check):
+        if capabilities[name]["status"] != "configured":
+            return
+        try:
+            check()
+        except (WorkbenchError, OSError, ValueError) as error:
+            capabilities[name] = {"status": "unavailable", "connectivity": None,
+                "reason": error.envelope.operation if isinstance(error, WorkbenchError) else "invalid_local_configuration"}
+
+    def require(path, kind="file"):
+        if available(path, kind)["status"] != "configured":
+            raise deps.error("unavailable", "configured_path_prerequisite")
+
+    def harness():
+        require(config.harness_dir / "hs-run.sh", "executable")
+        require(config.harness_dir / "hs_names.py")
+
+    def checks():
+        from src.effects.checks_common import catalogue, prerequisite, windows_sysroot
+        cat = catalogue(deps)
+        for path in (cat.git, cat.copy_program, cat.flock):
+            require(path, "executable")
+        for path in (cat.idle, cat.nocore, cat.windows_check, cat.pr_check, cat.gh):
+            if path is not None:
+                require(path, "executable")
+        if cat.ci_reader is not None:
+            require(cat.ci_reader)
+        if cat.windows_check is not None or cat.windows_sysroot is not None:
+            windows_sysroot(deps, cat.windows_sysroot)
+        for entry in cat.checkouts.values():
+            prerequisite(deps, entry.path, directory=True)
+        for profile in cat.profiles.values():
+            prerequisite(deps, profile.cpm, directory=True)
+
+    def sessions():
+        from src.effects.session_storage import catalogue
+        from src.effects.names import copy_names
+        from src.effects.session_runtime import runtime_root, check_length
+        check_length(runtime_root(config) / ("0" * 12) / "c.sock")
+        cat = catalogue(deps)
+        require(cat.clone_root, "directory")
+        for build in cat.builds.values():
+            copy = deps.paths.read(build.path)
+            names = copy_names(deps, copy, "configured_session_build")
+            require(copy / names.executable, "executable")
+            require(copy / "image.bin")
+            require(copy / "romfs", "directory")
+        for seed in cat.saves.values():
+            require(seed.path, "directory")
+
+    def knowledge():
+        cfg = config.knowledge
+        for path in (cfg.gh, cfg.prloop_script, cfg.nightly_database):
+            if path is not None:
+                require(path)
+        for path in (cfg.skills_dir, cfg.reports_dir, cfg.prloop_state_dir, cfg.nightly_root):
+            if path is not None:
+                require(path, "directory")
+        if cfg.skills_dir is not None:
+            for name in cfg.skill_names:
+                require(cfg.skills_dir / name / "SKILL.md")
+        if cfg.reports_dir is not None:
+            for report in cfg.reports:
+                require(cfg.reports_dir / report.file)
+
+    verify("harness", harness)
+    verify("checks_catalogue", checks)
+    verify("session_catalogue", sessions)
+    verify("knowledge", knowledge)
     gate_summary = deps.gates.snapshot()
     return {"observed_at": utc_now(), "policy": deps.policy.snapshot().model_dump(),
             "capabilities": capabilities,
             "active_jobs": deps.registry.list_jobs(active_only=True).model_dump(),
             "protected_player_active": None,
             "gate_summary": gate_summary.model_dump(),
-            "tool_revisions": {"server": version("hookshot-workbench-mcp"), "fastmcp": version("fastmcp"),
+            "tool_revisions": {"server": version("ls-workbench-mcp"), "fastmcp": version("fastmcp"),
                                **{q.device + "_gate": q.source_sha256 for q in gate_summary.devices}},
             "tools": deps.tool_catalogue()}
 

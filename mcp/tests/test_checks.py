@@ -39,6 +39,7 @@ def bench(tmp_path, monkeypatch):
     root.mkdir()
     tools = tmp_path / "tools"
     tools.mkdir()
+    (tools / "hs_names.py").write_bytes((Path(__file__).parents[2] / "harness/hs_names.py").read_bytes())
     control = tmp_path / "control.json"
     control.write_text(json.dumps({"pids": str(tmp_path / "pids.json")}))
     fixture = (Path(__file__).parent / "fakes/checks_backend.py").read_text().replace("@CONTROL@", str(control))
@@ -67,6 +68,8 @@ def bench(tmp_path, monkeypatch):
     parser.write_text("import re\ndef failures(text):\n return {'tests': re.findall(r'FAIL\\s+[\\d.]+s\\s+(tests/[^\\s]+)', text), 'cases': []}\n")
     for name in ("cpm", "sysroot", "exefs", "romfs"):
         (tmp_path / name).mkdir()
+    (tmp_path / "sysroot/include").mkdir()
+    (tmp_path / "sysroot/include/windows.h").write_text("/* fixture header */\n")
     (tmp_path / "exefs/input.dat").write_text("neutral fixture input")
     catalogue = tmp_path / "catalogue.json"
     data = {"checkouts": {"fixture": {"path": str(root), "reviewed_commits": [base, head]}},
@@ -80,7 +83,7 @@ def bench(tmp_path, monkeypatch):
     catalogue.write_text(json.dumps(data))
     config = ChecksConfig(state_root=tmp_path / "state", read_roots=(tmp_path, Path(sys.executable).resolve().parent, Path("/usr/bin")),
         write_roots=(tmp_path,), protected_roots=(tmp_path / "protected",), profile="operate", checks_catalogue=catalogue,
-        build_gate=tools / "build-gate", dependency_python=Path(sys.executable).resolve())
+        build_gate=tools / "build-gate", dependency_python=Path(sys.executable).resolve(), harness_dir=tools)
     config.state_root.mkdir()
     rule = {"lanes": ["build", "idle"], "classes": ["ordinary"], "max_hold_seconds": 480}
     (config.state_root / "policy.json").write_text(json.dumps({"day": rule, "night": rule}))
@@ -132,6 +135,32 @@ async def approved_plan(client, bench, **kwargs):
     bench.data.setdefault("approved_plans", []).append(result["plan"]["plan_hash"])
     save_catalogue(bench)
     return result
+
+
+async def test_longshot_build_names_and_environment(bench):
+    from src.effects.checks import build_env
+    for name in ("nx2/build.py", "nx2/make_game.py"):
+        path = bench.root / name
+        path.write_text(path.read_text().replace("hookshot", "longshot").replace("HOOKSHOT_", "LONGSHOT_"))
+    git(bench.root, "add", ".")
+    git(bench.root, "commit", "-m", "renamed project fixture")
+    bench.head = git(bench.root, "rev-parse", "HEAD")
+    bench.data["checkouts"]["fixture"]["reviewed_commits"].append(bench.head)
+    save_catalogue(bench)
+    async with Client(build_server(deps=bench.deps)) as client:
+        plan = await approved_plan(client, bench)
+        assert plan["plan"]["expected_outputs"] == ["longshot", "longshot_vk.so", "completion_receipt"]
+        job = await call(client, "build_start", plan_id=plan["artifact"]["id"], idempotency_key="renamed")
+        done = await finished(client, job["job_id"])
+        assert done["job"]["state"] == "completed", done
+        run = bench.deps.registry.get_run(done["job"]["run_ids"][0])
+        assert set(run.build.binary_hashes) == {"longshot", "longshot_vk.so"}
+        from src.models.checks import Profile
+        (bench.tmp / "environment").mkdir()
+        env = build_env(bench.deps, Profile.model_validate(bench.data["profiles"]["default"]), bench.tmp / "environment", bench.root)
+        assert env["RX_PGO"].endswith("/longshot_pieces.prof")
+        assert env["LONGSHOT_LIFT_JOBS"] == "8" and env["LONGSHOT_KEEP_BUILD_FILES"] == "1"
+        assert not any(key.startswith("HOOKSHOT_") for key in env)
 
 
 @pytest.mark.parametrize("profile,extras", [("observe", ()), ("operate", ()), ("observe", ("checks_source",))])
@@ -312,6 +341,8 @@ async def test_queued_admission_policy_rechecked(bench):
     async with Client(build_server(deps=bench.deps)) as client:
         job = await call(client, "checks_source", repo_id="fixture", commit=bench.head, idempotency_key="queue")
         assert job["started_at"] is None
+        assert job["phase"] == "waiting_for_test_gate"
+        assert "Waiting for the test gate" in job["progress_text"]
         (bench.config.state_root / "policy.json").write_text("{}")
         set_control(bench, queue=False)
         done = await finished(client, job["job_id"])
@@ -452,6 +483,57 @@ async def test_source_exact_selection_and_key_conflict(bench):
         assert result["coverage"] == "named" and result["failing_names"] == ["tests/test_alpha.py"]
         conflict = await client.call_tool("checks_source", {**args, "tests": ["tests/test_beta.py"]}, raise_on_error=False)
         assert json.loads(conflict.content[0].text)["code"] == "invalid_argument"
+
+
+async def test_windows_sysroot_headers_checked_before_queue(bench):
+    (bench.tmp / "sysroot/include/windows.h").unlink()
+    async with Client(build_server(deps=bench.deps)) as client:
+        status = await call(client, "workbench_status")
+        assert status["capabilities"]["checks_catalogue"]["status"] == "unavailable"
+        reply = await client.call_tool("checks_windows_syntax",
+            {"repo_id": "fixture", "commit": bench.head, "base": bench.base, "idempotency_key": "missing-headers"},
+            raise_on_error=False)
+        assert reply.is_error
+        assert not bench.deps.registry.list_jobs().jobs
+
+
+def test_source_totals_include_cpp_and_byte_compile_rows():
+    rows = [f"pass 0.1s tests/test_case_{i}.py" for i in range(509)]
+    rows += ["FAIL 0.1s tests/test_updater_asset_digest.py"]
+    rows += [f"skip nx2/test_skip_{i}.py (prerequisite)" for i in range(20)]
+    rows += [f"pass 0.1s gpu/vk/tests/{name}_test.cpp" for name in ("lower", "regmap_marker", "ldsm_address", "present_rect")]
+    rows += ["pass 0.1s (byte-compile every tracked .py)"]
+    parsed, totals, complete = parse_source("result time check\n" + "\n".join(rows) +
+        "\n514 passed, 1 failed, 20 skipped in 156 s\n")
+    assert complete and totals == (514, 1, 20)
+    assert len(parsed) == 535
+    assert [row.name for row in parsed if row.status == "failed"] == ["tests/test_updater_asset_digest.py"]
+
+
+@pytest.mark.parametrize("method", ["update_job", "append_event", "add_artifact"])
+async def test_busy_observation_does_not_abort_check_child(bench, monkeypatch, method):
+    from src.effects.checks_worker import Worker
+    async with Client(build_server(deps=bench.deps)):
+        job = bench.deps.registry.create_job("checks_source")
+        folder = bench.tmp / "busy-output"
+        folder.mkdir()
+        worker = Worker(bench.deps, {"job_id": job.job_id, "operation": "checks_source",
+            "request": {"repo_id": "fixture", "commit": bench.head}, "run_ids": []}, folder)
+        original = getattr(bench.deps.registry, method)
+        raised = False
+        def once_busy(*args, **kwargs):
+            nonlocal raised
+            if not raised:
+                raised = True
+                raise bench.deps.error("busy", "registry", retryable=True)
+            return original(*args, **kwargs)
+        monkeypatch.setattr(bench.deps.registry, method, once_busy)
+        child = bench.tmp / "busy-child.py"
+        child.write_text("print('pass 0.1s tests/test_alpha.py', flush=True)\nprint('child completed', flush=True)\n")
+        code, output = worker.stream([sys.executable, child], bench.root, os.environ.copy(), "source")
+        assert raised and code == 0 and output.endswith("child completed\n")
+        assert (folder / "source.log").read_text() == output
+        assert worker.artifacts[0].complete
 
 
 async def test_ci_protected_backend_and_missing_catalogue(bench):

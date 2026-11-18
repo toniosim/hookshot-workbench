@@ -1,0 +1,114 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+input	InitializeNpad, SetSupportedNpadIdType, SetSupportedNpadStyleSet	import	agrees			Game side holds: f_80ed67c0 (InitializeNpad, SetSupportedNpadIdType, style 0x1f), f_83b44500 and f_81000d20. LS answer column not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetNpadStyleSet	import	agrees			f_834893d0 calls the style-set import for each of the nine ids. LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetNpadStates (FullKey, Handheld, JoyDual, JoyLeft, JoyRight)	import	agrees			f_834893d0 calls the five state getters (FullKey, Handheld, JoyDual, JoyLeft, JoyRight). LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetSixAxisSensorHandles	import	agrees			Six-axis handle count at +0x280 and calls seen in f_834893d0; the 2 asked for and LS's 3 not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	StartSixAxisSensor	import	agrees			Game side plausible (per-handle start on style change); LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	SetGyroscopeZeroDriftMode	import	agrees			+0x8782 read in f_834893d0; modes not re-read; LS stub not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetSixAxisSensorStates	import	agrees			Guarded by +0x8781 in f_834893d0; LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetVibrationDeviceHandles, InitializeVibrationDevice	import	agrees			Vibration handle count at +0x284, handles at +0xe98/+0xe9c in f_834893d0; LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	SendVibrationValue	import	agrees			f_83489ad0 pops a command and calls the send import; LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	IsOunceVibrationDeviceMounted	import	agrees			f_830502a0 tail-calls the mount check on the active pad's vibration handle (+0xe98, count +0x284). LS stub not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	DisconnectNpad	import	agrees			f_81041ae0 calls the disconnect import only for ids up to 7.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	SetNpadJoyHoldType	import	agrees			f_81000d20 sets the supported styles and the hold type; +0x2c store not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	ShowControllerSupport	import	agrees			f_83b45f80 and f_83b45780 both call the applet helpers; LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetJcmsHandle, StartJcms, StopJcms, GetNmouseHandles, GetNmouseTypeSet, GetSensorFusionHandles	import	cannot-check			Stubs and the buffer-guarded calls were not read; LS side not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	FinalizeJcms, FinalizeNmouse, FinalizeSensorFusion	import	cannot-check			Only the destructor's finalise-if-set shape was read (f_834892b0); import names not matched.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	InitializeMouse, InitializeKeyboard	import	agrees			f_83b486e0 calls the mouse init (f_85669e70) and a PLT keyboard init. LS answer not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	GetMouseStates, GetKeyboardState	import	agrees			f_83b48780 calls the 16-state mouse read and the keyboard read; stub behaviour not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The vibration classes	import	agrees			Rumble module and thread functions exist with the names the row gives; lifted SDK calls and host side not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80f487d0	function	agrees	read	read	Name "sead::ControllerMgr", vtable 0x84c189c0, 0x188 bytes from factory f_80f48780; list at +0x160, controllers +0x178/+0x180.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80ed65d0	function	agrees	read	read	Creates the task through f_80f48780, allocates 0x8788, runs f_80ed67c0 with the priority [caller+0x330], links with f_80ed66d0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80ed66d0	function	agrees	read	read	List head +0x160, count +0x170, node offset +0x174 as the row says.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_8038a140	function	agrees	read	read	Slot 22 (+0xb0) of 0x84c189c0; calls devices' +0x20, then controllers' +0x30 (direct call when it is f_8038a220).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_81041d30	function	agrees	read	read	Walks the device list calling a type-check virtual; returns the match or 0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_81041e10	function	agrees	guess	read	Locks [0x84eb5f48]+0xd60, finds the controller whose +0x138 is 9, unlocks; the merged-controller guess stays a guess.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80ed67c0	function	agrees	read	read	Id 0xd, 8 at +0x28, thread at +0x8518, nine ids from 0x83f38fb8, style 0x1f, records cleared with style 15, thread started.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_834892b0	function	agrees	read	read	Finalises and frees the buffers at +0x8768/+0x8770/+0x8778 when set, stops the thread, destroys the lock at +0x8748.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_834893a0	function	agrees	read	read	Calls f_834892b0 then frees 0x8788 bytes.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_834893d0	function	agrees	read	read	Callees match: style getter, five state getters, handle getters and starts; offsets +0x280/+0x284/+0x288 to +0x28a and +0x8780 to +0x8782 seen. Not read line by line (445 insns).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80ed6970	function	agrees	read	read	Name "VibrationThread", queue of 16 at +0xd8, lock at +0x230, vtable 0x84c16050.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83489ad0	function	agrees	read	read	Locks, pops a command with f_83489b50, unlocks and calls the send import.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83489b50	function	agrees	read	read	Ring with storage +0, capacity +8, read index +0xc, count +0x10; copies 20 bytes.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b486e0	function	partly	read	read	The vtable 0x84c81cf8 and id 10 are set there, but it also records the manager at +0x20 and clears 0x100 bytes at +0xa8; the mouse and keyboard inits are calls.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b48780	function	partly	read	read	Loop of 131 table pairs, hold counter 30 and early stop on attribute bit 0 confirmed; the wheel sum is +0x1c0. The pointer fields +0x1a8/+0x1b0 are not written here.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_8038a220	function	agrees	read	read	Offsets match (+8/+0x10 edges, +0x30 timers, +0xb0/+0xd0, +0x114, +0x118, +0x120/+0x128, +0x13c); 1134 insns, not read line by line.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b468d0	function	agrees	read	read	Pad at +0x178, flags +0x17c, last style +0x17d, last sampling number +0x180; helper calls for the Joy-Con mappings.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b468c0	function	agrees	read	read	Reads byte +0x17c, bit 0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b47ea0	function	agrees	read	read	Reads controllers at +0x188 (count +0x180) and writes +0x114/+0x118/+0x120/+0x128; connected flag +0x178.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b48180	function	agrees	read	read	Reads +0x178.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b479c0	function	agrees	read	read	Sampling advance +0x528, count +0x530, flags +0x534..+0x538, controller +0x20, six-axis count +0x280.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80fb5b70	function	agrees	read	read	Allocates 0x1a0, vtable 0x84c818e8, keeps it at 0x84eb2f10; returns at once when it exists.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b44500	function	agrees	read	read	Slot 7 of 0x84c818e8; calls f_83b486e0, f_810421f0 nine times and the id-list import.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b45780	function	agrees	guess	read	Slot 2; starts with a try-lock, calls the assign function f_81041e90 and the applet helpers. Guess raised to read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83b45f80	function	agrees	read	read	Calls the applet helpers under the locks and f_81041e90.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_81041e90	function	agrees	guess	read	Calls f_81041d30, f_81041e10, f_810421f0 and f_81041ae0. Guess raised to read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_81041ae0	function	agrees	read	read	Calls the disconnect import only for id <= 7.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_81000d20	function	agrees	read	read	Finds the Npad device in the manager's list, sets the styles and stores the hold type.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_81000ca0	function	agrees	read	read	Reads five bool parameters into style bits and a hold type, then calls f_81000d20 with the module at [0x84eb2f10].	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_830502a0	function	agrees	guess	guess	Reads the vibration handle (+0xe98, count +0x284) of the active pad and tail-calls the mount check; the "Ounce" meaning stays a guess.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_82ae61c0	function	agrees	read	read	Vtable 0x84aff220 slot 39 is this function; calls f_80853d60, f_80964e50, f_80955090 and writes the output.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_82ae6030	function	agrees	read	read	Vtable 0x84aff0d0 slot 39; calls f_80993500.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80955090	function	agrees	read	read	Returns bit n of the u64 at [keys+0x40]'s target.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80993500	function	agrees	read	read	Returns bit n of the u64 at [keys+0x50]'s target.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80964e50	function	agrees	read	read	[[actor+0x270]+0x358] or 0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80853d60	function	agrees	read	read	[[[node+8]+8]+0x1f0].	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80954390	function	agrees	guess	guess	Uses "Move", "Turn", "LockOnMove", "PlayerMoveSpiderWeb" and f_80955090 twice; body of 830 insns not read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_805965e0	function	agrees	read	read	Vtable 0x84afc550 slot 39; module +0xb0; hash 0x605e5df8 used; two sign flips seen, the six motion flips not counted.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_828a9190	function	agrees	read	read	Hook confirmed (OC_ENTRY_HEAD in nx2/oot_patches.py, patch_ocarina_wait). The wait kinds were not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+input	f_828a9280	function	agrees	read	read	Hook confirmed (OC_TICK_HEAD, patch_ocarina_wait). The three gates were not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+input	f_832b35d0	function	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_806aac40	function	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_82856760	function	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80c79650	function	agrees	read	read	Uses "engine::rumble::RumbleModule" and "Rumble/Common.bnvib.sarc"; calls f_80c7a080.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80c7a080	function	agrees	read	read	Uses "rmbl::VibrationThread"; called by f_80c79650; the thread function and timer not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83a68ff0	function	cannot-check	read	read	67 insns, not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80707730	function	cannot-check	guess	guess	Called by nothing direct; only calls f_83a69180. Not read further.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_83a69180	function	agrees	read	read	Called by f_80707730; 104 insns, not read in detail.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_828e2fa0	function	agrees	guess	guess	Name string "OneShotControllerRumble" is used by f_828e3460 (name getter), not by this function; the vtable slot not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	f_80807530	function	agrees	guess	guess	Name string used by f_83300470 (name getter); the function itself not read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84e9f680	data	agrees	read	read	Static value 0; written at runtime; read by the controller functions (f_81041e10, f_81000d20).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c189c0	data	agrees	read	read	Slot 22 (+0xb0) is f_8038a140; used by f_80f487d0, f_834a4410, f_834a4440.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c16018	data	agrees	read	read	Slot 4 (+0x20) is f_834893d0; written by f_80ed67c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c16050	data	agrees	read	read	Slot 14 (+0x70) is f_83489ad0; written by f_80ed6970.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c81b00	data	agrees	read	read	Slots 4, 6, 7 are f_83b468c0, f_8038a220, f_83b468d0; the object writer was not found by address scan.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c81b98	data	agrees	read	read	Slot 4 f_83b48180, slot 6 f_8038a220, slot 7 f_83b47ea0; used by f_83b47e20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c81b60	data	agrees	read	read	Slot 4 (+0x20) is f_83b479c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c81cf8	data	agrees	read	read	Slot 4 (+0x20) is f_83b48780; written by f_83b486e0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84c818e8	data	agrees	read	read	Slot 2 f_83b45780, slot 7 f_83b44500; written by f_80fb5b70.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x84eb2f10	data	agrees	read	read	Written by f_80fb5b70; the GOT cell 0x84c9ef30 holds this address.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x83f38fb8	data	agrees	read	read	Nine words: 0 to 7 and 0x20; 0x24 bytes copied by f_80ed67c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x83f8f8a8	data	partly	read	read	Pairs are byte pairs (code, index), 131 of them (the loop count in f_83b48780 is 0x83).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	0x83e6085c	data	agrees	read	read	The word is 1/32767 as a float.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x18	field	agrees	read	read	0xd stored at +0x18 by f_80ed67c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x20	field	agrees	read	read	Manager stored at +0x20 by f_80ed67c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x28	field	agrees	read	read	8 stored at +0x28.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x2c	field	agrees	read	read	Set by f_81000d20; the store itself not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x30 + 4n	field	agrees	read	read	Style index 0xf at +0x30 + 4n for the nine records.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x58 + 0xec0 n	field	agrees	read	read	Records at +0x58, stride 0xec0 (88, 3864 ...).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x8518	field	agrees	read	read	Thread built at +0x8518 by f_80ed6970.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x8748	field	agrees	read	read	f_834892b0 destroys the lock at +0x8748.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x8768, +0x8770, +0x8778	field	agrees	read	read	Buffers at +1896, +1904, +1912 above 0x8000 (0x8768, 0x8770, 0x8778) finalised in f_834892b0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	The Npad device +0x8780, +0x8781, +0x8782	field	agrees	read	read	Constructor writes +0x8780 and +0x8781 as 1 and +0x8782 as 0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0	field	agrees	read	read	16 states of 0x28 bytes fit the record layout (first record +0x58, next +0xec0 on).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0x280	field	agrees	read	read	+0x280 read in f_834893d0 and f_830502a0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0x284	field	agrees	read	read	+0x284 read in f_830502a0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0x288, +0x289, +0x28a	field	agrees	read	read	+0x288, +0x289, +0x28a used in f_834893d0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0x28c, +0x290	field	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0x298, +0x898	field	agrees	read	read	Arithmetic fits: 16 x 0x60 from +0x298 reaches +0x898, and 16 more reach +0xe98.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0xe98, +0xe9c	field	agrees	read	read	+3736 and +3740 passed as handle addresses in f_834893d0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	An Npad record +0xea0, +0xea8, +0xeb8	field	agrees	read	read	+3744, +3752 and +3768 used in f_834893d0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +8, +0xc, +0x10	field	agrees	read	read	+8, +0x10 edges used by f_8038a220; +0xc not separately checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x14	field	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x30 + 4n	field	agrees	read	read	Timer offsets seen in f_8038a220; the float type not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0xb0 + n, +0xd0 + n	field	agrees	read	read	+0xb0 and +0xd0 offsets used in f_8038a220.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0xf0 to +0xfc	field	cannot-check	read	read	Thresholds not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x104, +0x108	field	agrees	read	read	+0x104, +0x108 used in f_8038a220.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x114	field	agrees	read	read	+0x114 written by the controller calcs.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x118	field	agrees	read	read	+0x118 written by f_83b47ea0 and read in f_8038a220.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x120, +0x128	field	agrees	read	read	+0x120 and +0x128 used in f_8038a220 and f_83b47ea0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x130, +0x134	field	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x138	field	agrees	read	read	f_81041e10 compares +0x138 with 9.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x13c	field	agrees	read	read	+0x13c used in f_8038a220.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x140	field	cannot-check	read	read	Not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+input	A controller +0x148	field	cannot-check	read	read	Addons list offset not read within the check budget.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

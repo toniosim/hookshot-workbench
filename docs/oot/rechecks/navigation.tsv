@@ -1,0 +1,71 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+navigation	f_80fb36f0	function	agrees	read	read	Allocates 0x158, stores the singleton in the holder, task object at +0x38, delegate +0xc0, functor slot +0xe0, hash 0xc7303adb at +0x100, delegate at +0x108, f_80eed160	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_8102f530	function	agrees	read	read	Heap 0x1f4000, priorities 22/22, core masks 4 and 2, three radii 2.8/10.0/22.1 (count 3), 1000, 0x100 and pointer 0x84d61838 all literal; no direct caller (slot 7)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_832195f0	function	agrees	read	read	State byte at +0x43, delegate stored at +0xe0, vtable word 0x84bba038, submit to queue [[0x84eb74c0]+0x10] via f_801bca90 all match; no direct caller	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_801bca90	function	agrees	read	read	desc+0x18 / [desc+0x10]+0x118 queue, desc+9 wait flag, f_801b5b60 push and f_801aee20 run-now call all present	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_801b5b60	function	agrees	guess	guess	Only caller f_801bca90 and neighbours; reading shows a locked queue push, consistent with the row; stays guess	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_811f75d0	function	agrees	read	read	Threads with priority 0x1c (28) and 0x11 (17); second thread mask 0x3f; the maker f_811f7560 (word at 0x84c89fe0) gives 0x80000 and mask 2 without settings	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_800ffde0	function	agrees	read	read	Calls the functor object at task+0xa8 through its slot 0; for the module that object is module+0xe0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_800aef70	function	agrees	read	read	Waits on the event at +168 (module +0xa8, task +0x70)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80eed160	function	agrees	read	read	Matches hash entries 0x40 bytes before the node, lists at 0x84eb7df8 and 0x84eb7e18	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80e4b5f0	function	agrees	read	read	Word at 0x8487fb98 holds it; builds 0x84eb1890 with hash 0xc7303adb, list at +8, mutex at +0x20, registers it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80781b00	function	agrees	read	read	Callee set and order match the mode-0 and mode-1 paths (apply pending, async check, sync run, post, push state, step tasks, wrap, start at 0x80782664); busy-bit detail not traced	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80bf54d0	function	agrees	guess	read	Calls f_80bf6560 at 16 sites, run from the step body before the world processing; the add and remove paths are there	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80bf6560	function	agrees	read	read	addCharacter call at 0x80bf6a80 and removeCharacter at 0x80bf6b28	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80bf8224	function	agrees	read	read	Carries the string "void hkaiCollisionAvoidance::System::addCharacter(Character *)"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80bf8550	function	agrees	read	read	Carries the removeCharacter string	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_83a05410	function	partly	read	read	Matches; the instruction count is 835 in functions.txt, not 836. Called per character from the step body with (item, world)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_83a06120	function	partly	read	read	Called per character with the CA-idle flag in x2 (as stated); its size is 677 instructions in functions.txt, not 764	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81f2b10c	function	agrees	read	read	Mode at +0x4c8; modes 1 to 3 give true (bit mask 0xe); else the "Unknown stepping mode" string	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81f2a000	function	agrees	read	read	Carries "TtdisableAsyncProcessing"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81f33dc0	function	partly	read	read	Only the thunk at 0x81e9a4f0 reaches it; the thunks at 0x81e9a4f4 and 0x81e9a4fc go to f_81f34570 and f_81f34b20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81f35b80	function	agrees	read	read	Thunk at 0x81e9a504 tail-calls it; called from the step body. Name not string-confirmed	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_839fbe40	function	agrees	read	read	Two f_80070b20 (PoolB_WaitPhase) calls at 0x839fbf08 and 0x839fbf40; "only place" not exhaustively checked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_820d1420	function	agrees	read	read	Twelve f_81700b90 calls with priority 0x40; edge array at +0x428 present	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81700b90	function	agrees	read	read	Calls f_817009dc; array at +0x4b8 and count at +0x4c0 used	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_820d6078	function	agrees	read	read	Size 0x920 (2336 marked), count from the system +0x68, thread count from the StepContext +0x20, ranges via f_81708bc0 at task+0x30	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81708bc0	function	agrees	read	read	The divide of count by threads is at 0x81708c44	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_81708ea0	function	agrees	guess	guess	Called from f_820de560 when its own range is empty; zero ends the loop. Inner workings not traced, stays guess	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_820de560	function	agrees	read	read	Slot = input+0x18 + 1; ranges at +0x4c0 claimed by atomic add; entries +0x58/0x70 bytes; gatherer at char+0xe0 slot 6 (+0x30); then f_820def60 on entry+0x50	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_820d0640	function	agrees	read	read	Calls f_81ebbd80 (at 0x820d072c) and f_81e69500 (at 0x820d08d4); vtable 0x84944020 slot 6 holds it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_820d0540	function	agrees	read	read	Builds the 0x38-byte gatherer (vtable word from the page at +3552)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_820d0cbc	function	agrees	read	read	Stores at character +0xe0 with reference counting	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_82e81090	function	agrees	read	read	Vtable word 0x84b6d4c0 holds it, 0x84b6d550 holds f_82e82650; IsEnableBoundaryGather byte (+0xaf) is copied to the descriptor; the other two bytes not located	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80d153d0	function	agrees	read	read	Allocates and builds via f_80d155e0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_80d155e0	function	agrees	read	read	Carries setSteeringProperties and setSensorSize strings; calls f_820d0540 (0x80d15824) then f_820d0cbc (0x80d158ac) when the descriptor byte is set	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_82d8a610	function	agrees	read	read	Its name function f_82d8c100 returns game__component__PathFindingParam; field offsets named are in the visitor	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	f_83c15650	function	agrees	read	read	Its name function f_83c18010 returns engine__component__PathfindingParam	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84e63d28	data	agrees	read	read	Holder cell loaded and stored by f_80fb36f0 (page 0x84e63000 + 0xd28)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84eaedb0	data	agrees	read	read	GOT cell 0x84c9df58 holds it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84eb74c0	data	agrees	read	read	Stored into the module task queue slot by the maker f_811f7560; GOT cell 0x84ca6d48	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84eb1890	data	agrees	read	read	Built by f_80e4b5f0 as stated	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84bb9ec8	data	agrees	read	read	Slot 2 is f_832195f0 and slot 7 f_8102f530; the name slots not read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84bba038	data	agrees	read	read	Slot 0 is f_80781ae0, slot 2 f_83219b20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x84944020	data	agrees	read	read	Slot 6 is f_820d0640; GOT cell 0x84cd5de0 holds 0x84944010	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x83d483b7	data	agrees	read	read	String "NavMeshCAStepDepWorker"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x83e3f7bd	data	agrees	read	read	String "NavMeshDepWorker"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	0x83da2ad8	data	agrees	read	read	String "SceneLowPriority"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x0,+0x4	field	agrees	read	read	Priority 22 at +0x0, core mask 4 at +0x4 in the literal block	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x8,+0xc	field	agrees	read	read	Priority 22 at +0x8, mask 2 at +0xc; f_8069aa20 masks with 0x3e	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x10	field	agrees	read	read	Literal 0x84d61838	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x18	field	agrees	read	read	Literal 1000	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x1c..+0x30	field	cannot-check	read	read	deep: what f_810ccb00 copies from the block was not traced	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x28	field	agrees	read	read	Literal 0x100	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavMeshSystemSettings+0x38,+0x40	field	agrees	read	read	Pointer at +0x38 to three floats 2.8, 10.0, 22.1 and count 3 at +0x40	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x0	field	agrees	read	read	f_80f6ecf0 builds the world wrapper (f_80f6f8e4); sizes not re-checked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x8	field	agrees	read	read	f_80f6f55c builds the 0x90-byte (144 marked) System	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x20,+0x28	field	cannot-check	read	read	deep: radius entries (f_80f6f2e8) not traced	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x80,+0x88,+0x90	field	agrees	read	read	f_8102f6e0 stores the pool at +0x80, the job graph at +0x88 and the Havok-task job at +0x90	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x98/+0xc0,+0xc8/+0xf0	field	agrees	read	read	+0xc0 and +0xc8 are used as the lock in the step body; +0x98 and +0xf0 not located	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x118,+0x120,+0x128	field	agrees	read	read	Second pool, graph and job built by f_80f6ecf0 and used at +0x118..+0x128 by the step body	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x190,+0x198	field	agrees	read	read	+400 and +408 are read and written in the step body	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x1a0	field	agrees	read	read	+416 is used for the avoidance task graph	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	NavSystem+0x1f0	field	agrees	read	read	nav+496 is passed as the follow-up object	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	CollisionAvoidanceSystem+0x40	field	cannot-check	read	read	deep: the up vector comes from the constructor argument; its value was not read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	CollisionAvoidanceSystem+0x60,+0x68	field	agrees	read	read	f_820de560 reads the character array at +96 and the count at +104	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	GatherBoundariesAndSolveCharactersTask+0x30	field	agrees	read	read	f_820d6078 passes task+0x30 to f_81708bc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	GatherBoundariesAndSolveCharactersTask+0x70	field	partly	read	read	+0x70 is a pointer to inline storage at +0x80 with capacity 17 in its header	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	GatherBoundariesAndSolveCharactersTask+0x4c0	field	corrected	read	read	+0x4c0 holds a pointer to the ranges, stored inline from +0x4d0; each range is 64 bytes	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	GatherBoundariesAndSolveCharactersTask+0x910	field	agrees	read	read	Stored from the system +0x68; read as the character count	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	GatherBoundariesAndSolveCharactersTask+0x914	field	agrees	read	read	Stored from the StepContext +0x20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+navigation	GatherBoundariesAndSolveCharactersTask+0x918	field	agrees	read	read	Stored from the argument; f_820de560 reads System at +0x18, entries at +0x58, count +0x60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

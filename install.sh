@@ -9,9 +9,11 @@
 #   ~/Games/.hookshot-harness/          hs-*.sh, hs-*.py, tools/deps-local.sh, playthrough/, regress/, nightly/,
 #                                       runs.log, gpu-slots (=1), live/, saves/ (local, empty: saves are game data)
 #   ~/Games/hs-{gpu,intel,build}-slot, ~/Games/.hookshot-harness/gpu-guard.sh   the gates and the guard
-#   ~/.claude/skills/hookshot-*         the skills, for Claude Code (all but hookshot-discord-updates: posting to
+#   ~/.claude/skills/ls-*               the skills, for Claude Code (all but ls-discord-updates: posting to
 #                                       Discord as you through your browser is against Discord's terms; link it
-#                                       yourself if you decide otherwise)
+#                                       yourself if you decide otherwise). Upstream renamed them hookshot-* -> ls-*
+#                                       on 2026-11-17: a stale hookshot-* link into this checkout is removed.
+#   ~/.local/bin/magick                 tools/magick6, only while there is no real `magick` (ImageMagick 6 here)
 #   ~/hookshot-wt/{reports,reports/drafts}   worktrees and reports; reports/AGENT-BRIEF.md -> docs/agent-brief.md
 set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
@@ -32,21 +34,33 @@ file() {   # path content
 dir "$H"; dir "$H/tools"; dir "$H/playthrough"; dir "$H/regress"; dir "$H/nightly"; dir "$H/live"; dir "$H/saves"
 dir "$S"; dir "$WT/reports/drafts"
 for f in "$here"/harness/*; do
+    case $f in */__pycache__) continue ;; esac
     case $f in */deps-local.sh) link "$f" "$H/tools/deps-local.sh" ;; *) link "$f" "$H/$(basename "$f")" ;; esac
 done
 for f in "$here"/play/*.py; do link "$f" "$H/playthrough/$(basename "$f")"; done
 for f in "$here"/regress/*.py; do link "$f" "$H/regress/$(basename "$f")"; done
 for f in "$here"/nightly/*; do link "$f" "$H/nightly/$(basename "$f")"; done
-link "$here/perf" "$H/perf"                   # hs_perf.py, read by hookshot-perf-monitor
+link "$here/perf" "$H/perf"                   # hs_perf.py, read by ls-perf-monitor
 for g in hs-gpu-slot hs-intel-slot hs-build-slot; do link "$here/gates/$g" "$G/$g"; done
 link "$here/gates/gpu-guard.sh" "$H/gpu-guard.sh"
-for s in "$here"/skills/hookshot-*; do
-    [ "$(basename "$s")" = hookshot-discord-updates ] && continue
+for s in "$here"/skills/ls-*; do
+    [ "$(basename "$s")" = ls-discord-updates ] && continue
     link "$s" "$S/$(basename "$s")"
 done
+for old in "$S"/hookshot-*; do      # the pre-rename links: only ones that point into this checkout, never a real folder
+    [ -L "$old" ] || continue
+    case $(readlink "$old") in "$here"/skills/hookshot-*) ;; *) continue ;; esac
+    if [ "$check" = 1 ]; then echo "stale link   $old (the skill is ls-${old##*/hookshot-} now)"; miss=1; else rm "$old"; echo "removed stale link $old"; fi
+done
+for old in "$H"/* "$H"/*/*; do        # links this checkout no longer has (a file upstream removed or renamed)
+    [ -L "$old" ] && [ ! -e "$old" ] || continue
+    case $(readlink "$old") in "$here"/*) ;; *) continue ;; esac
+    if [ "$check" = 1 ]; then echo "dangling    $old"; miss=1; else rm "$old"; echo "removed dangling link $old"; fi
+done
+# ImageMagick 6 has no `magick`: the author's play/ and regress/ tools call it (tools/magick6 maps it to convert & co)
+if ! { command -v magick > /dev/null 2>&1 && [ ! -L "$HOME/.local/bin/magick" ]; }; then dir "$HOME/.local/bin"; link "$here/tools/magick6" "$HOME/.local/bin/magick"; fi
 link "$here/docs/agent-brief.md" "$WT/reports/AGENT-BRIEF.md"
 file "$H/gpu-slots" 1                       # one game at a time (the gate enforces it on this machine anyway)
 file "$WT/reports/LOG.md" "# Mistakes and guard lines, one dated line each"
-file "$H/pr-check-forbidden.txt" 'NX2navi|nx2navi'   # hs-pr-check.sh: added lines must not name the other port
 [ -e "$H/runs.log" ] || { [ "$check" = 1 ] || : > "$H/runs.log"; }
 if [ "$check" = 1 ]; then [ "$miss" = 0 ] && echo "install: complete" || { echo "install: incomplete"; exit 1; }; fi

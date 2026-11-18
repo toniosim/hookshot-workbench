@@ -1,0 +1,142 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+resources	f_809db6a0	function	wrong-address	read	read	The function at this address is a one-instruction thunk that tail-calls f_809db6b0; the described body (heaps, f_80c49770, SetAllocator(f_8348d800, f_8348d820)) is f_809db6b0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80c499d0	function	agrees	read	read	Confirmed: QueryMountRomCacheSize (f_850a2d30), allocation via heap vtable +48, stored at +0x28, tail jump to MountRom with "content", cache, size. Called by f_80c497f0 <- f_80c49770.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8006bb40	function	agrees	read	read	Slot 9 of vtable 0x84c16100 (checked in the image); calls through the nn::fs imports; only caller is f_80108a40. Which import is which was not matched.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8348a140	function	agrees	read	read	Slot 14 of vtable 0x84c16100 (image); one import call (ReadFile) with the position at +0x20; matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80ba1b90	function	agrees	read	read	Slot 19 of vtable 0x84c16100 (image); one import call (GetFileSize). Matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80459cc0	function	agrees	read	read	Confirmed: magic 0x43524153 "SARC", BOM 0xfffe, "SFAT" 0x54414653; its four callers are in the lifted code and both vtables 0x84c2e498 and 0x84c43798 hold it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_836d8ad0	function	agrees	read	read	Strings confirmed: "Resource Control", "Resource Memory", "LoadingThreads", "ARes Loading %@", "ComposeThreads", "ARes Compose %@", "DecompSystem", "zsdic"; 2 MB default; f_8069a5e0 masks 1<<5 down.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801bcd40	function	agrees	read	read	Slot 0 of vtable 0x84c88818 (image); string "ares::System::calc", f_801bca90, [0x84ea2fe0], [0x84e9f7c8], two mutex locks and f_801c07e0 all there.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_83213890	function	agrees	read	read	Slot of vtable 0x84bb9048 (image); all four path strings, "Product" and "All" are in its code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_83bb6eb0	function	agrees	guess	read	Raised: strings (ResourceU/S/L/G, Local/IgnorePackContent.txt, %s/%s) and calls to f_836dd060, f_811fdd00, f_836d8ad0 and f_83bb3eb0 are there; slot 5 of vtable 0x84c88818.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80b13af0	function	agrees	guess	guess	Slot of vtables 0x84bbe0b8 and 0x84c879a8 (image); the extension list ("pack", "zsdic", "sarc", ... "baev") and the "ForResource" heaps are all there.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80383e80	function	agrees	guess	read	Raised: the label "Load(ForSync)" and calls to f_836dc5b0, f_801b3f60, f_801b5590, f_801b4090 and f_8080c610 are there; four callers.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801b5590	function	agrees	guess	read	Raised: eleven callers (f_8002f220, f_80383e80 and nine others) confirmed; mutex and light-event calls are there.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8080c610	function	agrees	read	read	Confirmed: f_801b27a0 when the state is 1, WaitLightEvent on +0x140, system +0x98/+0xa0 against the context, f_80036920 on +0x158 else +0x1c8, answers 1; 40 functions, 75 call sites.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801b4090	function	agrees	read	read	Confirmed: records of 0x398 at system +0x440 (count +0x438), reference count at +0x94, ring +0x4d0..+0x4e8; 159 call sites.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_836d80e0	function	agrees	read	read	Returns a pointer to the text after the last "." or the empty string; the empty-string constant is there.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_836d8180	function	agrees	read	read	Confirmed: ".szs" and ".zs" strings, a copy within capacity.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_83bb3eb0	function	agrees	read	read	Confirmed: the name "GeneralFormatAsync_", priority 0x18 and a loop to 6 cores; its caller is f_83bb6eb0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		30f09c7
+resources	f_808103c0	function	agrees	read	read	Confirmed: the table names (Tag, ActorInfo, EventSetting, AnalyzedEventInfo ...), f_80717dd0 after the wait, the abort call at 0x80810724, and the indirect call from f_83b7b340 at 0x83b7b478.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		05a1508
+resources	f_80717dd0	function	agrees	read	read	Reads the record state; 35 callers (50 sites). The state values 9, 12, 15 and code 5 to 15 were not individually checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		05a1508
+resources	f_8069a5e0	function	agrees	read	read	Confirmed: slot 0x28, thread 0xd8 "ParallelDecompThread" prio 19 stack 0x4000 32 msgs vtable 0x84c376e0, szs 0x150, zs 0x690; chunk half the size (a quarter for szs).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8069a8d0	function	agrees	read	read	Confirmed: vtable 0x84c377c0 at +0, an empty name at +8, two event objects at +72 and +120, and a signal on the light event at +104 (0x68).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801c5e80	function	agrees	read	read	Confirmed: loads the thread at [queue+8] and jumps to its vtable slot 2 (f_801c5ea0) with the message; it is slot 0 of vtable 0x84c37578.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_836dda20	function	agrees	read	read	Slot 14 of vtable 0x84c376e0 (image); jumps to slot 2 of the message object (f_80115bf0 for the job).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80108da0	function	agrees	read	read	Confirmed: work memory 0x471f9 (+chunks), +0x608 / +0x638 events, two reads of the frame header (f_80109790), f_8010b380 for a short file, f_834ac540 for the dictionary; slot 2 of 0x84c377e8.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ac540	function	agrees	read	read	Looks the ID up in the tree at +0x70 (node +0x18 ID, +0x20 DDict); one caller (f_80108da0).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ac440	function	agrees	read	read	Registers a DDict under its ID (f_834ab970, f_834ac490); callers f_811fdd00 and f_836dd060.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_811fdd00	function	agrees	read	read	Confirmed: the string "ZsDic", f_80c76b10 and f_836dd120 per file, f_834ac440 to register.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_836dd060	function	agrees	read	read	Confirmed: loads through [0x84e9f5c0], f_80c76b10, f_836dd120, f_834ac440.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_83bb15b0	function	agrees	guess	read	Raised: slot 0 of vtable 0x84c88168 (image); allocates and calls f_834ab740 (CreateDDict), whose only caller is this.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_804566e0	function	agrees	read	read	Label "gsys::ModelResource(MatBlock)" and the call to f_8044cb30 are there; patch_heap_retry (nx2/oot_patches.py) targets its two f_80522050 calls and tryAllocs. The "unchecked" claim was not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+resources	f_80522050	function	agrees	read	read	About 30 callers (32 sites) confirmed, two of them in f_804566e0 (the hooked ones); the failure behaviour was not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+resources	f_8044cb30	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8093f940	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8021dea0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80115bf0	function	agrees	read	read	Slot 2 of vtable 0x84c377c0 (image); decodes with f_80115c80(job+0x10, +0xa8 or +0xa8+half, ...) and signals the "finished" and "chunk done" events as described.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80115c80	function	agrees	read	read	The hook (patch_zstd_stream) exists on this function; states 1 and 2 and the staging buffer at +0x20 are in the code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+resources	f_80109790	function	agrees	read	read	The magic 0xFD2FB528 (low half 0xb528) is built here; the other named callers are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80113880	function	agrees	read	read	Confirmed: the context pointer rebased by 0x7000 with stage at +164 (0x70a4), block type +160 (0x70a0), dictID +140 (0x708c).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ab610	function	agrees	read	read	Confirmed: the 0x0c00000c header constant, repeat offsets and expected size are in its code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ac0b0	function	agrees	read	read	XXH64 prime constants are in the code; the state at +0x70b0 (28848) is in the same rebased form.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ac110	function	agrees	read	read	XXH64 prime constants are in the code (stripe loop).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ac2a0	function	agrees	read	read	XXH64 final mixing constants are in the code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8572f040	function	agrees	read	read	The SDK memmove; its import slot at 0x84cdf3c0 and the caller f_834ab4a0 are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80116490	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801117a0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801102e0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ab4a0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80112880	function	agrees	read	read	Timing table 0x83f456d8 is read; the callees (f_8010ad60, f_801099a0, f_80110860, f_8010ffc0, f_80113080) are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801156e0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8010ad60	function	agrees	read	read	Called by f_834abae0; the double-symbol table and workspace limits were not re-derived.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80115880	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8010ffc0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80113080	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80110860	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_801099a0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8010b160	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834abda0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_8010b380	function	agrees	read	read	Callers f_80108da0, f_80c17020 (slot 0 of vtable 0x84c77ec0, image) and f_80f700d0 confirmed; the zstd magic constants are in the code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80f700d0	function	agrees	read	read	Called by f_80f70240 and f_80a335e0; calls f_8010b380. Matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_80f70070	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ab740	function	agrees	read	read	Confirmed: allocates the DDict and fills it with f_834ab850; its only caller is f_83bb15b0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ab850	function	agrees	read	read	Confirmed: the dictionary magic 0xEC30A437 (low half 0xa437) and f_834abae0 are there.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834abae0	function	agrees	read	read	All named calls, offsets and constants are in the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_834ab970	function	agrees	read	read	Confirmed: the magic 0xEC30A437 is there.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84ea2fe0	data	agrees	guess	read	Raised: read by f_801bcd40, f_801b4090 and f_8080c610 (system +0x98/+0xa0, +0x440, +0x438 as the rows say); the object is the resource system.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84e9f5c0	data	agrees	guess	read	Raised: read by f_836dd060 and by the zs decompressor's destructor f_836dea10, which calls f_8349f0f0 with it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84c16100	data	agrees	read	read	Image slots: 9 f_8006bb40, 10 f_80ba1bf0, 14 f_8348a140, 15 f_8348a1c0, 19 f_80ba1b90, 22 to 25 f_80f462d0 / f_8348a310 / f_8348a330 / f_8348a480. Matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84c376e0	data	agrees	read	read	Image slots: 2 f_801c5ea0, 14 f_836dda20. Matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84c377c0	data	agrees	read	read	Image slot 2 is f_80115bf0 (and slot 7 f_80108da0). Matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84c377e8	data	agrees	read	read	Image slot 2 is f_80108da0 and slot 0 f_836dea10 (the destructor). Matches.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x84c37770	data	agrees	guess	read	Raised: the szs decompressor stores [0x84cb4ae0]+16 = 0x84c37770 as its vtable, and its slot 2 is f_836de2b0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83f456d8	data	agrees	read	read	The table is referenced by f_80112880; its 16 rows of 3 were not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83f45658	data	agrees	read	read	Referenced by f_80116490 (masks); not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83f4564c	data	agrees	read	read	Referenced by f_834ab610 (repeat offsets 1, 4, 8); not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83e79f40	data	agrees	read	read	Referenced by f_80109790 (dictionary ID field sizes); not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83e7a7a0	data	agrees	read	read	Referenced by f_80109790 (content size field sizes); not re-read.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83cbda26	data	agrees	read	read	Read in the image: "ParallelDecompThread".	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83dee5ef	data	agrees	read	read	Read in the image: "Pack/ZsDic.pack".	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83dd4265	data	agrees	read	read	Read in the image: "Pack/ResidentCommon.pack".	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83de1b2b	data	agrees	read	read	Read in the image: the rsizetable path format.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83d14e55	data	agrees	read	read	Read in the image: ".zs".	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	0x83cf097c	data	agrees	read	read	Read in the image: ".szs".	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A decompression slot (0x28 bytes, f_8069a5e0)+0	field	agrees	read	read	f_8069a5e0 stores the work buffer (f_80f6d4e0 result) at +0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A decompression slot (0x28 bytes, f_8069a5e0)+8	field	agrees	read	read	The szs decompressor.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A decompression slot (0x28 bytes, f_8069a5e0)+16	field	agrees	read	read	The zs decompressor.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A decompression slot (0x28 bytes, f_8069a5e0)+24	field	agrees	read	read	The ParallelDecompThread.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A decompression slot (0x28 bytes, f_8069a5e0)+32	field	agrees	read	read	The core mask argument (32-bit).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A decompression slot (0x28 bytes, f_8069a5e0)+36	field	agrees	read	read	Priority 0x13 = 19.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0	field	agrees	read	read	vtable [0x84cb4af0]+16 = 0x84c377e8 (image).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0x70	field	agrees	read	read	The tree used by f_834ac540 / f_834ac440.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0x590	field	agrees	read	read	st32 +1424 = chunk size rounded up to 32 (half the size given).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0x598	field	agrees	read	read	st64 +1432 = the work buffer; the context at its start was not re-derived.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0x5a0	field	agrees	read	read	f_8069a8d0 is called on +1440.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0x668	field	agrees	read	read	+1640 holds the queue object (vtable 0x84c37578).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The zs decompressor (0x690 bytes)+0x670	field	agrees	read	read	+1648 holds the ParallelDecompThread.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0	field	agrees	read	read	vtable 0x84c377c0 stored by f_8069a8d0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+16	field	agrees	read	read	f_8069a940 is run on job+16 (the stream).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0x68	field	agrees	read	read	The light event at 72+32, signalled when made.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0x98	field	agrees	read	read	The light event of the second event object (+120).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0xa8	field	agrees	read	read	Read by f_80115bf0 (the read buffer).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0xb0	field	agrees	read	read	Read by f_80115bf0 (the half size).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0xb4	field	agrees	read	read	Read by f_80115bf0 (the chunk count).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0xb8	field	agrees	read	read	Read by f_80115bf0 (the length).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0xbc	field	agrees	read	read	Tested negative in f_80115bf0; stored on an error.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The ParallelDecomp job (at the zs decompressor's +0x5a0)+0xc0	field	agrees	read	read	Read by f_80115bf0 (the DDict).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+0	field	agrees	read	read	State byte tested by f_80115c80 (1, 2, 3, 4).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+8	field	agrees	read	read	Output pointer advanced by f_80115c80.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+16	field	agrees	read	read	Output room.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+20	field	agrees	read	read	Bytes still to come (the content size at the start).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+24	field	agrees	read	read	The workspace for the context.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+32	field	agrees	read	read	The staging buffer.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+40	field	agrees	read	read	Its size.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+44	field	agrees	read	read	Its fill.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The stream S (f_80115c80's first argument)+48	field	agrees	read	read	The context once started.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0	field	agrees	read	read	Four table pointers (standard ZSTD_DCtx).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x20	field	agrees	read	read	Literal-length table: 513 entries of 8 bytes, so the offset table follows at +0x1028; standard zstd 1.4 layout.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x1028	field	agrees	read	read	Offset table follows 513 x 8 bytes (standard layout).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x1830	field	agrees	read	read	Match-length table follows 257 x 8 bytes (standard layout).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x2838	field	agrees	read	read	Huffman table of 4097 x 4 bytes, so the repeat offsets follow at +0x683c.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x683c	field	agrees	read	read	Follows the Huffman table (0x2838 + 0x4004).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x7048	field	agrees	read	read	Used rebased (ctx+0x7000) in the decode functions; standard previousDstEnd.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x7050, +0x7058, +0x7060	field	agrees	read	read	Standard prefixStart, virtualStart, dictEnd (consistent with the DDict path).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x7068	field	agrees	read	read	Standard "expected"; used by f_80115c80 and f_80113880.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x7070	field	agrees	read	read	The frame header; dictID at +0x708c (+140 rebased) confirmed.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x7098	field	agrees	read	read	Decoded size so far.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x70a0	field	agrees	read	read	Block type (+160 rebased) confirmed in f_80113880.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x70a4	field	agrees	read	read	Stage (+164 rebased) confirmed in f_80113880.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x70b0	field	agrees	read	read	The XXH64 state (f_834ac0b0 uses it).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x7168	field	agrees	read	read	The dictionary ID (follows the XXH64 state and headerSize).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x716c	field	agrees	read	read	Whether the dictionary is cold.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x71d8	field	agrees	read	read	The literal buffer: 0x71d8 + 0x20008 = 0x271e0 as the next row says.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	The decoder context (zstd's ZSTD_DCtx, 0x271f8 bytes)+0x271e0	field	agrees	read	read	The header buffer, the end of the structure (0x271f8).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+0	field	agrees	read	read	Its own copy of the dictionary.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+8	field	agrees	read	read	The content.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+16	field	agrees	read	read	The size.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+0x18	field	agrees	read	read	Entropy tables start at +0x18; derived: DCtx offsets minus 8 (+0x1020, +0x1828, +0x2830).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+0x6834	field	agrees	read	read	Repeat offsets: 0x683c - 8.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+0x6840	field	agrees	read	read	The dictionary ID; the total size 0x6860 is consistent.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	A DDict (0x6860 bytes)+0x6844	field	agrees	read	read	Whether it has entropy tables.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+resources	f_809db6b0	function	corrected		read	Made from the neighbour's wrong-address verdict: the heaps and managers are made here (f_809db6a0 is a thunk that tail-calls it).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		recheck-1

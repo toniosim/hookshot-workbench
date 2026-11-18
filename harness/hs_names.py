@@ -1,4 +1,4 @@
-"""Names read from an owned Hookshot/Longshot copy or checkout, never its folder name.
+"""Names read from an owned HS/LS copy or checkout, never its folder name.
 
 No game is launched, no environment is changed, and an ambiguous identity is refused.
 The shell companion invokes this same implementation to avoid a second mapping.
@@ -161,8 +161,13 @@ def build_env(checkout, suffix_values):
                     reader = ast.unparse(node.func)
                     if reader in ('os.environ.get', 'os.getenv', 'environ.get', 'env_on', 'env_int'):
                         value = node.args[0]
-                elif isinstance(node, ast.Subscript) and ast.unparse(node.value) in ('os.environ', 'environ'):
+                elif (isinstance(node, ast.Subscript) and isinstance(node.ctx, ast.Load)
+                      and ast.unparse(node.value) in ('os.environ', 'environ')):
                     value = node.slice
+                elif (isinstance(node, ast.AugAssign) and isinstance(node.target, ast.Subscript)
+                      and ast.unparse(node.target.value) in ('os.environ', 'environ')):
+                    # An augmented assignment reads its target despite its Store context.
+                    value = node.target.slice
                 if isinstance(value, ast.Constant) and isinstance(value.value, str):
                     if re.fullmatch(r'(?:HOOKSHOT|LONGSHOT)_[A-Z0-9_]+', value.value):
                         keys.add(value.value)
@@ -177,15 +182,8 @@ def build_env(checkout, suffix_values):
 
 
 def environment_value(environ, suffix):
-    """A local helper may accept either spelling of an input, never competing ones.
-
-    This selects a value, not a variable to pass to a build; use build_env for that.
-    """
-    present = [(Names(p).env_key(suffix), environ.get(Names(p).env_key(suffix))) for p in PROJECTS]
-    present = [(key, value) for key, value in present if value]
-    if len(present) > 1:
-        raise NameError('mixed environment inputs: ' + ', '.join(key for key, _ in present))
-    return present[0][1] if present else None
+    """Read an LS workbench input; game build switches belong to build_env."""
+    return environ.get('LS_' + suffix) or None
 
 
 def protected_user_paths(home):

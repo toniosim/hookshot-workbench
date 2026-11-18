@@ -87,9 +87,9 @@ def read_bytes(deps, path, operation, cap=FILE_CAP) -> bytes:
     return raw
 
 
-def read_json(deps, path, operation):
+def read_json(deps, path, operation, *, cap=FILE_CAP):
     try:
-        return json.loads(read_bytes(deps, path, operation))
+        return json.loads(read_bytes(deps, path, operation, cap=cap))
     except (ValueError, UnicodeError):
         raise deps.error("backend_failed", operation) from None
 

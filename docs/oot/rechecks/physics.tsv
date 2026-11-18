@@ -1,0 +1,209 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+physics	f_83b89110	function	agrees	read	read	Strings, vtable 0x84c862d0 slot 7, f_80cea370, 1/60 (0x3c888889) stored at 0x83b89578 into config+0x44, and f_81225f20 all seen; root+0x94 gets 1 and 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806a6610	function	agrees	read	read	Slot 2 of vtable 0x84c863f0; loads [0x84eb5fe0] and jumps to f_806a6620 with the module and [module+8] as arguments.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806a6620	function	agrees	read	read	Vtable 0x84c862d0 slot 3; locks f_806a6850 on [DF+0x130] and tail-jumps f_806a6c20 on [DF+0x170]; both phase hashes seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81225f20	function	agrees	read	read	Calls f_81226010 (after f_809df700 heap) and stores the DF at root+0xc0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81226010	function	agrees	read	read	String, 0x500 alloc, config+0x24 capped at 0.999 (0x83e60ac4), f_838ce800 and async queries stored at DF+0x128 all seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_838ce800	function	agrees	read	read	Vtable 0x84c56788; tau/damping 0.6 at +0x234/+0x23c, 4 at +0x244, 10000.0 at +0x248, 200 at +0x1cc and the empty job slots all seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_838f1f20	function	corrected	read	read	It sets eleven 1.0 values from +0x38 to +0x60; +0x64 is 0 (it is the phase mask). The rest of the row holds.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80d36e60	function	agrees	read	read	Names and offsets +8/+0x10/+0x18/+0x20 match; 0x28 holder, 0x98 queues, per-queue limit +0x88, four copy functions seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80f56290	function	agrees	read	read	World type at +0x84, hknpWorld (0x1170) at +0xe0, f_80f57fb8, f_80f58a60, f_80f6f430 and the named objects all seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80f57fb8	function	agrees	read	read	Defaults seen: 4096, 0.05/0.005, tau 0.6, damping 1.0, 4 iterations, 1 microstep, deactivation on, helper off with 1/30.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80f58a60	function	agrees	read	read	Calls f_818f0374, and f_818f04a4/f_818f051c/f_818f0584 for the helper (world+0xd68); named objects seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_83a44c20	function	agrees	read	read	Vtable 0x84c56688 slot 17; writes n at hknpWorld+0xc48 and 1/n at +0xcb8; hknpWorld from +0xe0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80db2950	function	partly	read	read	Only a 3-instruction prefix: points x0 at hknpWorld+0xc30 and falls into f_80db295c (21 insns, no row), which does the writes.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80b240a0	function	agrees	read	read	Job vtables 0x84c86798/0x84c867c0 seen; world 0 job when DF+0xc <= 1, world 1 job when it is 0 or 2; bit 0 of +0x17 when proc+0x270 is 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806a4570	function	agrees	read	read	Slot 2 of vtable 0x84c86798. Mask 0x3ff/0x10c, pool +0x138, ctx +0x140/+0x1b0, priority 0x8000, counter +0x44 seen. In single mode it calls f_8113f450 when DF+0xc is 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806a4140	function	agrees	read	read	Slot 2 of vtable 0x84c867c0; same code with the counter at +0x48.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806a48f0	function	agrees	read	read	All seven delegates pair with the names as listed (checked per slot); DF+0x460/0x468/0x4d4/0x4d8 stores and the single-job string seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_838cfc10	function	partly	read	read	Also calls f_838d5730 (the character-controller update) with the step and frame step when DF+0x100 is set (0x838cff24): the multithreaded path does run it. Rest holds.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+physics	f_803749e0	function	agrees	read	read	Calls f_803799c0 (rank 282, "next_center_of_mass_local") and f_80372000 on [DF+0xc8/+0xd0] with +0x24; world 0 with bit 0 also f_803776c0 on [DF+0x198].	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80380a20	function	agrees	read	read	String, f_8038086c, delegate at 0x80380d00 with f_806d4620, f_80372400 at 0x80380f28 and the +0x24/+0x28 to +0x2c/+0x30 copy seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_838d0080	function	agrees	read	read	Vtable 0x84c56788 slot 5; calls f_838ceb80, f_838cf0b0, f_838cf1f0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_838ceb80	function	agrees	read	read	String, substeps stored at wrapper +0x2c8, f_838d5730 call and the patch heads in forge/main (patch_solver_steps lists f_838ceb80) confirmed.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+physics	f_838cf1f0	function	agrees	read	read	String; calls the four drains and f_806d4720, then the water managers (f_8389a3d0 InteractiveWaterMgr, f_838a6fa0 ResponsiveWaterMgr post-updates).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_838cf0b0	function	agrees	read	read	Calls f_83a445a0 (plus f_80374ec0 and f_839f41e0).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_83a445a0	function	agrees	read	read	Calls f_817f1d68 (stepCollide) and f_817f6f80 (stepSolve) around f_80372ad4/f_80371c40 and f_80372400.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80372000	function	partly	read	read	Argument order is (world, step, ctx = [DF+0x468], pool = [DF+0x460], ...): the row has pool and ctx the wrong way round. Everything else holds.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80372ad4	function	agrees	read	read	Calls f_817ee880 with the step input; the simulation collide goes through a virtual call.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80372400	function	agrees	read	read	Rank 467; w22 = 1 at 0x80372540 stored as the instance count (+56); atomic add on the context +0x130.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_803719e0	function	corrected	read	read	f_803719e0 is a delegate invoke thunk (like f_83b78880): it adjusts this and jumps to f_80371ab0, which calls f_80371c40 and tail-jumps f_80372400. f_80371ab0 has no row.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80371c40	function	agrees	read	read	Calls f_817f3ce0; other callers f_817f6f80 (stepSolve), f_83a445a0, f_80371ab0, f_83a44a40.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_817f3ce0	function	agrees	read	read	Monitor strings with +0xc90, +0xc30, +0xc40, +0xc48 in that order seen; the solver factory (f_81993780) is reached by a virtual call.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_817ee880	function	agrees	read	read	Calls f_818f0374 and f_818f0584; its only caller is f_80372ad4; gravity at +0xfb0 (4016).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819923b8	function	agrees	read	read	Slot 2 of vtable 0x848d9148; the twelve task names, the +0xbb0/+0x60 call and the f_8191e80c call seen. Rank 718.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8191e80c	function	agrees	read	read	Vtable via GOT 0x84cc16c8 (+16 = 0x848d7b90) ok; calls f_81708bc0 (+0x130); slot 5 of the vtable is f_8191ee00. Rank 3377 per hot_order.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8199f7c0	function	agrees	read	read	Strings AllocateSolverData, InitNarrowPhaseTasks and rank 902 confirmed.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819a6820	function	agrees	read	read	Rank 1506; one caller (f_819a679c); the activation/cache description was not re-derived.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819a3d20	function	agrees	read	read	Strings GridTask, NarrowPhase, Process; rank 888.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81996780	function	agrees	read	read	Rank 1629; strings GridTask, Finish; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819ab300	function	agrees	read	read	Rank 599; one caller (f_819ace28).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819affa0	function	agrees	read	read	Rank 682; 2,441 insns; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819ad000	function	agrees	read	read	Rank 1732; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819aeae8	function	agrees	read	read	Rank 295; strings NarrowPhase, PairsTask, Finish seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819b25e0	function	agrees	read	read	Rank 1673; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8199c860	function	agrees	read	read	Strings CollideSync, NarrowPhase and the process signature seen; rank 976.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81928de0	function	agrees	read	read	String "collide_bodyPairs" seen; rank 99; one caller (f_81928d74).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819257c0	function	agrees	read	read	Strings "collide_bodyPairs" and GenerateWorkItems seen; rank 798.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a14200	function	agrees	read	read	String CopyAabbsAndMarkActiveBodiesRecollide; rank 2539.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a191a0	function	agrees	read	read	String CollideTrees and m_newCachesOut; rank 877.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a33440	function	agrees	guess	guess	Rank 204; its callers include f_81a15ec0 as the row says (and f_81a12220, f_81a19ca0). No strings of its own.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a19f80	function	agrees	read	read	Strings Finalize/AppendNewPairs/CopyPreviousAabbs; rank 1048.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8199d5b8	function	agrees	read	read	String IncrementalOptimize and the process signature; rank 802.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a363c0	function	agrees	read	read	String hkcdSimdTree::BuildRanges; rank 995.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a38400	function	agrees	read	read	String hkcdSimdTree::FinalizeTree/Compact tree nodes; rank 1794.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818623a0	function	corrected	guess	guess	Not inside f_81861e40 (a separate 335-insn function ending in its own return, which f_81857ba0 calls). f_818623a0 (1,160 insns) is one of two bodies of stub f_818589f0, a vtable cell 0x84cbf790.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81730760	function	agrees	guess	guess	Extent 2,064; rank 85; ten distinct callers including f_818cc4a0, f_818fa3c0 and f_8176c980 (rank 158), as the row says.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81993780	function	agrees	read	read	Slot 3 of vtable 0x848d9148; rank 749.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81995fc4	function	agrees	read	read	Called from f_8199671c only; "Solver" label; role is the row's own guess.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819b5320	function	agrees	read	read	Rank 1034; callers f_81993780 and f_81995fc4 (inside "PreSolve" setup), as expected.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81997f00	function	agrees	read	read	Rank 1935; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819b657c	function	agrees	read	read	Rank 1929; callers f_81997f00 and f_819b6480.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819a9348	function	agrees	read	read	Rank 2014; one caller (f_819aa184).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819ba420	function	agrees	read	read	Rank 155; strings SolveJacobians* and SolveConstraints; its caller is f_819b8e20 (GatherSolverVelocities).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8177b2a0	function	agrees	read	read	Rank 78; it calls f_81785c00 four times (the contact solver stub).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81785c60	function	partly	guess	guess	f_81785c00 is a 17-insn dispatch stub (bit 0 of w3) jumping to this function or to f_817893a0; 7,648 = stub plus both bodies. This one is 3,536 insns. solveJacobians calls the stub.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_819b8e20	function	agrees	read	read	Rank 119; label GatherSolverVelocities; called through f_819ba420's parent chain.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8182d2c0	function	agrees	read	read	Rank 382; callers f_8182b0a0, f_8182f520, f_818fe120.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8182dc20	function	agrees	read	read	Rank 183; callers f_8182b0a0, f_8182f860, f_8182fc40.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_817d9d80	function	agrees	guess	guess	Rank 167; its one caller is f_8182dc20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81998a60	function	agrees	read	read	Rank 565; all quoted labels are in the function.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8199e714	function	agrees	read	read	Rank 1164; cell 0x848d9798 holds it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8199e040	function	agrees	read	read	Rank 2025; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f0374	function	agrees	read	read	Offsets checked one by one (+0x18/0x1c counts, +0x60/0x68, +0x80 ratio, +0x78, +0x90/0x98, +0xa0, +0xb0, derived +0xe0..0xf0 area). Rank 946.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f04a4	function	agrees	read	read	Defaults 1/30, 0.6, 1.0, 4, 8 and a 0x38-byte layout seen; one caller (f_80f58a60).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f051c	function	agrees	read	read	It copies a 25-byte settings block and derives one value (+0x34); the cinfo offsets are the caller's, not this function's. One caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f0584	function	agrees	read	read	Callers f_80f58a60 and f_817ee880; it calls f_818f0374.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80f6f430	function	agrees	read	read	Vtable 0x84c71348 (GOT 0x84cd8960 holds it less 16); the three callers are exactly as listed.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8004fe90	function	partly	read	read	f_80080000 is not a function start (it is +0x1a0 inside the pool B loop f_8007fe60; the processTask call is at 0x80080ec4). Pool A at 0x8004b690 in f_8004ab40 is right.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8004fee0	function	partly	read	read	f_816f4180 is a mode dispatcher to f_816f41c0, f_816f5aa0 and f_816f7480, which call it (so do f_816f8fc0 and f_81725dc0). String seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_839febe0	function	partly	read	read	The one caller is f_80781b00 (880 insns); f_80781ae0 is a 6-insn thunk into it. String and instance count 1 at 0x839fed00 seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_804f5030	function	corrected	guess	guess	The caller is f_8037adc0 (string "no name", calls f_838cd6d0, called by f_803799c0), not f_8037adb0, which is a one-instruction return in slot 0 of vtable 0x84c57190. Strings, rank, extent ok.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80158c10	function	agrees	guess	guess	Rank 215; 14 distinct callers including f_80021ca0 and f_80159dc0; strings seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f4f28	function	agrees	read	read	Label string, rank, and the broad-phase slot offset (+0xd0/+0xd8/+0xe8) as stated.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f5450	function	agrees	read	read	Label string, rank, and the broad-phase slot offset (+0xd0/+0xd8/+0xe8) as stated.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f5ec8	function	agrees	read	read	Label string, rank, and the broad-phase slot offset (+0xd0/+0xd8/+0xe8) as stated.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_818f64cc	function	agrees	read	read	Label string, rank, and the broad-phase slot offset (+0xd0/+0xd8/+0xe8) as stated.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a20780	function	agrees	read	read	Slot 26 of vtable 0x848da718; rank 110; slots 10-15 exist as stated.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a20b40	function	agrees	read	read	Extent 984; no direct calls, indirect at +0x30/+0x38; one caller f_81a20780.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a21aa0	function	agrees	read	read	Slot 27 of vtable 0x848da718; calls f_81a465e0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a465e0	function	corrected	guess	guess	Direction is reversed: only f_81a21aa0 calls it; it calls hknpShapeQueryInterface::castShape (f_817575ec) at 0x81a468d8.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_817575ec	function	agrees	read	read	String CastShape; rank 196; f_81a465e0 calls it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81757d54	function	agrees	read	read	String GetClosestPoints; rank 267.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a498a0	function	agrees	read	read	Slot 22 of vtable 0x84cbfbe0; rank 225.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a4a540	function	agrees	guess	guess	Slot 23 of vtable 0x84cbfbe0; rank 63; extent 2,361.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81a55380	function	partly	guess	guess	Caller f_81a4ca24 (slot 24, rank 230) is right, but it is called directly by f_839f89e0; f_839f7040 is a 2-insn stub that jumps elsewhere.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806d4620	function	agrees	read	read	Resets +0x1a8/+0x1b0/+0x1d8 to +0x18, drains the four queues of [DF+0x128] with mask bit 7 (world 0), world 1 tail-calls f_806d4720.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806d4510	function	agrees	read	read	Mutex +8, limit +0x88, list +0x30/+0x38, f_8387ac40, listener +0x190 slot 0 and delegate +0x198 seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806d4400	function	agrees	read	read	Same shape; calls f_8387b070.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806d42f0	function	agrees	read	read	Same shape; calls f_8387c5c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_806d41e0	function	agrees	read	read	Same shape; calls f_8387c5c0; rank 3343.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8016cb20	function	agrees	read	read	Strings hclWorld, hclSphereShape, hclPlaneShape, hclCollisionConvexes, Collidable_Ground seen; description byte 0 cleared, +0x20/+0x21 = 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80e66b2c	function	agrees	read	read	Dispatcher at +0x78, time-step util at +0x158 (desc+4), flag +0x163 from desc+0 seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80186a00	function	agrees	read	read	Callers f_802ca820, f_82c3fab0, f_82c415e0, f_83af3580 and callees f_80168320, f_801881a0 all seen; rank 29.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80168320	function	agrees	read	read	Calls f_8016b620; +0x134/+0x138 read by the job f_8016b320; rank 19.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8016b620	function	agrees	read	read	Strings and the call to f_81de0c18 seen; rank 20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81dddcc0	function	agrees	read	read	Strings Extrapolate/Back-interpolate/Interpolate seen; called from f_8016b620.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b0e600	function	agrees	read	read	Warning string (stored with a "Pd" tag prefix) seen; rank 670.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b47080	function	agrees	read	read	Rank 21; f_81b47078 is a 1-insn stub (vtable cell 0x848f7d18) jumping here; labels seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81c66a60	function	agrees	read	read	Strings Integrate, Actions; rank 117; called from f_81b47080.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b56de0	function	agrees	read	read	String Solve; rank 51.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b58720	function	agrees	read	read	Strings seen; rank 118.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b57a80	function	agrees	read	read	File and function strings seen; rank 105; one callee chain to f_81b5a3c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b5a3c0	function	agrees	guess	guess	Extent 4,912; rank 50; one caller f_81b57a80.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b8c000	function	agrees	guess	guess	Extent 17,448; rank 26; one caller f_81b5a3c0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81c86720	function	agrees	read	read	Rank 66; reached by a virtual call.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81c7d2e0	function	agrees	read	read	String Bend Link Constraints; rank 147; f_81c88940 (302), f_81c67fa0 (477) and f_81c7bd00 (129, called by f_81c67fa0) ranks match.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81c7ecc0	function	agrees	read	read	Both strings seen; rank 186.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81c7f880	function	agrees	guess	guess	Rank 40; one caller f_81c7ecc0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81b38800	function	agrees	read	read	String Update AABBs; rank 91.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81db9a40	function	agrees	read	read	Rank 61; f_81db9a00 is a 9-insn stub jumping here (13,569 = stub + body); f_81cdff40 (rank 96) is called from here and three others.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81ce6500	function	agrees	read	read	String Mesh Bone Deform; rank 157.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_80781ae0	function	partly	read	read	f_80781ae0 is a 6-instruction thunk that jumps to f_80781b00 (880 insns, no row), where the calls listed are made.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81f2e278	function	agrees	guess	guess	Calls f_81f2c97c and f_81f2df80 ("Unknown stepping mode" is in the latter); one caller f_80781b00.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81f2b500	function	agrees	read	read	Strings InitialProcessing, Phases seen; rank 812.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_820cc4f4	function	agrees	read	read	System::step strings; one caller f_80781b00; f_820da77c is a vtable cell (0x84946080).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81e69500	function	agrees	read	read	Rank 67; one caller.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_820def60	function	agrees	read	read	Rank 237; caller f_820de560.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_820e2520	function	agrees	guess	guess	Rank 53; f_820de560 -> f_820def60 -> f_820e2350 -> f_820e2520 as described.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81ebbd80	function	agrees	read	read	Rank 269.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81f768a8	function	agrees	read	read	Rank 462; its walk is two calls down: f_81fbac2c then f_81fbb000 (rank 94).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81ebd620	function	agrees	read	read	Rank 451; callers f_81ebbd80, f_81ebf380.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_81f8c974	function	agrees	read	read	Rank 483.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	f_8301f730	function	agrees	read	read	Four key hashes (0x0a6d2c57, 0x97c33c58, 0x7264e321, 0xc4d35c72) built, pi/180 on the angular radius, f_811f07b0 on ctrl+0xc0, {0.3, 1.0} at +0xb8 seen.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	f_811f07b0	function	agrees	read	read	Copies the four vec3 to +0x08/+0x14/+0x20/+0x2c, body id to +0x50, phases to +0x38..+0x4c wrapped to [0, 2pi).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	f_8301f930	function	partly	read	read	It stores the step at +0xb8, runs f_8388c160, and only then stores 1.0/0.0 at +0xbc, so the step uses the previous update's flag. Moving/Stopping and Move as stated.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	f_8388c160	function	agrees	read	read	Flag at [block+4+...]; transform written to body+0x88 and the dirty byte at body+0x1e8 seen; six phases wrapped with 1/2pi and 2pi.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	0x84ea7ff0	data	agrees	read	read	Root cell and the +0xc0 DF seen; +0x10 not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c56788	data	agrees	read	read	Vtable of the DF (slot 5 is f_838d0080).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c58188	data	agrees	read	read	Vtable stored by f_838f1f20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c56688	data	agrees	read	read	Slots 15, 17, 18 are f_83a4f520 (hknpWorldSnapshot), f_83a44c20, f_80db2950.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c56878	data	agrees	read	read	Vtable of the phase delegates (slot 0 is a thunk).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c863f0	data	agrees	read	read	Slot 2 is f_806a6610.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c86798	data	agrees	read	read	Slot 2 is f_806a4570.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c867c0	data	agrees	read	read	Slot 2 is f_806a4140.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84c71348	data	agrees	read	read	Slot 2 is f_8004fe90; GOT 0x84cd8960 holds it less 16.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x848da718	data	agrees	read	read	Slots 26, 27, 29 are f_81a20780, f_81a21aa0, f_81a1ebe0 (used as +0xd0/+0xd8/+0xe8).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84cbfbe0	data	agrees	read	read	Slots 22-24 are f_81a498a0, f_81a4a540, f_81a4ca24.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x848d9148	data	agrees	read	read	Slots 2, 3, 4 are f_819923b8, f_81993780, f_81994420 (monitor strings).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x848d7b90	data	agrees	read	read	Slot 5 is f_8191ee00; GOT 0x84cc16c8 holds it less 16.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x83e60ac4	data	agrees	read	read	Holds 0.999.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84eb5fe0	data	agrees	read	read	Counted at +0x44/+0x48 by the world jobs; GOT 0x84ca29d8 holds the address.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	0x84b8ca28	data	agrees	read	read	Slots 1-3 are f_80e807d0, f_8301f730, f_8301f930; the hashes prove the keys.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The Dynamics Framework +0x1c	field	agrees	read	read	Phase 1 tests the low three bits and clears the byte (ldrb +0x1c, str wzr).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x20, +0x24	field	agrees	read	read	Stored by f_838f1f20; +0x24 is what the phases use.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x28	field	agrees	read	read	Stored by f_838f1f20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x2c, +0x30	field	agrees	read	read	f_80380a20 copies +0x24/+0x28 to +0x2c/+0x30.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x38	field	agrees	read	read	Read as the frame step by phase 1 (times +0x244 plus 0.001).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x4c	field	agrees	read	read	Phase 1 squares [+0x4c] and multiplies tau.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x58	field	agrees	read	read	Step input multiplies by [+0x58] when not 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x64, +0x6c	field	agrees	read	read	Phase 1 stores the world index at +0x6c and mask at +0x64.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x128	field	agrees	read	read	Stored by f_81226010.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0xc8, +0xd0	field	agrees	read	read	World wrappers read in phase 3 and phase 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x1a0	field	agrees	read	read	Bit 0 of +0x1a0 selects the single job and single-thread count.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x234, +0x23c	field	agrees	read	read	Constructor stores 0.6 at both.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x244	field	agrees	read	read	Constructor stores 4; phase 1 converts it to float. The 8 is from LS, not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x2a8 to +0x450	field	agrees	read	read	Constructor empties them; AddUpdateWorldJobs stores delegates and names at 0x2a8-0x450.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x460, +0x468	field	agrees	read	read	Stored by f_806a48f0 (+0x460 pool, +0x468 context).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x478 to +0x4b8	field	agrees	read	read	Seven records at 0x478-0x4b8 (stride 48).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x4d0	field	agrees	read	read	strh at +0x4d0 from w7 = 0x8000.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The Dynamics Framework +0x4d4, +0x4d8	field	agrees	read	read	Stored at +0x4d4/+0x4d8 by f_806a48f0.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xc30	field	agrees	read	read	f_818f0374 writes the solver info there; offsets checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xc40	field	agrees	read	read	Monitor string Damping at +0xc40.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xc48, +0xc4c	field	agrees	read	read	stp of counts at info+0x18 (0xc48/0xc4c); inverses at +0x88.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xc90, +0xc98	field	agrees	read	read	info +0x60/+0x68.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xca0	field	agrees	read	read	info +0x70 previous step, +0x80 ratio.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xca8	field	agrees	read	read	info +0x78.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xcc0, +0xcc8	field	agrees	read	read	info +0x90/+0x98.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xd68	field	agrees	read	read	f_80f58a60 zeroes it, helper stored there when cinfo+0xf8 is set.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0xfb0	field	agrees	read	read	Used by preCollide (+4016).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorld fields +0x1050	field	agrees	read	read	Read by the collide builder (+4176).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0x10, +0x14	field	agrees	read	read	f_80f56290 stores desc+0x34 plus 0x800 (0x1800 more for type 1) into both.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0x18, +0x1c, +0x20	field	agrees	read	read	Stores desc+0x50, desc+0x5c*2 and desc+0x140.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0x80, +0x90	field	agrees	read	read	fmin/fmax of two corners from desc+0xc..0x20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xb8, +0xbc	field	agrees	read	read	Defaults 0.05/0.005 seen; the scale origin was not re-derived.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xd4, +0xd8	field	agrees	read	read	Defaults 0.6/1.0; game stores desc+0x70/0x74.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xdc, +0xe0	field	agrees	read	read	Default 4/1; game stores desc+0x6c.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xe4	field	agrees	read	read	Default 1 and not stored by the game.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xe5	field	agrees	read	read	Default 1; game stores the inverse of holder+0x28. Bit 7 of +0xf48 not checked.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xec	field	agrees	read	read	Default 0x5f7ffff0; game stores desc+0xe8.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xf8	field	agrees	read	read	Default 0; the game does not store it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	hknpWorldCinfo +0xfc, +0x100, +0x104	field	agrees	read	read	1/30 and 1 seen as defaults; the 8 is at the helper (+0x2c).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x10	field	agrees	read	read	Loaded by f_8016b320 (+0x10).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x18	field	agrees	read	read	Instances at +0x18, +0x4c/+0x50 factors, +0x70 limit read by the job.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x28	field	agrees	read	read	Passed to f_8016b620 (+0x28).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x134	field	agrees	read	read	Stored/loaded at +0x134.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x138	field	agrees	read	read	Stored/loaded at +0x138.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x170	field	agrees	read	read	Atomic add at +0x170.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	A cloth batch +0x174, +0x198	field	agrees	read	read	Atomic add at +0x174; event at +0x198.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The WaveLoop controller ctrl +0x08	field	agrees	read	read	ctrl+8 holds the actor (all accessors load [x0+8]).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller ctrl +0xb8	field	agrees	read	read	Setup stores 0.3 at +0xb8; update stores the step.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller ctrl +0xbc	field	agrees	read	read	Setup stores 1.0 at +0xbc; update stores 1.0/0.0 after the step runs.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller ctrl +0xc0	field	agrees	read	read	ctrl+0xc0 passed to f_811f07b0/f_8388c160; first 8 bytes unwritten by init.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller block +0x08	field	agrees	read	read	Copied to block+0x08.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller block +0x14	field	agrees	read	read	Copied to block+0x14.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller block +0x20	field	agrees	read	read	Copied to block+0x20.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller block +0x2c	field	agrees	read	read	Copied to block+0x2c (angular radius times pi/180).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller block +0x38	field	agrees	read	read	Six phases from +0x38 wrapped to [0, 2pi).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+physics	The WaveLoop controller block +0x44	field	agrees	read	read	Phases at +0x44.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+physics	The WaveLoop controller block +0x50	field	agrees	read	read	Body id at +0x50 (u16, 0xffff when none).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd

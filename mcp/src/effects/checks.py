@@ -12,7 +12,8 @@ from src.models import Build, Producer, Receipt, State, TERMINAL, utc_now
 from src.models.checks import Plan, PlanResult
 from src.policy import child_environment
 from src.effects.checks_common import (catalogue, capture, checkout, digest, dry_run, file_hash,
-    git, json_read, prerequisite, safe_relative)
+    git, json_read, prerequisite, safe_relative, windows_sysroot)
+from src.effects.names import checkout_names, resolver
 
 
 def area(deps):
@@ -121,9 +122,14 @@ def seed_profile(deps, prof, source):
 
 def build_env(deps, prof, root, source):
     env = child_environment(root)
+    names = checkout_names(deps, source, "checks_environment")
     env.update(RX_CPM=str(prof.cpm), RX_RELEASE="1", OOT_WORK=str(source / "work/build"),
-        RX_PGO=str(source / "work/build/hookshot_pieces.prof"),
-        HOOKSHOT_LIFT_JOBS=str(prof.lift_jobs), HOOKSHOT_KEEP_BUILD_FILES="1")
+        RX_PGO=str(source / "work/build" / names.profile))
+    try:
+        env.update(resolver(deps, "checks_environment").build_env(source,
+            {"LIFT_JOBS": prof.lift_jobs, "KEEP_BUILD_FILES": "1"}))
+    except (ValueError, OSError, SyntaxError):
+        raise deps.error("unavailable", "checks_environment") from None
     return env
 
 
@@ -178,6 +184,7 @@ def build_plan_impl(deps, repo_id, commit, profile_id, donor_id=None):
     folder = area(deps) / ("plan_" + uuid.uuid4().hex)
     deps.paths.output(folder).mkdir(mode=0o700)
     source = snapshot(deps, cat, root, commit, folder / "source")
+    names = checkout_names(deps, source, "build_plan")
     donor, changes, evidence = None, [], ["conservative_regression_lift_group"]
     if donor_id:
         try:
@@ -210,7 +217,8 @@ def build_plan_impl(deps, repo_id, commit, profile_id, donor_id=None):
     data = dict(repo_id=repo_id, commit=commit, profile_id=profile_id, mode=mode,
         donor_id=donor_id if donor else None, profile_identity=identity, lift_group=group,
         compatibility_evidence=evidence, changed_assets=changes[:100], changed_assets_truncated=len(changes) > 100,
-        required_gates=["build"] + (["full_build_lock"] if mode == "full" else []), dry_run=observed)
+        required_gates=["build"] + (["full_build_lock"] if mode == "full" else []), dry_run=observed,
+        expected_outputs=[names.executable, names.renderer, "completion_receipt"])
     plan = Plan(**data, plan_hash=digest(data))
     path = folder / "plan.json"
     write_new(deps, path, {"plan": plan.model_dump(), "source": str(source), "catalogue_hash": digest(cat.model_dump(mode="json"))})
@@ -257,7 +265,7 @@ async def submit_impl(deps, operation, request, idempotency_key):
         prerequisites += [cat.idle, cat.nocore]
         if operation == "checks_windows_syntax":
             prerequisites.append(cat.windows_check)
-            prerequisite(deps, cat.windows_sysroot, directory=True)
+            windows_sysroot(deps, cat.windows_sysroot)
     elif operation == "checks_pr":
         prerequisites += [cat.pr_check]
         if cat.pr_check_checkout is None or deps.paths.read(cat.pr_check_checkout) != root:
@@ -281,6 +289,9 @@ async def submit_impl(deps, operation, request, idempotency_key):
         request_path = area(deps) / (job.job_id + ".json")
         if request_path.exists() or job.state in TERMINAL or deps.registry.process(job.job_id)[0] is not None:
             return deps.registry.get_job(job.job_id)
+        if operation in ("checks_source", "checks_windows_syntax"):
+            deps.registry.update_job(job.job_id, phase="waiting_for_test_gate",
+                progress_text="Waiting for the test gate; queue position and admission time are unknown.")
         if operation == "build_start" and request["plan"]["mode"] == "full":
             active = area(deps) / "full-build.json"
             if active.exists():
@@ -299,7 +310,7 @@ async def submit_impl(deps, operation, request, idempotency_key):
             deps.registry.own_run(job.job_id, run.run_id)
             run_ids = [run.run_id]
             deps.registry.update_job(job.job_id, run_ids=run_ids)
-        worker_config = {key: getattr(deps.config, key) for key in ("state_root", "build_gate", "dependency_python",
+        worker_config = {key: getattr(deps.config, key) for key in ("state_root", "harness_dir", "build_gate", "dependency_python",
             "checks_catalogue", "read_roots", "write_roots", "protected_roots")}
         payload = {"operation": operation, "request": request, "job_id": job.job_id, "run_ids": run_ids,
                    "config": {key: str(value) if isinstance(value, Path) else [str(p) for p in value] if key.endswith("roots") else value

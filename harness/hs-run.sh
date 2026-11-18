@@ -1,5 +1,5 @@
 #!/bin/bash
-# One unattended Hookshot or Longshot run on the RTX 4090 (or, with --intel, the Intel UHD 770), through its gate. Written
+# One unattended HS or LS run on the RTX 4090 (or, with --intel, the Intel UHD 770), through its gate. Written
 # 2026-11-10 (HsWorkbench); --window 2026-11-11 (WindowRuns).
 #
 # THIS MACHINE (tonesi, 2026-11-11): RTX 3070 Ti (8 GB, also the COSMIC desktop's card), Intel UHD 770 beside it,
@@ -55,9 +55,9 @@
 # offscreen submission, or swapchain with --window. Otherwise present.csv supplies game intervals (three or seven columns).
 #
 # With --window (the user's word of 2026-11-11, for exactly this): inside the gate, right before the game starts,
-# hs-window.py finds the one live Hyprland and sends it two window rules for the class hookshot-harness (never
+# hs-window.py finds the one live Hyprland and sends it two window rules for the class ls-harness (never
 # focused, floating at the monitor's size on the visible workspace, the game's requests for fullscreen, maximize and
-# activation ignored); the game starts only if the compositor answers `ok` to both, with SDL_APP_ID=hookshot-harness
+# activation ignored); the game starts only if the compositor answers `ok` to both, with SDL_APP_ID=ls-harness
 # (SDL then names the window so: reports/WindowRuns.md), on Wayland only (DISPLAY unset), still muted. The window
 # covers the monitor (1536x864 logical = 1920x1080 pixels at his scale of 1.25) and cannot be focused: keys, mouse
 # and controllers do not reach it; HOS_INPUT_SCRIPT and HOS_INPUT_LIVE do. While it runs hs-window.py reads the
@@ -90,7 +90,7 @@ source "$(dirname -- "${BASH_SOURCE[0]}")/hs-names.sh"
 NV_ICD=/usr/share/vulkan/icd.d/nvidia_icd.json
 INTEL_ICD=/usr/share/vulkan/icd.d/intel_icd.json
 
-WCLASS=hookshot-harness
+WCLASS=ls-harness
 window_refused() {
     cat <<EOF
 hs-run.sh: --window is switched off: $H/window-ok does not exist. Nothing was started.
@@ -358,6 +358,6 @@ print("hs-run %s exit=%s wall=%ss span=%.1fs from=%gs %s shots=%d %s %.1fMB fata
          (" HOME-WRITES:" + home) if home else "", kernel_info["kernel_status"]))
 PY
 ) || exit 1
-echo "$line" | tee "$R/summary.txt"
-echo "$(cat "$R/start.txt") $line" >> "$H/runs.log"
+echo "$line" | tee "$R/summary.txt" || exit $?
+echo "$(cat "$R/start.txt") $line" >> "$H/runs.log" || exit $?
 exit 0

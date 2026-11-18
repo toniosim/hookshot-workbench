@@ -1,0 +1,194 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+actors	f_83392300	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_8120a760	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ad3230	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ad3480	function	corrected	read	read	Also called from f_83af00a0 (the 0x520-byte ActorBase maker), not f_83aeff60. Rest holds.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_81209b40	function	partly	read	read	List holds (28 names) but each carries a Ref suffix except ASOptimize and CppExecutorParam; ActorBase is registered first (maker f_83af00a0).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_8122db20	function	cannot-check	read	read	deep: about 109 registry entries not walked in this pass	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_829c3780	function	partly	read	read	It is slot 39 of vtable 0x84a81040 and writes the id to node+0x20 (an output), not returns it; also calls f_80856e80 on node+0x28 and sets bit 0 of node+0x1f.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80853e00	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_82c3f780	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_8084acc0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_83af21f0	function	partly	read	read	Jobs 0-3 have 0x38-byte nodes; job 4 has a 0x20-byte node (+0x10 is its functor). The function does more after the jobs (calls, returns a flag).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_800b73d0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83af59c0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83af6150	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_800b9420	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_82c46560	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_82c3fab0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_800cdbe0	function	corrected	read	read	f_82c43898 is not a function: it is a call inside slot 53 (f_82c43780). Callers are slot 52 and slot 53.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_800c34e0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_8018dba0	function	partly	guess	guess	Labels confirmed; the strings also name HandIK, FootIK, FloorContact, FixedChain, BoneModifier, TailBone, RagdollReaction, eye variations. Role stays a guess.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_82ea25b0	function	partly	guess	guess	Climb/Crouch/Ladder strings present, but also camera behaviour params (CameraBehavior, LatCalcType, SpCameraType) and SwordBlurParam: broader than a climb update.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80b4eaa0	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83aff1f0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83afef50	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ed5d00	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ed7f60	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ed84a0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83ad0bf0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83acff00	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83acf390	function	partly	read	read	It first releases the object at 0x84eb0d78 through its vtable slot 0 and clears that pointer, then destroys [0x84eb0d90] (f_83acf400, 0x470 bytes, freed) and clears it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83afb830	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83afbfb0	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80392a70	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83afdf90	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_832dca10	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_808e90a0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_805cf0e0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_805cefb0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ed6f00	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		30f09c7
+actors	f_8038fbd0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_8038fde0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_80b4e020	function	partly	guess	guess	Walks three pending-create sets and a locked list; for each entry the matcher (arg 2, virtual slot 0) accepts it sets bit 0 of the entry flags at +0x150 by CAS; true if any matched.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_80b4e6e0	function	agrees	guess	guess	State-4 path read: CAS clears state bits, zeroes request+8, returns request to the pool under the request lock. Caller-side claim (request_cancel) not checkable. Stays guess.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_80b4e2e0	function	partly	guess	guess	Under both locks: state 4 -> f_80b4e6e0 (recycle); states 2/3 -> state set to 5 (6 if flag bit 0), then f_800c6490(actor,2) on the actor result. Returns 1 handled.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_800c6490	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_80c8fd60	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		f429957
+actors	f_804e6580	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_804e6630	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_82642e50	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_80b4fbc0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_803c8bb0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_803c88b0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_80e71650	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_82e08210	function	partly	read	read	The respawn-flag part is reached through f_80f26de0, which calls f_80f26e80; f_82e08210 does not call f_80f26e80 directly.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_80f26e80	function	partly	read	read	Also: a tail call at the end (f_80f27250 when the flag is set, f_82e06d50 otherwise); the else branch calls f_82c44db0(actor,1).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_80f27040	function	partly	read	read	Claim holds, incomplete: also calls f_80713fd0 when none of bits 0x800783 of [rec+0x98] were set, and a bit-5 branch of [rec+0x14] writes a named Bool flag first.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_80f27130	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_80c905f0	function	agrees	read	read	Calls f_803c8bb0(death, reason, 0, 0). The default 10 comes from the port default; not visible in this function.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_800b1bb0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	f_80c6dc00	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80a04860	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_83b04310	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_83af0700	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_82c4e160	function	agrees	guess	read	All parts confirmed: factory virtual call at vtable +0, f_83af0700, bits 8/9 of +0x4a8 set when param bytes +9/+10 equal 1.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_814e6c90	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_80c36cf0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_800f36a0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_809b2df0	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_82ed07d0	function	agrees	guess	read	Slot 10 of vtable 0x84b6ff90 (cell 0x84b6ffe0) and the f_80c36cf0 call at 0x82ed114c both confirmed.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_83056970	function	agrees	guess	guess	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_80965170	function	agrees	guess	read	Count at +0x50 >= 16, [[scene+0x58]+0x78], then a virtual type check (slot 0) with a type object: as written.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_832fe900	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80965130	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_809650c0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80965610	function	agrees	guess	read	Stores the child flag (+112), picks the child or adult resident name and requests its creation; returns a flag.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_809659f0	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80963920	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80964800	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_80ba0800	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_80ba08f0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_82ec3ef0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_829876a0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_8305e390	function	agrees	guess	guess	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_8305e4c0	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_80458ab0	function	agrees	guess	guess	Callers, call sites, strings and vtable slots confirmed; body only skimmed (not read line by line).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	f_83c0dd50	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83c077b0	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83c21730	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83c20470	function	partly	read	read	Eleven fields, not ten: IsOverwriteForbidPushJobDis (+0x4b, the game's spelling) sits between DisableForbidPushJobByArea and OverwriteForbidPushJobDistance.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	f_83c0d650	function	agrees	read	read	Calls, offsets and strings match the lifted code.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84eb0d90	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84eb1888	data	agrees	read	read	[0x84c9f3e0]=0x84eb1888, image value 0 as stated; "about 116 users" not recounted.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c9f3e0	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84b45e18	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c7b7a8	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84b6c460	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c7bed8	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c7bf00	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c7bf28	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c7bf50	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c7bf78	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84c79680	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x83d2d9a4	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x83d7c824	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	0x84b6ff90	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	0x84b8e6c8	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	0x84e42540	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	0x83f18090	data	agrees	read	read	Address and content confirmed in the image or in the code that uses it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	GameActor+0x0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x18	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x28	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x138	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x270	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x2c0…+0x2e0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x31c…+0x324	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x330,+0x348	field	agrees	read	read	Host reads atan2(+816, +840) for the yaw (forge/main host/hos_main.c).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+actors	GameActor+0x3d8	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x470	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x5f8	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	GameActor+0x2c	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	GameActor+0x30	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	GameActor+0x260	field	agrees	tested	tested	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	GameActor+0x328	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	GameActor+0x358,+0x364	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	GameActor+0x4a8	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	InstanceRecord+0x14	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	InstanceRecord+0x58	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	InstanceRecord+0x88	field	agrees	tested	tested	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	InstanceRecord+0x94	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	InstanceRecord+0x98	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		eb2cad0
+actors	InstanceRecord+0xf0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ActorJob+node+0x10	field	partly	read	read	True for jobs 0-3 (0x38-byte nodes); job 4's node is 0x20 bytes and its +0x10 is the functor.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+node+0x22	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+node+0x28,+0x30	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+functor+0x0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+functor+0x10	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+functor+0x15	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+functor+0x18	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+functor+0x20	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ActorJob+functor+0x28	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	BaseProcMgr+0x80	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	BaseProcMgr+0x3c8	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	BaseProcMgr+0x3f8,+0x410,+0x428	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x9f	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x95,+0x93,+0x94	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x58	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x91	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x74	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x78	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x70	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x3c	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x90	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x9b,+0x99,+0x9a	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0xa4	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x88,+0xa5	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x38,+0x44,+0x40	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x5c	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x48	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x6c	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x50,+0x96,+0x4c,+0x97	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x68	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x60,+0x9d,+0x64,+0x54,+0x80	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	LODParam+0x98	field	agrees	read	read	Offset paired with the field name in the visitor f_83c0dd50 (all 44 match).	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+actors	ShotRecord+0x18	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShotRecord+0xdb	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShotRecord+0xdc	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShotRecord+0xde	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShotRecord+0xe0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+0x10	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+0x18	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+0x20	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+0x2c	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+0x130	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+0x139	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+entry+0x00	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+entry+0x08	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+entry+0x10	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+entry+0x18	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+entry+0x20	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	ShooterComp+entry+0x34,+0x36	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+module+0xf0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+module+0x141,+0x2b0	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+S+0x20	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+S+0x28	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+S+0x30	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+S+0x38	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+S+0x48	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+S+0x50	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+slot+0x00	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+slot+0x0c	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+slot+0x10	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+slot+0x14	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+actors	FoliageScene+slot+0x18,+0x24,+0x30	field	agrees	read	read	Offset confirmed in the functions that use it.	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd

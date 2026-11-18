@@ -182,3 +182,34 @@ def test_reused_gate_pid_does_not_revive_old_ticket(gate_fixture):
     ticket(101, age=60)
     result = reader.snapshot("gpu").devices[0]
     assert result.stale_tickets == 1 and result.waiters == []
+
+
+def test_inherited_flock_holder_is_not_a_stale_marker(gate_fixture):
+    config, reader, paths, proc, process, ticket, lock = gate_fixture
+    process(101)
+    # flock(1) took the locks and exited; the gate's exec child retains its FDs.
+    for slot, dead_pid in (("0", 701), ("1", 702)):
+        lock("gpu", slot, dead_pid)
+        (paths["gpu"] / ("holder." + slot)).write_text("101\n")
+        os.utime(paths["gpu"] / ("holder." + slot), (NOW - 30, NOW - 30))
+    folder = proc / "101/fdinfo"
+    folder.mkdir()
+    rows = (proc / "locks").read_text().splitlines()
+    for index, row in enumerate(rows):
+        (folder / str(index + 9)).write_text("pos:\t0\nlock:\t" + row + "\n")
+    result = reader.snapshot("gpu").devices[0]
+    assert result.stale_holder_files == 0
+    assert [holder.pid for holder in result.holders] == [101, 101]
+    assert all(holder.process_alive and holder.age_seconds == 30 for holder in result.holders)
+    assert all(holder.resource_class == "whole" for holder in result.holders)
+
+
+def test_live_marker_without_inherited_lock_remains_stale(gate_fixture):
+    config, reader, paths, proc, process, ticket, lock = gate_fixture
+    process(101)
+    (proc / "101/fdinfo").mkdir()
+    lock("gpu", "0", 701)
+    (paths["gpu"] / "holder.0").write_text("101\n")
+    result = reader.snapshot("gpu").devices[0]
+    assert result.stale_holder_files == 1
+    assert result.holders[0].pid == 701

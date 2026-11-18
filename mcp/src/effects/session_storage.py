@@ -80,23 +80,23 @@ def write_new(deps, path: Path, value: str):
         os.fsync(stream.fileno())
 
 
-def plain_files(deps, root: Path, slot: int | None = None) -> list[tuple[Path, os.stat_result]]:
+def plain_files(deps, root: Path, slot: int | None = None, operation: str = "save_clone") -> list[tuple[Path, os.stat_result]]:
     deps.paths.read(root)
     if any(p.is_symlink() for p in (root, *root.parents)) or not root.is_dir():
-        raise deps.error("refused_by_policy", "save_clone")
+        raise deps.error("refused_by_policy", operation)
     result, total, entries, found_slot = [], 0, 0, slot is None
     for top, dirs, files in os.walk(root, followlinks=False):
         for name in sorted(dirs + files):
             entries += 1
             if entries > MAX_FILES * 2:
-                raise deps.error("invalid_argument", "save_clone")
+                raise deps.error("invalid_argument", operation)
             path = Path(top) / name
             info = path.lstat()
             if not (stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode)) or (stat.S_ISREG(info.st_mode) and info.st_nlink != 1):
-                raise deps.error("refused_by_policy", "save_clone")
+                raise deps.error("refused_by_policy", operation)
             rel = path.relative_to(root)
             if any(len(part) > 100 for part in rel.parts) or len(rel.as_posix()) > 256:
-                raise deps.error("refused_by_policy", "save_clone")
+                raise deps.error("refused_by_policy", operation)
             selected = True
             for part in rel.parts:
                 if re.fullmatch(r"slot_[0-9]{2}", part):
@@ -108,15 +108,15 @@ def plain_files(deps, root: Path, slot: int | None = None) -> list[tuple[Path, o
                 total += info.st_size
                 result.append((path, info))
             if len(result) > MAX_FILES or total > MAX_SAVE_BYTES:
-                raise deps.error("invalid_argument", "save_clone")
+                raise deps.error("invalid_argument", operation)
     if not result or not found_slot:
-        raise deps.error("not_found", "save_clone")
+        raise deps.error("not_found", operation)
     return result
 
 
-async def clone_tree(deps, source: Path, destination: Path, slot: int | None = None,
-                     progress=None) -> list[dict]:
-    files = plain_files(deps, source, slot)
+async def clone_tree(deps, source: Path, destination: Path, slot: int | None = None, progress=None,
+                     operation: str = "save_clone") -> list[dict]:
+    files = plain_files(deps, source, slot, operation)
     new_directory(deps, destination)
     manifest = []
     for path, before in files:
@@ -128,18 +128,18 @@ async def clone_tree(deps, source: Path, destination: Path, slot: int | None = N
         with os.fdopen(fd, "rb") as src, os.fdopen(deps.paths.reserve_file(target), "wb") as out:
             opened = os.fstat(src.fileno())
             if (opened.st_ino, opened.st_dev, opened.st_size, opened.st_mtime_ns) != (before.st_ino, before.st_dev, before.st_size, before.st_mtime_ns):
-                raise deps.error("busy", "save_clone")
+                raise deps.error("busy", operation)
             copied = 0
             while chunk := src.read(1024 * 1024):
                 copied += len(chunk)
                 if copied > before.st_size:
-                    raise deps.error("uncertain_outcome", "save_clone")
+                    raise deps.error("uncertain_outcome", operation)
                 out.write(chunk)
                 digest.update(chunk)
                 await asyncio.sleep(0)  # cancellation boundary, not a readiness delay
             after = os.fstat(src.fileno())
             if (after.st_size, after.st_mtime_ns, after.st_ctime_ns) != (opened.st_size, opened.st_mtime_ns, opened.st_ctime_ns):
-                raise deps.error("uncertain_outcome", "save_clone")
+                raise deps.error("uncertain_outcome", operation)
             out.flush()
             os.fsync(out.fileno())
         manifest.append({"file": relative.as_posix(), "bytes": before.st_size, "sha256": digest.hexdigest()})

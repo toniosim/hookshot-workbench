@@ -267,8 +267,8 @@ async def test_knowledge_search_and_registered_resources(kb):
         assert section["next_line"] == 3 and len(section["lines"]) == 2
         continuation = json.loads((await client.read_resource(section["next_uri"]))[0].text)
         assert continuation["lines"][0]["line"] == 3
-        skill = json.loads((await client.read_resource("workbench://skills/hookshot-workbench?limit=1"))[0].text)
-        raw = (kb.skills / "hookshot-workbench" / "SKILL.md").read_bytes()
+        skill = json.loads((await client.read_resource("workbench://skills/ls-workbench?limit=1"))[0].text)
+        raw = (kb.skills / "ls-workbench" / "SKILL.md").read_bytes()
         assert skill["revision"] == hashlib.sha256(raw).hexdigest()
         (kb.reports / "alpha.md").write_text("# Changed\n")
         await error(client, "knowledge_search", {"query": "Synthetic", "collection": "reports", "cursor": first["next_cursor"]}, "busy")
@@ -339,10 +339,32 @@ async def test_knowledge_prompt_installed_citations(kb, name):
 
 
 async def test_knowledge_prompt_missing_source_refuses(kb):
-    (kb.skills / "hookshot-workbench" / "SKILL.md").write_text("# Missing required section\n")
+    (kb.skills / "ls-workbench" / "SKILL.md").write_text("# Missing required section\n")
     deps = Deps(kb.config)
     with pytest.raises(WorkbenchError) as failure:
         prompt_plan_impl(deps, "recover_or_cancel", {"job_or_run_id": "synthetic"})
+    assert failure.value.envelope.code == "unavailable"
+
+
+def test_repository_prompt_sections_exist(tmp_path):
+    skills = Path(__file__).parents[2] / "skills"
+    names = tuple(sorted({name for sections in PLANS.values() for name, _ in sections}))
+    deps = Deps(Config(state_root=tmp_path / "state", read_roots=(skills,),
+        knowledge=KnowledgeConfig(skills_dir=skills, skill_names=names)))
+    for prompt in PLANS:
+        assert prompt_plan_impl(deps, prompt, {})["plan"]
+
+
+def test_large_retained_loop_snapshot_is_bounded_separately(kb):
+    state = json.loads((kb.loop / "state.json").read_text())
+    state["snapshot"]["retained_body"] = "x" * (3 * 1024 * 1024)
+    put(kb.loop / "state.json", state)
+    deps = Deps(kb.config)
+    assert load_snapshot(deps)[0] == state
+    state["snapshot"]["retained_body"] = "x" * (16 * 1024 * 1024)
+    put(kb.loop / "state.json", state)
+    with pytest.raises(WorkbenchError) as failure:
+        load_snapshot(deps)
     assert failure.value.envelope.code == "unavailable"
 
 

@@ -109,7 +109,10 @@ class Supervisor:
         env = child_environment(root)
         if trusted_read_environment:
             # Only reviewed read adapters may request this; no token-variable inheritance.
-            env.update({key: os.environ[key] for key in ("HOME", "XDG_CONFIG_HOME", "GH_CONFIG_DIR") if key in os.environ})
+            for key in ("HOME", "XDG_CONFIG_HOME", "GH_CONFIG_DIR"):
+                env.pop(key, None)
+                if key in os.environ:
+                    env[key] = os.environ[key]
         spec = dict(argv=argv, cwd=str(cwd), job_dir=str(root), parent_pid=os.getpid(),
                     wall_seconds=wall_seconds, queue_timeout_seconds=queue_timeout_seconds,
                     grace_seconds=grace_seconds, queued_monotonic=time.monotonic(), cancellation=cancellation)

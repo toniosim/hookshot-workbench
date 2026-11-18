@@ -1,0 +1,78 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+shaders	f_83b728f0	function	agrees	read	read	Read: strings "grphics::GraphicsModule", agl/gsys resource sarcs, "Shader/%s%s%s.%s.bfsha", ".Product"/"All", ".product", "Nin_Ounce_NVN2"; f_801b0950 once; no callers	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80c75b70	function	partly	read	read	Only 25 instructions: makes a 0x901d8-byte gsys object, builds it (f_80cf7200), tail-calls f_80c75be0. The gsys_minimum.bfsha string and the f_80c76250, f_80722da0, f_80c760d0 calls are in f_80c75be0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8017dd60	function	agrees	guess	read	Read: calls f_80796e40 and f_8017ed80 (1,406 instr); callers f_804566e0, f_80c760d0 (from the gsys minimum load), f_83b71980. Raise to read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80fd0d10	function	agrees	read	read	Read: string "Layout2Shader/MergeShader.%s.Nin_Ounce_NVN2.bfsha", calls f_80fd0f80; caller f_80a9e9c0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80fd42f0	function	agrees	read	read	Read: strings "Lib/Terrain/tera_resource.Nin_Ounce_NVN2.release.sarc" and "terrain::TerrainModule"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80f71360	function	agrees	read	read	Read: the three .pck names, "ndsr_tmp", f_80f718a0 three times (-> f_80f71a00); caller f_809eafc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80796e40	function	agrees	read	read	Read: callback +0x28, models +0x40/+0x10, mutex +0xb0, +0xa8, programs +0xe8/+0x88, flags +0x34/+0x42, G3d2 string	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f26c0	function	agrees	read	read	Read: variation kinds at +0x10/+0x8/0, f_812c42c0 on +0x68 (3 calls), flags +0x34, f_814f15c0, +0x42 test	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f1f50	function	agrees	read	read	Read: +0x34 bit 0, mutex at model+0xb0, callback at archive+0x28	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f2010	function	agrees	read	read	Read: +0x34 bits 2/4/3 pick 0/1/2 from 0x84cf0008, BindProgram wrapper with mask 0x1ff; callers f_8150a630, f_8155f830	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f25e0	function	agrees	read	read	Read: uses +0xeb/+0xea and the key table at +0x90	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f20b0	function	agrees	read	read	Read: word +0x24, mask +0x20, shift +0x25 as stated	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f25c0	function	agrees	read	read	Read: fills 4*[+0xeb] bytes with 0xff	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8044f300	function	agrees	read	read	Read: +0xeb, default key via f_814f23c0, selector fields +0..+0x20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80442f00	function	agrees	read	read	Read: memcmp of static key, f_814f25e0, program at model+0x88 + index*64 kept at sel+0x20, f_814f1f50	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80444a50	function	agrees	read	read	Read: option records at model+0x18, +0x1e bit 0 chooses dynamic key	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80444ae0	function	agrees	read	read	Read: options +0xe6, default +0x1a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80443000	function	agrees	read	read	Read: strings gsys_meshlet_process_type_passthrough/use_prepass, f_80444ae0/f_80444a50/f_80442f00 calls; 1,677 instructions (row 1,684)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8044db80	function	agrees	guess	read	Read: string "%s>%s>%d(%s%s)", calls f_8044f420 and f_80443000. Raise to read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8044f420	function	agrees	guess	read	Read: calls f_80451d60, f_80451460, f_8044ed60, f_8044d470; all seven lighting/input strings present. Raise to read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80451d60	function	agrees	read	read	Read: gsys_render_state_mode (opaque/mask/translucent/custom), display_face, depth test and blend strings	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8155dc50	function	agrees	read	read	Read: PaneType, Texture_ActiveCount, ShaderGraph_TextureBlendExpression, o_* options, SlicingType0..	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8155ee00	function	agrees	read	read	Read: calls f_8044f300, f_8155dc50, f_80442f00; caller f_8155ebe0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8155e9c0	function	partly	guess	guess	Maps its buffer (f_800a8df0) and copies blocks, but does not select the program: f_8155ee00 is reached from the next function, f_8155ebe0 (tail-called by f_815454c0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_812c42c0	function	agrees	read	read	Read: nvnProgramInitialize, SetShaders/SetShadersExt, program builder path, memory pool and GetBufferAddress, f_8017ed50, f_812c3480	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_812c4f00	function	agrees	read	read	Read: nvnProgramFinalize and nvnMemoryPoolFinalize	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_812c3d60	function	agrees	read	read	Read: f_8017ed50 per stage, nvnMemoryPoolGetBufferAddress or f_80792e30	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_814f14c0	function	agrees	read	read	Read: one f_812c42c0 then f_812c4f00 (via the same offsets); +0x34 and +0x68 used	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80654d70	function	agrees	read	read	Read: bit 0 -> f_806569a0 path, other bits list lookups; 420 call sites in 95 functions (scan confirms)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_806569a0	function	agrees	read	read	Read: "%s[%d]", nvnProgramInitialize/SetShaders/Finalize, "RegisterUBO" then "globalParams", program object at +0xc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_802a1760	function	agrees	read	read	Read: dirty word +0x10, BindProgram on +0xc0, Update call; 203 caller functions (row 202), 305 sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_8029f590	function	agrees	read	read	Read: BindUniformBuffer and f_8353e5d0 inline path; 96 caller functions	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80296c30	function	agrees	read	read	Read: indirect binds by block kind; 545 caller functions	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_802a67c0	function	agrees	read	read	Read: GetTextureHandle, BindTexture, f_80654d70 update; 111 caller functions	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80b72180	function	wrong-address	read	read	Not the shader holder: this 109-instruction helper fills tables of 16-byte "Undefined" name slots for a program object and its 0x170-byte entries. The holder (strings, 10,143 instr) is f_80b72340	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80b7cc30	function	agrees	read	read	Read: strings common, g_buffer, g_buffer_clear_header, g_buffer_expand_material_id, g_buffer_fill_infinity_depth, clear_geometry_culling, analyze_miplevel	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80b6c8a0	function	agrees	read	read	Read: tera_common/develop/debug, cBrushInfo, cMaterialBakeParam, cTexMaterialBake, cTexPasteHeight	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80b696d0	function	agrees	guess	guess	Read: strings "AglShader" and "FoliageShader"; the application-package role stays a guess	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80f71a00	function	partly	read	read	Pool, samplers and three program sets via f_815023d0, f_81503280 and f_81503b80 (not f_81503ce0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_81503720	function	agrees	read	read	Read: PushComputeConstants, BindImages/Textures/StorageBuffers, BindProgram, DispatchCompute and Indirect, Barrier, ClearBuffer; caller f_802722b0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_82105e20	function	agrees	guess	guess	Read: memory pool, sampler, texture, f_821066c0; the NDVE role stays a guess (caller f_82105d20)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_80c4acc0	function	agrees	read	read	Read: "agl::detail::DynamicUniformBlock", GpuMemory_Alloc, nvnBufferInitialize, GetAddress; called by f_80c4a1c0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	f_802eb390	function	agrees	read	read	Read: AddCommand/ControlMemory, BeginRecording, CPU nvnEventSignal, WaitEvent, timestamp, pools, scratch; EndRecording+Submit branch. Agrees with REFrame notes; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	0x84cf0008	data	agrees	read	read	Image: 16, 8, 0; read through GOT 0x84cad160 by 10 functions	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	0x83e7a9f0	data	agrees	read	read	Image: 8, 16, 24, 32, 40, … (eight 64-bit entries); only f_8017ed50 reads it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	0x84d63100	data	agrees	read	read	Image: pointer 0x83cfc411 -> "RegisterUBO"; read by f_806569a0 (3 sites)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	0x84e9f6c8	data	agrees	read	read	Read: +0x170 device, +0x40/+0x60/+0x68/+0xb8/+0xe0/+0x164/+0x168/+0x220/+0x2a8 per REFrame; scratch +0xa8/+0xb0, pools +0x180/+0x1a0 seen; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0x18	field	agrees	read	read	Read at that offset: options (f_80444a50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0x88	field	agrees	read	read	Read at that offset: programs (f_80442f00, f_80796e40)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0x90	field	agrees	read	read	Read at that offset: key table (f_814f25e0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0x98	field	agrees	read	read	Read at that offset: archive, its +0x28 callback (f_814f1f50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0xa8	field	agrees	read	read	Read at that offset: BNSH file (f_80796e40)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0xb0	field	agrees	read	read	Read at that offset: mutex (f_80796e40, f_814f1f50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0xe6	field	agrees	read	read	Read at that offset: option count (f_80444ae0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0xe8	field	agrees	read	read	Read at that offset: program count (f_80796e40)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0xea	field	agrees	read	read	Read at that offset: dynamic words (f_814f25e0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A shading model+0xeb	field	agrees	read	read	Read at that offset: static words (f_814f25e0, f_8044f300, f_814f25c0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An option+0x1a	field	agrees	read	read	Read at that offset: default (f_80444ae0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An option+0x1e	field	agrees	read	read	Read at that offset: dynamic bit (f_80444a50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An option+0x1f	field	agrees	read	read	Read at that offset: first word (f_814f20b0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An option+0x20	field	agrees	read	read	Read at that offset: mask (f_814f20b0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An option+0x24	field	agrees	read	read	Read at that offset: word (f_814f20b0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An option+0x25	field	agrees	read	read	Read at that offset: shift (f_814f20b0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A program+0x20	field	agrees	read	read	Read at that offset: variation (f_814f26c0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A program+0x28	field	agrees	read	read	Read at that offset: shading model (f_814f1f50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A program+0x34	field	agrees	read	read	Read at that offset: flags (f_814f1f50, f_814f2010)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A selector+0	field	agrees	read	read	Read at that offset: holder (f_80442f00)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A selector+8	field	agrees	read	read	Read at that offset: static key (f_80444a50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A selector+0x10	field	agrees	read	read	Read at that offset: dynamic key (f_80444a50)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A selector+0x18	field	agrees	read	read	Read at that offset: last key (f_80442f00)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	A selector+0x20	field	agrees	read	read	Read at that offset: selected program (f_80442f00)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An agl program+0x10	field	agrees	read	read	Read at that offset: dirty word (f_802a1760, f_80654d70)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An agl program+0x18	field	agrees	read	read	Read at that offset: UBO size (f_806569a0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An agl program+0x1c…+0x1f	field	agrees	read	read	Read at that offset: slots per stage (f_806569a0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An agl program+0x20	field	agrees	read	read	Read at that offset: made bit (f_806569a0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An agl program+0x22	field	agrees	read	read	Read at that offset: variation index (f_806569a0)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+shaders	An agl program+0xc0	field	agrees	read	read	Read at that offset: NVN program (f_806569a0, f_802a1760)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

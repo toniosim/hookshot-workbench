@@ -9,7 +9,7 @@ Generated from the real registered server; do not edit by hand.
 |---|---|---|---|---|---|---|
 | `build_plan` | checks | WRITE_LOCAL | operate | yes | repo_id, commit, profile_id | Pinned build/donor planning and compiler dry-run inspection |
 | `build_start` | checks | RUN | operate | yes | plan_id, idempotency_key | Gated full/reused build wrappers and completion bookkeeping |
-| `checks_pr` | checks | WRITE_LOCAL | operate | yes | repo_id, commit, branch, title_artifact, idempotency_key | Repository-bound pre-push check; whole imported-commit attestations only |
+| `checks_pr` | checks | WRITE_LOCAL | operate | yes | repo_id, commit, branch, title_artifact, idempotency_key | Repository-bound pre-push check at pr_check_checkout; whole imported-commit attestations only |
 | `checks_source` | checks | RUN | operate | yes | repo_id, commit, idempotency_key | Idle-gated source test runner and failing-name comparison |
 | `checks_windows_syntax` | checks | RUN | operate | yes | repo_id, commit, base, idempotency_key | Windows-target fixture check wrapper (not Windows runtime) |
 | `ci_read` | checks | READ | observe, operate | no | repository | CI reader plus failed-job/log and matching-main inspection |
@@ -33,16 +33,22 @@ Generated from the real registered server; do not edit by hand.
 | `run_logs` | evidence | READ | observe, operate | no | run_id | Bounded retained-log tail and approved signature filtering |
 | `save_clone` | session | WRITE_LOCAL | operate | yes | save_id, idempotency_key | Fresh disposable copy of a registered seed with hashes |
 | `session_age` | session | WRITE_LOCAL | operate | yes | run_id, age, idempotency_key | Optional typed bridge age command, with no cheat fallback |
+| `session_debug` | session | WRITE_LOCAL | operate | yes | run_id, action, idempotency_key | One typed cheat line into the owned live input file, then observed log and state read-back |
+| `session_destinations` | session | READ | observe, operate | yes | run_id | Bridge teleport listing without a destination |
+| `session_flag_set` | session | WRITE_LOCAL | operate | yes | run_id, name, value, idempotency_key | Typed flag lookup and write through the opt-in memory commands, then read-back |
+| `session_flags` | session | READ | observe, operate | yes | run_id, names | One-shot oot flag subscription on its own control connection |
 | `session_input` | session | WRITE_LOCAL | operate | yes | run_id, steps, units, idempotency_key | Typed control-client sequence or scoped release commands |
 | `session_launch` | session | RUN | operate | yes | build_id, profile_id, wall_seconds, idempotency_key | Windowless wrapper setup, gate admission and bridge readiness journal |
 | `session_options_get` | session | READ | observe, operate | yes | run_id | Bounded canonical control option_get listing |
 | `session_options_set` | session | WRITE_LOCAL | operate | yes | run_id, values | Scoped control option_set and conditional restoration |
 | `session_saves_list` | session | READ | observe, operate | yes | run_id | Control saves metadata listing, not save-file export |
 | `session_shot` | session | WRITE_LOCAL | operate | yes | run_id | Control screenshot into a fresh registered output |
+| `session_snapshot` | session | WRITE_LOCAL | operate | yes | run_id, idempotency_key | Fresh registered copy of the live disposable user folder with hashes and sampled state |
 | `session_state` | session | READ | observe, operate | yes | run_id | Control status plus sampled-state age and freshness checks |
 | `session_stop` | session | WRITE_LOCAL | operate | yes | run_id, reason, idempotency_key | Owned input/game shutdown before gate release and final receipt |
 | `session_teleport` | session | WRITE_LOCAL | operate | yes | run_id, destination_id, idempotency_key | One listed debug teleport plus observed arrival checks |
 | `session_wait` | session | READ | observe, operate | yes | run_id, predicate, idempotency_key | Observed frame/state/map predicates, not guessed boot sleeps |
+| `session_warp` | session | WRITE_LOCAL | operate | yes | run_id, x, y, z, idempotency_key | One typed `!place` line into the owned live input file, then observed log and state read-back |
 | `system_telemetry` | telemetry | READ | observe, operate | no | run_id | Optional proposed perf.csv reader (#2915); no file means unavailable observation, not an error |
 | `team_read` | knowledge | READ | observe, operate | no | room | Attested GET-only existing-room read; unsafe stock CLI stays unavailable |
 | `test_requests_read` | knowledge | READ | observe, operate | no | none | Attested GET-only request list/show; unsafe stock CLI stays unavailable |
@@ -52,6 +58,7 @@ Generated from the real registered server; do not edit by hand.
 
 | URI or template | Profiles | Purpose |
 |---|---|---|
+| `workbench://artifacts/{id}{?cursor,limit}` | observe, operate | Read complete registered JSON/plain/CSV text (8 MiB maximum), redacted and revision-pinned. limit is 1–32768 characters; follow next_cursor. Never binary/save contents. |
 | `workbench://evidence/analyzers` | operate | Approved analyzer IDs, measurements, units, clocks and required retained inputs; no probe. |
 | `workbench://jobs/{id}/events{?cursor,limit}` | observe, operate | Append-only events, at most 100 per page; continue with next_cursor. |
 | `workbench://nightly/{cycle}{?start,limit,revision}` | observe, operate | Retained nightly cycle status and bounded private report; no new work or database initialization. |

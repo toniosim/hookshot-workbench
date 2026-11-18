@@ -124,3 +124,28 @@ print(job.job_id)
     assert len({e.cursor for e in page.events}) == 61
     assert registry.list_jobs().jobs[0].job_id == job_id
     registry.close()
+
+
+@pytest.mark.parametrize("explicit_config", [False, True])
+async def test_trusted_reader_preserves_unset_config_home(deps, tmp_path, monkeypatch, explicit_config):
+    home = tmp_path / "provider-home"
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
+    monkeypatch.delenv("GH_CONFIG_DIR", raising=False)
+    monkeypatch.setenv("GH_TOKEN", "not-for-child")
+    if explicit_config:
+        monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "provider-config"))
+    script = tmp_path / "reader.py"
+    script.write_text("import json,os; print(json.dumps({k:os.environ.get(k) for k in ['HOME','XDG_CONFIG_HOME','GH_CONFIG_DIR','GH_TOKEN']}))")
+    await deps.open()
+    try:
+        job = deps.registry.create_job("fixture")
+        await deps.supervisor.start(job.job_id, [sys.executable, str(script)], cwd=tmp_path,
+                                    wall_seconds=2, trusted_read_environment=True)
+        done = await wait_job(deps, job.job_id, 5)
+        assert done.job.state == State.COMPLETED
+        values = json.loads((deps.supervisor.job_directory(job.job_id) / "stdout.log").read_text())
+        assert values == {"HOME": str(home), "XDG_CONFIG_HOME": str(tmp_path / "provider-config") if explicit_config else None,
+                          "GH_CONFIG_DIR": None, "GH_TOKEN": None}
+    finally:
+        await deps.close()

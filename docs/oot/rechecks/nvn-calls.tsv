@@ -1,0 +1,341 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+nvn-calls	nvnCommandBufferBindStorageBuffer	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 712 (scan 573); functions 45 (scan 44): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferGetAddress	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 690 (scan 700); functions 379 (scan 380): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindUniformBuffer	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 666 (scan 633); functions 39 (scan 40): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferReportCounter	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBarrier	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 338 (scan 339); functions 104 (scan 105): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferResetCounter	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 315 (scan 317): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetRenderEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetRenderEnableConditional	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 256 (scan 249): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDispatchCompute	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolGetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 227 (scan 226): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindProgram	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolFlushMappedRange	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferCallCommands	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindVertexAttribState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindVertexStreamState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferUpdateUniformBuffer	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolInvalidateMappedRange	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawElements	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindVertexBuffer	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceGetTextureHandle	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 49 (scan 52); functions 32 (scan 33): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 42 (scan 50); functions 31 (scan 38): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 37 (scan 38): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindImage	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindTexturesDeferred	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 34 (scan 35); functions 4 (scan 5): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferBuilderSetDevice	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferBuilderSetStorage	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetGeometryProcessingMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetLevels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferWaitEvent	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 24 (scan 25); functions 16 (scan 17): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetDevice	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 24 (scan 27); functions 17 (scan 19): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetFormat	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 24 (scan 25): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderGetStorageSize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetTarget	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 23 (scan 24): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolBuilderSetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolBuilderSetStorage	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceGetInteger	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 21 (scan 24); functions 19 (scan 21): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolBuilderSetDevice	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferEndRecording	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetStorage	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetSwizzle	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindPolygonState	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 13 (scan 14): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBeginRecording	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetPolygonOffsetClamp	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetScissor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSignalEvent	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnPolygonStateSetCullFace	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnPolygonStateSetFrontFace	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnPolygonStateSetPolygonMode	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnPolygonStateSetPolygonOffsetEnables	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderGetStorageAlignment	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferGetCommandMemoryUsed	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferGetControlMemoryUsed	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferAddCommandMemory	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferAddControlMemory	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindChannelMaskState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindDepthStencilState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetMemoryCallback	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetMemoryCallbackData	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetStencilMask	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetViewport	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 15 (scan 16); functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetDepthTestEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetDepthWriteEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetStencilFunc	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetStencilOp	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetStencilTestEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetSize2D	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20. sites 15 (scan 16): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBlendStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnChannelMaskStateSetChannelMask	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindBlendState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindColorState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawArrays	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawMeshTasks	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawMeshTasksIndirect	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetDepthRange	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetStencilRef	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetStencilValueMask	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetHeight	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetWidth	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBlendStateSetBlendEquation	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBlendStateSetBlendFunc	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBlendStateSetBlendTarget	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnColorStateSetBlendEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnColorStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 13 (scan 14); functions 10 (scan 11): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnColorStateSetLogicOp	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferClearBuffer	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferClearColor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetCommandMemoryCallbackEnabled	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetDepthClamp	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetRecordingMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetDepthFunc	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceGetImageHandle	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetLayers	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferReportValue	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 12 (scan 9); functions 4 (scan 1): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetBlendColor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetTiledCacheAction	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 12 (scan 13); functions 12 (scan 13): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTexturePoolRegisterTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueSubmitCommands	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetFormat	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetLevels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferCopyTextureToTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawElementsInstanced	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetRenderTargets	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolMap	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueFlush	catalogue	agrees	read	read	name, GOT and pointer match the loader. functions 8 (scan 6): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetDepth	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetDepthStencilMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetHeight	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetSamples	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetStride	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetSwizzle	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetWidth	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramBuilderSetDevice	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramBuilderSetShaders	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramInitializeFromBuilder	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetFormat	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferMap	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferClearDepthStencil	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferPushComputeConstants	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 6 (scan 8); functions 6 (scan 8): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetTiledCacheTileSize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferShadingRateImagePalette	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolGetBufferAddress	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 6 (scan 9): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueFinish	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetDevice	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSyncWait	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 6 (scan 7); functions 6 (scan 7): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetTarget	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetTarget	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferFlushMappedRange	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDispatchComputeIndirect	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawElementsBaseVertex	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetComputeOverlapMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetPrimitiveRestart	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 5 (scan 7); functions 5 (scan 7): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetMinMagFilter	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetWrapMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindShadingRateImage	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetPointSize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceGetTimestampInNanoseconds	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueFenceSync	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerPoolRegisterSampler	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnVertexAttribStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferInvalidateMappedRange	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferClearTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 3 (scan 4); functions 3 (scan 4): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferCopyBufferToTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetColorReductionEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetColorReductionThresholds	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetLineWidth	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetShaderScratchMemory	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDepthStencilStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnEventSignal	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetComputeMemorySize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetDevice	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetBorderColor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetCompare	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetMaxAnisotropy	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSyncInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderGetStorageClass	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureFlushTexels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetDepth	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureWriteTexels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnVertexAttribStateSetFormat	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnVertexAttribStateSetStreamIndex	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnChannelMaskStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindMultisampleState	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindTextures	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferCopyTextureToBuffer	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawElementsIndirect	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetConservativeRasterEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetSamplerPool	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetShadingRatePaletteMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetTexturePool	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceFinalizeCommandHandle	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceGetTexelFetchHandle	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceRegisterFastClearColor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnEventBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnEventBuilderSetStorage	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnEventInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolMapVirtual	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMultisampleStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnPolygonStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramSetShaders	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetCommandMemorySize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetControlMemorySize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetPrimaryQueue	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 2 (scan 3); functions 2 (scan 3): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueuePresentTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		6a554fd
+nvn-calls	nvnSamplerBuilderSetLodBias	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetLodClamp	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerBuilderSetReductionFilter	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderGetZCullStorageSize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetPackagedTextureLayout	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetLevels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetSamples	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetStride	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetSwizzle	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureReadTexels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnVertexStreamStateSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnVertexStreamStateSetDivisor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnVertexStreamStateSetStride	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowAcquireTexture	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowBuilderSetDefaults	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowBuilderSetDevice	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowBuilderSetNativeWindow	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowBuilderSetNumActiveTextures	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowBuilderSetPresentInterval	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowBuilderSetTextures	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowInitialize	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowSetCrop	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowSetNumActiveTextures	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferGetMemoryOffset	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnBufferSetDebugLabel	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindImages	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferBindStorageBuffers	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferDrawArraysInstanced	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferPushGraphicsConstants	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetComputeWorkloadPriority	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetConservativeRasterMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetCopyImageStride	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetCopyRowStride	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetDepthBounds	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetDepthRanges	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetRasterizerDiscard	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetSampleMask	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetScissors	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetStencilCullCriteria	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnCommandBufferSetViewports	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceBuilderSetDefaults	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceBuilderSetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceInstallDebugCallback	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceSetDepthMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnDeviceSetWindowOriginMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnEventFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnEventGetValue	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolGetSize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMemoryPoolSetDebugLabel	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMultisampleStateSetAlphaToCoverageEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMultisampleStateSetMultisampleEnable	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnMultisampleStateSetSamples	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnProgramSetShadersExt	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderGetQueueMemorySize	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 1 (scan 2); functions 1 (scan 2): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueBuilderSetQueueMemory	catalogue	agrees	read	read	name, GOT and pointer match the loader. sites 1 (scan 2); functions 1 (scan 2): scan is rougher, not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnQueueWaitSync	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetBorderColor	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetCompare	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetLodBias	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetLodClamp	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetMaxAnisotropy	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetMinMagFilter	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetReductionFilter	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerGetWrapMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSamplerPoolInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnSyncFinalize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderGetFlags	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureBuilderSetPackagedTextureData	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetMemoryOffset	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetMemoryPool	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureGetTextureAddress	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureInvalidateTexels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTexturePoolInitialize	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewGetLayers	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewGetLevels	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewGetTarget	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnTextureViewSetDepthStencilMode	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowFinalize	catalogue	partly	read	read	name, GOT and pointer match the loader. the sites sit in f_80547fc0 (unranked tail of f_80547f20), not f_80547f20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	nvnWindowSetPresentInterval	catalogue	agrees	read	read	name, GOT and pointer match the loader	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d66f00	data	agrees	read	read	Loader f_812be290 stores 735 answers from 0x84d66f00 (nvnDeviceBuilderSetDefaults) to 0x84d685f0 (…GetAccelerationStructureVisualizationData); f_8348be50 fills it twice	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84ca2dd8	data	agrees	read	read	GOT slot holds 0x85ff20a8 (image); scan finds 1,873 reading sites in 422 functions (row says 1,871)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x85e2c158	data	agrees	read	read	Slot holds 0x85ff20a8; read only by f_855f6f80 (sets) and f_855f1750 (clears)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67ca0	data	agrees	read	read	GOT 0x84cadb40 and pointer match the loader. Scan counts 573 sites (page 712): scan is rougher, f_8008fc00 gives the stated 60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c78	data	agrees	read	read	GOT and pointer match the loader. Scan counts 633 sites (page 666); f_8008fc00 gives the stated 64	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67fd8	data	agrees	read	read	Name, GOT and pointer match the loader; scan 339 sites (page 338)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67cd0	data	agrees	read	read	Name, GOT and pointer match the loader; scan 249 sites (page 256)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67df8	data	agrees	read	read	Name, GOT, pointer and 252 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d673b8	data	agrees	read	read	Name, GOT and pointer match; scan 226 sites (page 227)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c60	data	agrees	read	read	Name, GOT, pointer and 212 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67390	data	agrees	read	read	Name, GOT, pointer and 181 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c10	data	agrees	read	read	Name, GOT, pointer and 105 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c50	data	agrees	read	read	Name, GOT, pointer and 101 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c58	data	agrees	read	read	Name, GOT, pointer and 100 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67f50	data	agrees	read	read	Name, GOT, pointer and 94 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67398	data	agrees	read	read	Name, GOT, pointer and 67 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67d50	data	agrees	read	read	Name, GOT, pointer and 65 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c68	data	agrees	read	read	Name, GOT, pointer and 52 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d66f50	data	agrees	read	read	Name, GOT and pointer match; scan 52 sites in 33 functions (page 49)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67ce0	data	agrees	read	read	Name, GOT and pointer match; scan 35 sites (page 34)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67d90	data	agrees	read	read	Name, GOT, pointer and 28 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67d98	data	agrees	read	read	Name, GOT, pointer and 14 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c00	data	agrees	read	read	Name, GOT, pointer and 17 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67c08	data	agrees	read	read	Name, GOT, pointer and 19 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67120	data	agrees	read	read	Name, GOT, pointer and 11 sites confirmed by scan	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	0x84d67f68	data	agrees	read	read	Name, GOT and pointer match; scan finds 9 sites, all in f_80265760 (page 12 in 4 functions): not conclusive	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812be290	function	agrees	read	read	Read: 735 indirect calls with the proc names, each answer stored through its GOT slot into g_NvnProcs; called twice by f_8348be50 (0x8348bff4, 0x8348c0d8)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_8348be50	function	agrees	read	read	Read: nvnDeviceInitialize/GetProcAddress/InstallGlobalDebugCallback strings, NvnProcs_Load twice, API check 231, Presentation Thread, f_80f69040 and f_8348fcc0 calls	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_855f6f80	function	agrees	read	read	Read: stores 1/0 into 0x85ff20a8 from device, [0x85ff20c0] and [0x85ff2078] == default table 0x85e56528; "nvn" prefix check, name search; tail calls f_855f4ca0. RE notes agree	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_855f1750	function	partly	guess	read	It is the SDK device finalize: clears nvnPrivate0, frees the device's memories, events and queue state, clears the device registration words. Three callers (two sites + a tail call). Raise to read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812c3470	function	agrees	read	read	Read: table at 0x83e79c60, indexed by the argument (image values 0,1,3,4,5,10,11,12,13,14,1,6)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812c3480	function	agrees	read	read	Read: table 0x83e79c9c = 0,3,4,2,1,5,8,6 for stages 0-7 (image)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812c3490	function	agrees	read	read	Read: bit shuffle of a stage mask (no table); called by the BindProgram wrapper	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812c34e0	function	agrees	read	read	Read: table 0x83e7a994; f_812c34f0 has the same code	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812c3500	function	agrees	read	read	Read: empty function (returns its first argument)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_8002d440	function	agrees	read	read	Read: stage via f_812c3480, address via f_812c3500, tail call BindUniformBuffer on [ctx+0xd0]; 31 call sites, rank 504	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812be080	function	agrees	read	read	Read: same shape for BindStorageBuffer; 17 call sites, rank 1348	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_812bd9d0	function	agrees	read	read	Read: program at +8, mask at +4 or via f_812c3490 when +1 bit 0 is set, tail call BindProgram on [ctx+0xd0]	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_80104de0	function	agrees	read	read	Read: GetTextureHandle on [[ctx+8]] with ids read through pointers (x3, x4), then BindTexture on ctx+0xd0; 61 call sites, rank 741	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_8002a5f0	function	agrees	read	read	Read: nvnBufferGetAddress(buf+8) into out, then 0; 31 call sites, rank 857	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_8008f840	function	agrees	read	read	Read: converts primitive and index type, tail calls DrawElementsInstanced on ctx+0xd0; 35 call sites, rank 1141	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_8353e5d0	function	agrees	read	read	Read: sets cmd+0x10, tests nvnPrivate0 and stage != 5/8 (table 0x83f492b4 matches RE), writes words or tail calls BindUniformBuffer; 70 call sites, unranked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_809f0900	function	agrees	read	read	Read: count +0x30, buffer +0x38, DrawElements or DrawElementsInstanced behind the inline flag on [ctx+0xd8]; 137 call sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_809f0a20	function	agrees	read	read	Read: loop over +0x108 buffers at +0x110, size at +0x120, BindVertexBuffer behind the flag; 122 call sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_809f1180	function	agrees	read	read	Read: attribute state (+0x11c) and stream state (+0x160), 16 each; 69 call sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_809ebc00	function	agrees	read	read	Read: Barrier on [ctx+0xd8], bits from [flags] and [[0x84ca2d60]+0x9cc]; skipped when obj+0x10 is null; 120 call sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_835c3140	function	agrees	read	read	Read: compares item+0x69e with ctx+0x3b, SetGeometryProcessingMode; 252 call sites, callers span 0x8366d820-0x836a8da0, none ranked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_83607f60	function	agrees	read	read	Read: DrawElementsIndirect with primitive 4 on [ctx+0xd8]; 256 call sites in the same range, none ranked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_8359f530	function	agrees	read	read	Read: mode byte at +0x69f: 0 tail call f_8029fef0, else DrawMeshTasks with n at +0x6a4; 66 call sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_800a8df0	function	agrees	read	read	Read: tail call nvnBufferMap(buf+8); 81 call sites, rank 1623	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_800a9510	function	agrees	read	read	Read: nvnBufferFlushMappedRange(buf+8) after the buf+1 bit 1 test; 62 call sites, rank 2331	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_80527e90	function	agrees	read	read	Read: f_80527f00 on g_GfxSystem+0x28, then QueueSubmitCommands(queue, 1, handles) as a tail call; rank 452	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_80527f00	function	agrees	read	read	Read: sorting at slot+0x68, QueueSubmitCommands, QueueFlush; callers f_80527e90 and f_834bf400 (three f_834bf400 calls from f_83560df0). Agrees with REFrame notes; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_805902c0	function	agrees	read	read	Read: WaitSync, Submit, FenceSync, Flush, EventGetValue, then ICALL of vtable +0x100; vtable 0x84c167e0 slot +0xf8; the other class reaches it through thunk f_805902b0. Agrees wit…; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+nvn-calls	f_80547f20	function	partly	tested	tested	Role holds (slot +0x100, nvnQueuePresentTexture, tail f_80547fc0), but its table is based at 0x84c83f80 (slot +0x100 at 0x84c84080; +0xf8 is thunk f_805902b0): 0x84c84040 is not t…; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	6a554fd

@@ -565,7 +565,7 @@ class AdapterSafety(unittest.TestCase):
             def start(*args, **kwargs):
                 for name, content in {'exit.txt': '124', 'wall.txt': '1', 'load-before.txt': '0 0 0',
                         'load-after.txt': '0 0 0', 'hookshot_log.txt':
-                        'hookshot v0 (source fixture)\nvk: device 0: NVIDIA GeForce RTX 4090, fake\n'}.items():
+                        'hookshot v0 (source fixture)\nvk: device 0: NVIDIA GeForce RTX 3070 Ti, fake\n'}.items():
                     (out / name).write_text(content)
                 return SimpleNamespace(poll=lambda: 0, returncode=0)
             kernel = {'kernel_errors': 0, 'memmap_lines': 0, 'no_memory_lines': 3 * kernel_events,
@@ -617,7 +617,7 @@ class SummarySafety(unittest.TestCase):
             root = Path(td)
             files = {'exit.txt': game_exit, 'wall.txt': '1', 'load-before.txt': '0 0 0', 'load-after.txt': '0 0 0',
                      'start.txt': '2026-11-12 10:00:00', 'end.txt': '2026-11-12 10:00:01',
-                     'hookshot_log.txt': 'vk: device 0: NVIDIA GeForce RTX 4090, fake\n'}
+                     'hookshot_log.txt': 'vk: device 0: NVIDIA GeForce RTX 3070 Ti, fake\n'}
             for name, text in files.items():
                 (root / name).write_text(text)
             if window:

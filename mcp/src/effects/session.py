@@ -18,11 +18,15 @@ from typing import Awaitable, Callable
 
 from src.errors import WorkbenchError
 from src.models import Job, Producer, Receipt, State, TERMINAL, utc_now
-from src.models.session import (GameSample, InputResult, InputStep, Option, OptionsChanged, OptionsPage,
-    Predicate, PredicateResult, Sample, SaveFile, SaveSlot, SavesPage, ShotResult, StopResult, TravelResult)
+from src.models.session import (Destination, DestinationsPage, GameSample, InputResult, InputStep, Option, OptionsChanged,
+    OptionsPage, Predicate, PredicateResult, Sample, SaveFile, SaveSlot, SavesPage, ShotResult, StopResult, TravelResult)
+from src.models.session_debug import GameInfo
 from src.effects.session_bridge import Bridge
+from src.effects.session_debug_env import debug_launch
 import sys
 from src.effects.session_storage import catalogue, clone_tree, lane_guard, new_directory, plain_files, read_json, write_new
+from src.effects.names import copy_names, LOG_NAMES
+from src.effects import session_runtime
 from src.registry import new_id
 
 # Canonical setting keys only. Names/aliases never get a chance to evade this.
@@ -30,7 +34,9 @@ DENIED_OPTIONS = frozenset({"fullscreen", "window_mode", "window_size", "monitor
     "output_device", "audio_device", "microphone", "mic", "microphone_device", "voice_chat", "background_input",
     "input_background", "controller", "controller_device", "headless", "output_res", "resolution", "quality",
     "frame_generation", "vram_budget", "memory_budget", "profile", "dlss", "dlss_model", "ultrawide"})
-FIELDS = frozenset({"map", "event", "loading", "age"})
+DEFAULT_FIELDS = frozenset({"map", "event", "loading", "age"})
+FIELDS = DEFAULT_FIELDS | {"pos", "life", "max_life", "rupees"}
+SAMPLE_CLOCK_SKEW = 0.05   # seconds a sample's stamp may be ahead of the reader's clock and still count as just taken
 
 
 def number(value, *, integer=False):
@@ -49,19 +55,39 @@ def boolean(value):
     return value if isinstance(value, bool) else None
 
 
+def position(value):
+    """Three finite coordinates (sign allowed), else null."""
+    if not isinstance(value, (list, tuple)) or len(value) != 3:
+        return None
+    if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or abs(v) > 1e9 for v in value):
+        return None
+    return [float(v) for v in value]
+
+
+def quantity(value):
+    """A non-negative whole count within 32 bits, else null."""
+    found = number(value, integer=True)
+    return found if found is not None and found < 2**32 else None
+
+
 def sample_from(reply: dict, *, max_age_ms: int, expected_map: str | None = None,
                 selected: list[str] | None = None) -> Sample:
     raw = reply.get("game") if isinstance(reply.get("game"), dict) else {}
     frame = number(raw.get("frame"), integer=True)
     sampled = number(raw.get("t"))
     now = time.monotonic()
-    age = (now - sampled) * 1000 if sampled is not None and sampled <= now else None
+    # (the game prints its clock to the millisecond: a sample read within a millisecond of its stamp can be stamped a hair ahead)
+    age = max(0.0, (now - sampled) * 1000) if sampled is not None and sampled - now <= SAMPLE_CLOCK_SKEW else None
     fresh = age <= max_age_ms if age is not None and frame is not None else None
-    keys = FIELDS if selected is None else set(selected)
+    keys = DEFAULT_FIELDS if selected is None else set(selected)
     game = GameSample(map=text(raw.get("map") if frame is not None else reply.get("map"), 80) if "map" in keys else None,
         event=boolean(raw.get("event")) if "event" in keys else None,
         loading=boolean(raw.get("loading")) if "loading" in keys else None,
-        age=text(raw.get("age"), 32) if "age" in keys else None)
+        age=text(raw.get("age"), 32) if "age" in keys else None,
+        pos=position(raw.get("pos")) if "pos" in keys else None,
+        life=quantity(raw.get("life")) if "life" in keys else None,
+        max_life=quantity(raw.get("max_life")) if "max_life" in keys else None,
+        rupees=quantity(raw.get("rupees")) if "rupees" in keys else None)
     if game.loading is True or game.event is True or fresh is False or (expected_map and game.map and game.map.casefold() != expected_map.casefold()):
         controllable = False
     elif fresh is True and game.loading is False and game.event is False and (expected_map is None or game.map is not None):
@@ -91,6 +117,12 @@ class Session:
     restore: dict[str, tuple[Option, Option]] = field(default_factory=dict)
     stopping: bool = False
     stop_reason: str | None = None
+    # Debug tools: the owned live-input file and the build's private game info (loaded lazily, cached).
+    live_path: Path | None = None
+    game_info_path: Path | None = None
+    game_info: GameInfo | None = None
+    debug_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    marked: list[float] | None = None
 
 
 class SessionService:
@@ -117,14 +149,19 @@ class SessionService:
     async def connection(self, session: Session) -> Bridge:
         async with session.connect_lock:
             if session.bridge is None or session.bridge.closed:
+                pointer = read_json(session.root / "control-socket.json", 4096)
+                selected = Path(pointer.get("socket", ""))
+                if pointer.get("run_id") != session.run_id or selected != Path(session.plan["socket"]):
+                    raise self.deps.error("refused_by_policy", "session_runtime_pointer")
+                session_runtime.validate(self.deps, selected, session.run_id)
+                session.socket = selected
                 if not session.socket.exists():
                     raise self.deps.error("unavailable", "session_bridge")
-                self.deps.paths.read(session.socket)
                 session.bridge = await Bridge.connect(session.socket)
             return session.bridge
 
     async def state_impl(self, run_id: str, max_age_ms=500, expected_map=None, fields=None) -> Sample:
-        if not 1 <= max_age_ms <= 10000 or (fields is not None and (len(fields) > 4 or set(fields) - FIELDS)):
+        if not 1 <= max_age_ms <= 10000 or (fields is not None and (len(fields) > len(FIELDS) or set(fields) - FIELDS)):
             raise self.deps.error("invalid_argument", "session_state")
         bridge = await self.connection(self.owned(run_id))
         return sample_from(await bridge.request("status"), max_age_ms=max_age_ms, expected_map=expected_map, selected=fields)
@@ -271,7 +308,7 @@ class SessionService:
             sample = sample_from(reply, max_age_ms=max_age_ms, expected_map=predicate.map)
             if initial is None:
                 initial = sample.frame
-            if predicate.kind in {"controllable", "field"} and sample.fresh is None:
+            if predicate.kind in {"controllable", "field"} and sample.fresh is None and sample.capabilities.get("freshness") is not True:
                 return PredicateResult(matched=None, sample=sample, frames_waited=None, elapsed_ms=(time.monotonic()-start)*1000,
                     reason="freshness_unsupported")
             matched = {"frames": sample.frame is not None and initial is not None and sample.frame-initial >= (predicate.frames or 0),
@@ -410,18 +447,42 @@ class SessionService:
                 await bridge.request("option_set", timeout=1, name=key, value=old.value)
         session.restore.clear()
 
+    def _destinations(self, reply: dict, operation: str, code: str) -> list[Destination]:
+        """Typed rows of the bridge's teleport listing; any malformed row refuses the whole listing."""
+        rows = reply.get("destinations")
+        if not isinstance(rows, list) or len(rows) > 256:
+            raise self.deps.error(code, operation)
+        result = []
+        for row in rows:
+            if not isinstance(row, dict) or type(row.get("index")) is not int:
+                raise self.deps.error(code, operation)
+            names = {key: row.get(key) for key in ("child", "adult")}
+            if any(name is not None and text(name, 80) is None for name in names.values()):
+                raise self.deps.error(code, operation)
+            try:
+                result.append(Destination(index=row["index"], **names))
+            except ValueError:
+                raise self.deps.error(code, operation) from None
+        return result
+
+    async def destinations_impl(self, run_id) -> DestinationsPage:
+        bridge = await self.connection(self.owned(run_id))
+        reply = await bridge.request("teleport", mutation=False)
+        return DestinationsPage(destinations=self._destinations(reply, "session_destinations", "backend_failed"), observed_at=utc_now())
+
     async def travel_impl(self, run_id, command, destination, timeout_seconds, idempotency_key):
         session = self.owned(run_id)
         if not session.profile.debug:
             raise self.deps.error("refused_by_policy", "session_"+command)
         async def action(job_id):
             bridge = await self.connection(session)
+            before = sample_from(await bridge.request("status"), max_age_ms=500, selected=["map", "age", "pos"]).game
+            chosen = None
             if command == "teleport":
                 listing = await bridge.request("teleport", mutation=False)
-                destinations = listing.get("destinations")
-                if not isinstance(destinations, list) or len(destinations) > 256:
-                    raise self.deps.error("unavailable", "session_teleport")
-                if destination not in [row.get("index") for row in destinations if isinstance(row, dict)]:
+                chosen = next((row for row in self._destinations(listing, "session_teleport", "unavailable")
+                               if row.index == destination), None)
+                if chosen is None:
                     raise self.deps.error("invalid_argument", "session_teleport")
             # Unknown age command is unavailable. Never substitute a cheat or
             # live-file parser, and never repeat a timed-out mutation.
@@ -429,13 +490,22 @@ class SessionService:
             state = await self.state_impl(run_id)
             sent, accepted = boolean(reply.get("sent")), boolean(reply.get("accepted"))
             arrived = None
+            target = text(reply.get("map"), 80)
             if sent is True and accepted is not False:
-                target = text(reply.get("map"), 80)
-                predicate = Predicate(kind="controllable", map=target) if command == "teleport" else Predicate(kind="field", field="age", value=destination)
-                waited = await self._wait(session, predicate, timeout_seconds, 500, 1, job_id)
+                started = time.monotonic()
+                if command == "teleport":
+                    waited = await self._wait(session, Predicate(kind="controllable", map=target), timeout_seconds, 500, 1, job_id)
+                else:
+                    # The game flips the age at once and reloads the scene as an event: the age alone is not an arrival. Wait for it, then
+                    # for control in the map the game named (a map that has the same name in both ages is already the age checked first).
+                    waited = await self._wait(session, Predicate(kind="field", field="age", value=destination), timeout_seconds, 500, 1, job_id)
+                    if waited.matched is True and target is not None:
+                        waited = await self._wait(session, Predicate(kind="controllable", map=target),
+                                                  max(0.5, timeout_seconds - (time.monotonic() - started)), 500, 1, job_id)
                 state = waited.sample
                 arrived = waited.matched
-            return TravelResult(sent=sent, accepted=accepted, arrived=arrived, controllable=state.controllable, state=state)
+            return TravelResult(sent=sent, accepted=accepted, arrived=arrived, controllable=state.controllable, state=state,
+                before=before, destination=chosen, map=target)
         return await self._submit("session_"+command, dict(run_id=run_id, destination=destination, timeout_seconds=timeout_seconds),
             idempotency_key, action, run_id=run_id)
 
@@ -486,6 +556,27 @@ class SessionService:
             raise self.deps.error("refused_by_policy", "save_clone")
         return root / "user"
 
+    async def _copy_clone(self, job_id, cat, source: Path, source_id: str, slot, tool: str, extra: dict[str, str] | None = None):
+        """Copy ``source`` into a NEW registered clone directory; the identity marker is written last."""
+        clone_id = new_id("save")
+        target = cat.clone_root / clone_id
+        def progress(count, total):
+            if count == total or count % 32 == 0:
+                self.deps.registry.update_job(job_id, completed_steps=count, total_steps=total, phase="copying")
+        new_directory(self.deps, target)
+        manifest = await clone_tree(self.deps, source, target / "user", slot, progress, operation=tool)
+        path = target / "copy-manifest.json"
+        write_new(self.deps, path, json.dumps({"source_id": source_id, "save_id": clone_id,
+            "owner": self.deps.registry.owner, "files": manifest}, separators=(",", ":")))
+        for name, body in (extra or {}).items():
+            write_new(self.deps, target / name, body)
+        write_new(self.deps, target / "clone-identity.json", json.dumps(
+            {"save_id": clone_id, "owner": self.deps.registry.owner}))
+        artifact = self.deps.registry.add_artifact(path, guards=self.deps.paths, mime="application/json",
+            producer=Producer(tool=tool), complete=True)
+        self.deps.registry.update_job(job_id, artifact_uris=[artifact.uri])
+        return clone_id, manifest, artifact
+
     async def clone_impl(self, save_id, slot, idempotency_key):
         cat = catalogue(self.deps)
         source = self._save_source(cat, save_id)
@@ -494,21 +585,7 @@ class SessionService:
             raise self.deps.error("refused_by_policy", "save_clone")
         plain_files(self.deps, source, slot)
         async def action(job_id):
-            clone_id = new_id("save")
-            target = cat.clone_root / clone_id
-            def progress(count, total):
-                if count == total or count % 32 == 0:
-                    self.deps.registry.update_job(job_id, completed_steps=count, total_steps=total, phase="copying")
-            new_directory(self.deps, target)
-            manifest = await clone_tree(self.deps, source, target / "user", slot, progress)
-            path = target / "copy-manifest.json"
-            write_new(self.deps, path, json.dumps({"source_id": save_id, "save_id": clone_id,
-                "owner": self.deps.registry.owner, "files": manifest}, separators=(",", ":")))
-            write_new(self.deps, target / "clone-identity.json", json.dumps(
-                {"save_id": clone_id, "owner": self.deps.registry.owner}))
-            artifact = self.deps.registry.add_artifact(path, guards=self.deps.paths, mime="application/json",
-                producer=Producer(tool="save_clone"), complete=True)
-            self.deps.registry.update_job(job_id, artifact_uris=[artifact.uri])
+            clone_id, manifest, artifact = await self._copy_clone(job_id, cat, source, save_id, slot, "save_clone")
             return {"save_id": clone_id, "source_id": save_id, "copy_hash_manifest": artifact.model_dump(),
                 "file_count": len(manifest), "provenance": "registered_source_copy", "validation_status": "copy_only_not_a_checkpoint"}
         return await self._submit("save_clone", dict(save_id=save_id, slot=slot), idempotency_key, action)
@@ -526,7 +603,8 @@ class SessionService:
             raise deps.error("refused_by_policy", "session_launch")
         # The wrapper writes caches and options alongside the executable.
         deps.paths.output(copy / ("permission-"+new_id("probe")))
-        if not os.access(copy / "hookshot", os.X_OK) or not (copy / "image.bin").is_file() or not (copy / "romfs").is_dir():
+        names = copy_names(deps, copy, "session_launch")
+        if not os.access(copy / names.executable, os.X_OK) or not (copy / "image.bin").is_file() or not (copy / "romfs").is_dir():
             raise deps.error("unavailable", "session_launch")
         wrapper = deps.config.harness_dir / "hs-run.sh" if deps.config.harness_dir else None
         gate = deps.config.gpu_gate if profile.lane == "gpu" else deps.config.intel_gate
@@ -534,11 +612,13 @@ class SessionService:
             raise deps.error("unavailable", "session_launch")
         if "cancellation" not in inspect.signature(deps.supervisor.start).parameters:
             raise deps.error("unavailable", "session_launch")
-        request = dict(build_id=build_id, save_id=save_id, profile_id=profile_id, wall_seconds=wall_seconds, capture=capture)
+        request = dict(build_id=build_id, save_id=save_id, profile_id=profile_id, wall_seconds=wall_seconds,
+            capture=capture, precompile=profile.precompile)
         plan_hash = hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest()
         hold_seconds = wall_seconds + 30  # wrapper TERM/KILL allowance plus cleanup, within 480 seconds
         snapshot = deps.policy.authorize(lane=profile.lane, resource_class=profile.resource_class,
             wall_seconds=hold_seconds, plan_hash=plan_hash, stage="plan")
+        session_runtime.cleanup_stale(deps)
         save = self._save_source(cat, save_id) if save_id else None
         if save:
             plain_files(deps, save)
@@ -553,17 +633,20 @@ class SessionService:
                 policy_revision=snapshot.revision, gate={"class": profile.resource_class, "device": profile.lane}, timing_valid=False,
                 capabilities={"save_drain": False, "disposable": True, "sampled_state": None})
             root = copy / "runs" / run.run_id
-            socket = root / "control.sock"
-            if len(os.fsencode(socket)) >= 108:
-                self._finish(existing.job_id, State.FAILED, error=deps.error("unavailable", "session_launch").envelope)
-                deps.registry.update_run(run.run_id, state=State.FAILED, stop_reason="socket_path_too_long")
-                raise deps.error("unavailable", "session_launch")
+            deps.registry.update_job(existing.job_id, run_ids=[run.run_id])
+            try:
+                socket = session_runtime.allocate(deps, run.run_id)
+            except (WorkbenchError, OSError) as exc:
+                error = exc if isinstance(exc, WorkbenchError) else deps.error("unavailable", "session_runtime_socket")
+                self._finish(existing.job_id, State.FAILED, error=error.envelope)
+                deps.registry.update_run(run.run_id, state=State.FAILED, ended_at=utc_now(), stop_reason="runtime_socket_unavailable")
+                raise error
             plan = dict(run_dir=str(root), socket=str(socket), copy=str(copy), wrapper=str(wrapper), gate=str(gate),
                 python=sys.executable, state_root=str(deps.config.state_root), lane=profile.lane,
-                resource_class=profile.resource_class, wall_seconds=wall_seconds, hold_seconds=hold_seconds, plan_hash=plan_hash)
-            session = Session(run.run_id, existing.job_id, root, socket, profile, plan)
+                resource_class=profile.resource_class, wall_seconds=wall_seconds, hold_seconds=hold_seconds, plan_hash=plan_hash,
+                project=names.project, log=names.log, precompile=profile.precompile)
+            session = Session(run.run_id, existing.job_id, root, socket, profile, plan, game_info_path=build.game_info)
             self.sessions[run.run_id] = session
-            deps.registry.update_job(existing.job_id, run_ids=[run.run_id])
 
             async def action(job_id):
                 try:
@@ -574,6 +657,8 @@ class SessionService:
                         deps.registry.update_run(run.run_id, state=State.CANCELLED if session.stopping else State.INTERRUPTED,
                             ended_at=utc_now(), stop_reason=session.stop_reason or "launch_interrupted")
                     raise
+                finally:
+                    self._cleanup_socket(session)
                 return {"run_id": run.run_id, "save_drain": "unsupported", "timing_valid": False}
 
             async def cancel():
@@ -585,6 +670,7 @@ class SessionService:
         if not root.parent.exists():
             new_directory(deps, root.parent)
         new_directory(deps, root)
+        write_new(deps, root / "control-socket.json", json.dumps({"run_id": session.run_id, "socket": str(session.socket)}))
         new_directory(deps, root / "shots")
         if save:
             await clone_tree(deps, save, root / "user")
@@ -595,8 +681,18 @@ class SessionService:
             "env-file.txt": "# owned empty environment file\n", "extra-env.txt": "\n".join([
                 "HOS_CONTROL="+str(session.socket), "HOS_HEADLESS=1", "HOS_OUTPUT_RES=1920x1080",
                 "HOS_INPUT_EXCLUSIVE=1", "RX_VK_SHOT_EVERY="+str(every), "RX_VK_SHOT_MENU=1"])+"\n"}
+        if not session.profile.precompile:
+            values["extra-env.txt"] += "RX_VK_PRECOMPILE=0\n"
+        deps.registry.append_event(session.launch_job, "startup_policy",
+            {"project": session.plan["project"], "precompile": session.profile.precompile,
+             "override": None if session.profile.precompile else "RX_VK_PRECOMPILE=0"})
         if session.profile.lane == "intel":
             values["intel"] = ""
+        # Debug-tool switches of the operator's profile (src/effects/session_debug_env.py): extra env lines, an owned
+        # live-input file created before the process starts, and its path remembered for session_debug.
+        debug_lines, debug_files, session.live_path = debug_launch(session.profile, root)
+        values["extra-env.txt"] += "".join(line + "\n" for line in debug_lines)
+        values.update(debug_files)
         for filename, value in values.items():
             write_new(deps, root / filename, value)
         planfile = root / "session-plan.json"
@@ -604,13 +700,14 @@ class SessionService:
         process = deps.registry.create_job("session_process", request={"run_id": session.run_id})
         session.process_job = process.job_id
         deps.registry.update_job(process.job_id, run_ids=[session.run_id])
+        session_runtime.bind_job(deps, session.socket, session.run_id, process.job_id)
         await deps.supervisor.start(process.job_id, [sys.executable, "-I",
             str(Path(__file__).with_name("session_worker.py")), "--outer", str(planfile)], cwd=Path(session.plan["copy"]),
             wall_seconds=session.plan["hold_seconds"]-20, queued=True, grace_seconds=20, cancellation="adapter")
         admitted, ready, live_log = False, False, False
         while deps.registry.get_job(process.job_id).state not in TERMINAL:
-            if not live_log and (root / "hookshot_log.txt").is_file():
-                art = deps.registry.add_live_artifact(root / "hookshot_log.txt", guards=deps.paths,
+            if not live_log and (root / session.plan["log"]).is_file():
+                art = deps.registry.add_live_artifact(root / session.plan["log"], guards=deps.paths,
                     mime="text/plain", producer=Producer(tool="session_launch"), run_id=session.run_id)
                 current = deps.registry.get_run(session.run_id)
                 deps.registry.update_run(session.run_id, artifacts=[*current.artifacts, art.id])
@@ -667,7 +764,7 @@ class SessionService:
         # the registry, but keep only one current named log in the Run manifest.
         artifacts = [ident for ident in run.artifacts if not (
             (art := self.deps.registry.get_artifact(ident)).producer.tool == "session_launch" and
-            not art.complete and self.deps.registry.artifact_path(ident, self.deps.paths).name == "hookshot_log.txt")]
+            not art.complete and self.deps.registry.artifact_path(ident, self.deps.paths).name in LOG_NAMES)]
         def load_values(filename):
             try:
                 raw = (session.root / filename).read_bytes()
@@ -684,9 +781,10 @@ class SessionService:
         artifact = self.deps.registry.add_artifact(context_path, guards=self.deps.paths, mime="application/json",
             producer=Producer(tool="session_launch"), run_id=session.run_id, complete=True)
         artifacts.append(artifact.id)
-        for filename, mime, clock in (("hookshot_log.txt", "text/plain", None), ("frames.csv", "text/csv", "renderer-offscreen-submit"),
+        for filename, mime, clock in ((session.plan["log"], "text/plain", None), ("frames.csv", "text/csv", "renderer-offscreen-submit"),
                 ("present.csv", "text/csv", "game-present"), ("perf.csv", "text/csv", "renderer-offscreen-submit"),
-                ("exit.txt", "text/plain", None), ("session-stop.json", "application/json", "host-monotonic")):
+                ("exit.txt", "text/plain", None), ("session-stop.json", "application/json", "host-monotonic"),
+                ("control-socket.json", "application/json", None)):
             path = session.root / filename
             if path.is_file() and path.stat().st_size <= 64*1024*1024:
                 art = self.deps.registry.add_artifact(path, guards=self.deps.paths, mime=mime, producer=Producer(tool="session_launch"),
@@ -695,14 +793,21 @@ class SessionService:
         if run.state not in TERMINAL:
             self.deps.registry.update_run(run.run_id, artifacts=artifacts)
 
+    def _cleanup_socket(self, session):
+        receipt = self.deps.registry.receipt(session.process_job) if session.process_job else None
+        if session.process_job is None or (receipt and receipt.process_exited):
+            session_runtime.cleanup(self.deps, session.socket, session.run_id)
+
     async def _stop(self, session, reason=None) -> StopResult:
         session.stop_reason = session.stop_reason or reason
         session.stopping = True
         job = self.deps.registry.get_job(session.process_job) if session.process_job else None
         if job is None:
+            self._cleanup_socket(session)
             return StopResult(method="cancelled_before_start", process_exited=True, forced=False, artifacts_complete=False)
         if job.state in TERMINAL:
             receipt = self.deps.registry.receipt(job.job_id)
+            self._cleanup_socket(session)
             return StopResult(method="already_exited", process_exited=bool(receipt and receipt.process_exited), forced=False,
                 artifacts_complete=(session.root / "exit.txt").is_file())
         if session.bridge is not None and not session.bridge.closed:
@@ -763,3 +868,4 @@ class SessionService:
                 await self._stop(session, self.deps.shutdown_reason)
             if session.bridge:
                 await session.bridge.close()
+            self._cleanup_socket(session)

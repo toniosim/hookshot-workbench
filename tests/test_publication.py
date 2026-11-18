@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+"""Synthetic publication and relocation tests; never use installed source folders."""
+from pathlib import Path
+import contextlib
+import importlib.util
+import io
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+import publish
+import name_policy
+
+
+def stage(root):
+    for live in publish.SKILL_MAP:
+        skill = root / 'skills' / publish.installed(live)
+        skill.mkdir(parents=True)
+        (skill / 'SKILL.md').write_text('---\nname: ' + live + '\n---\nRead skill://' + live + '.\n')
+    with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(root)}):
+        for source, _ in publish.files():
+            if not source.exists():
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text('synthetic source\n')
+    return root
+
+
+def destination(root):
+    (root / 'docs').mkdir(parents=True)
+    shutil.copy2(ROOT / name_policy.MANIFEST, root / name_policy.MANIFEST)
+    return root
+
+
+class PublicationTests(unittest.TestCase):
+    def test_explicit_skill_map_and_logical_cross_references(self):
+        self.assertEqual(len(publish.SKILL_MAP), 19)
+        self.assertEqual({live for live, public in publish.SKILL_MAP.items() if live == public},
+                         {'ls-function-map', 'ls-skill-upkeep', 'ls-field-data', 'ls-pr-tagging', 'ls-hold-chain',
+                          'ls-restack', 'ls-windows-laptop', 'ls-relay-lan', 'ls-nat-lab'})
+        for live, public in publish.SKILL_MAP.items():
+            original = f'name: {live}\nRead `{live}` and skill://{live}.\nSee skills/{live}/SKILL.md.\n'
+            expected = f'name: {public}\nRead `{public}` and skill://{public}.\nSee skills/{public}/SKILL.md.\n'
+            self.assertEqual(publish.skill_references(original), expected)
+
+    def test_absolute_live_skill_paths_are_not_cross_references(self):
+        for live, public in publish.SKILL_MAP.items():
+            paths = f'/home/mooki/.agents/skills/{live}/SKILL.md\n~/.agents/skills/{live}/scripts/tool.py\n'
+            original = paths + f'skills/{live}/SKILL.md skill://{live}\n'
+            self.assertEqual(publish.skill_references(original), paths + f'skills/{public}/SKILL.md skill://{public}\n')
+
+    def test_unrelated_names_are_not_prefix_matched(self):
+        original = 'hookshot-workbench-extra other/hookshot-workbench-file\n'
+        self.assertEqual(publish.skill_references(original), original)
+
+    def test_runtime_protocols_urls_and_host_paths_are_preserved(self):
+        original = ('hookshot.exe longshot_vk.so hookshot_log.txt longshot_log.txt\n'
+                    'HOOKSHOT_LIFT_JOBS LONGSHOT_LIFT_JOBS HOS_CONTROL\n'
+                    'scripts/hookshot_ctl.py scripts/longshot_ctl.py\n'
+                    'https://github.com/NotRexed/Hookshot https://git.magicbean.dev/MagicBeanDev/Longshot\n'
+                    '/home/mooki/Code/Hookshot /home/mooki/Code/hookshot-wt\n'
+                    '/home/mooki/Games/.hookshot-harness /home/mooki/Games/Hookshot\n')
+        self.assertEqual(publish.normalise(original), original)
+
+    def test_own_identity_and_markdown_prose_are_renamed(self):
+        original = '# Hookshot workbench\nHookshot and Longshot. `hookshot_log.txt`\nHOOKSHOT_WB_PROFILE hookshot-wb\n'
+        self.assertEqual(publish.normalise(original, 'SKILL.md'),
+                         '# LS workbench\nHS and LS. `hookshot_log.txt`\nLS_WB_PROFILE ls-wb\n')
+        self.assertEqual(publish.normalise('WCLASS=hookshot-harness\nH=Games/.hookshot-harness\n'),
+                         'WCLASS=ls-harness\nH=Games/.hookshot-harness\n')
+
+    def test_source_comments_and_docstrings_leave_runtime_literals_alone(self):
+        original = '"""Hookshot and Longshot."""\n# Hookshot helper\nruntime = "Hookshot v1 longshot_log.txt"\n'
+        expected = '"""HS and LS."""\n# HS helper\nruntime = "Hookshot v1 longshot_log.txt"\n'
+        self.assertEqual(publish.normalise(original, 'helper.py'), expected)
+
+    def test_live_toolchain_helper_and_test_follow_the_new_input_name(self):
+        original = 'def environment_value(environ, suffix):\n    return environ.get("OLD_" + suffix)\n'
+        namespace = {}
+        exec(publish.normalise(original, 'harness/hs_names.py'), namespace)
+        self.assertEqual(namespace['environment_value']({'LS_MINGW': '/fixture/sdk'}, 'MINGW'), '/fixture/sdk')
+        old_test = ('class Tests:\n    def test_local_toolchain_input_accepts_either_but_not_both(self):\n'
+                    '        pass\n')
+        actual = publish.normalise(old_test, 'harness/test_hs_names.py')
+        self.assertIn('def test_local_toolchain_input_uses_the_workbench_namespace', actual)
+        self.assertIn("'LS_MINGW'", actual)
+
+    def test_paths_and_allowlist_use_renamed_destinations(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = stage(Path(temporary))
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(root)}):
+                pairs = publish.files()
+            destinations = {str(destination) for _, destination in pairs}
+            self.assertEqual(len(pairs), 195)
+            self.assertIn('harness/ls-port.py', destinations)
+            self.assertTrue({'play/pilot/pilot.py', 'play/pilot/interact.py', 'play/pilot/test_pilot.py', 'play/bench/run.py',
+                             'play/bench/test_bench.py'} <= destinations)
+            self.assertTrue({'play/pilot/tactics.py', 'play/pilot/tactics_seed.py', 'play/pilot/lessons.py', 'play/pilot/selfplay.py',
+                             'play/pilot/routelib.py', 'play/pilot/frontier.py', 'play/pilot/routes.py', 'play/pilot/test_tactics.py',
+                             'play/pilot/test_selfplay.py', 'play/pilot/test_routelib.py', 'play/pilot/test_frontier.py',
+                             'play/playbench/playbench.py', 'play/playbench/arms.py', 'play/playbench/test_playbench.py',
+                             'play/playbench/rehearsal/rehearse.py'} <= destinations)
+            self.assertFalse({d for d in destinations if d.startswith('play/') and d.endswith(('.json', '.toml', '.txt'))})
+            self.assertTrue({'play/hsap_items.py', 'play/hsdebug.py', 'play/pilot/hunt.py', 'play/pilot/bughunt.py', 'play/pilot/scenario.py',
+                             'play/pilot/placement.py', 'play/pilot/hud_text.py', 'play/pilot/live_panel.py', 'play/pilot/overlay.py',
+                             'play/pilot/drivers/__init__.py', 'play/pilot/drivers/chat.py', 'play/pilot/mcp_server.py',
+                             'play/worldmodel/build.py', 'play/worldmodel/tables.py', 'play/worldmodel/formats.py', 'play/worldmodel/plan.py',
+                             'play/worldmodel/rebuild.sh', 'play/worldmodel/test_worldmodel.py',
+                             'play/bosspoints/bosspoints_table.py', 'play/bosspoints/make_saves.py', 'play/bosspoints/test_bosspoints.py'} <= destinations)
+            # the data of the world model is a folder named world/ (private, ignored): the code is worldmodel/, and no local table is ever published
+            self.assertFalse({d for d in destinations if d.startswith('play/world/') or '.local.' in d or d == 'play/pilot/story.py'})   # (pilot/story.py names the game's quest flags)
+            self.assertIn('regress/test_runtime_names.py', destinations)
+            self.assertIn('nightly/test_runtime_names.py', destinations)
+            self.assertIn((root / 'harness/nightly/test_compare_signature_paths.py',
+                           Path('nightly/test_compare_signature_paths.py')), pairs)
+            self.assertIn('skills/ls-function-map/SKILL.md', destinations)
+            self.assertIn('skills/ls-skill-upkeep/SKILL.md', destinations)
+            self.assertNotIn('mcp/pyproject.toml', destinations)
+            self.assertTrue(all('hookshot' not in destination for destination in destinations))
+
+    def test_published_live_layout_reads_renamed_physical_sources(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.object(publish, 'LIVE_LAYOUT', 'published'):
+            root = stage(Path(temporary))
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(root)}):
+                pairs = publish.files()
+            self.assertTrue((root / 'skills/ls-workbench/SKILL.md').is_file())
+            self.assertIn((root / 'harness/ls-port.py', Path('harness/ls-port.py')), pairs)
+
+    def test_unreviewed_skill_data_refuses_before_any_write(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = root / 'checkout'; checkout.mkdir()
+            (source / 'skills' / next(iter(publish.SKILL_MAP)) / 'private.json').write_text('{}')
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}), self.assertRaisesRegex(ValueError, 'unreviewed'):
+                publish.publish(checkout)
+            self.assertEqual(list(checkout.iterdir()), [])
+
+    def test_missing_source_refuses_before_any_write(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = root / 'checkout'; checkout.mkdir()
+            (source / 'harness/hs-run.sh').unlink()
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}), self.assertRaisesRegex(ValueError, 'missing'):
+                publish.publish(checkout)
+            self.assertEqual(list(checkout.iterdir()), [])
+
+    def test_links_cannot_escape_the_publication(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = root / 'checkout'; checkout.mkdir()
+            outside = root / 'outside'; outside.mkdir()
+            (checkout / 'harness').symlink_to(outside, target_is_directory=True)
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}), self.assertRaisesRegex(ValueError, 'linked'):
+                publish.publish(checkout)
+            self.assertEqual(list(outside.iterdir()), [])
+
+    def test_staging_is_idempotent_cleans_managed_skills_and_leaves_mcp(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = destination(root / 'checkout')
+            legacy = checkout / 'skills' / next(iter(publish.SKILL_MAP)); legacy.mkdir(parents=True)
+            (legacy / 'SKILL.md').write_text('obsolete')
+            (checkout / 'mcp').mkdir(); protected = checkout / 'mcp/owned.txt'; protected.write_text('unchanged')
+            original = {p: p.read_bytes() for p in source.rglob('*') if p.is_file()}
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(publish.publish(checkout), 0)
+                self.assertFalse(legacy.exists())
+                stale = checkout / 'skills/ls-workbench/stale.py'; stale.write_text('obsolete')
+                publish.publish(checkout)
+                self.assertFalse(stale.exists())
+                self.assertEqual(publish.publish(checkout, check=True), 0)
+                (source / 'harness/hs-run.sh').write_text('changed fixture')
+                before = (checkout / 'harness/hs-run.sh').read_bytes()
+                with contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(publish.publish(checkout, check=True), 1)
+                self.assertEqual((checkout / 'harness/hs-run.sh').read_bytes(), before)
+            self.assertEqual(protected.read_text(), 'unchanged')
+            self.assertTrue(all(p.read_bytes() == data for p, data in original.items() if p.name != 'hs-run.sh'))
+
+    def test_identity_skills_keep_helpers_and_map_links_without_editing_live_sources(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = destination(root / 'checkout')
+            skill = source / 'skills/ls-skill-upkeep'
+            original = ('---\nname: ls-skill-upkeep\n---\nRead skill://hookshot-workbench and `hookshot-pr-evidence`.\n'
+                        'Run /home/mooki/.agents/skills/hookshot-pr-evidence/scripts/panels.sh.\n')
+            manifest = checkout / name_policy.MANIFEST
+            row = ['skills/ls-skill-upkeep/SKILL.md', name_policy.literals(original)[-1], 1,
+                   'Synthetic live command path for this publication fixture.']
+            manifest.write_text(manifest.read_text().replace(name_policy.END, json.dumps(row) + '\n' + name_policy.END))
+            (skill / 'SKILL.md').write_text(original)
+            helper = skill / 'check_skills.py'; helper.write_text('print("synthetic checker")\n'); helper.chmod(0o755)
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(publish.publish(checkout), 0)
+                self.assertEqual(publish.publish(checkout, check=True), 0)
+            published = checkout / 'skills/ls-skill-upkeep'
+            self.assertIn('Read skill://ls-workbench and `ls-pr-evidence`.', (published / 'SKILL.md').read_text())
+            self.assertIn('/home/mooki/.agents/skills/hookshot-pr-evidence/scripts/panels.sh.', (published / 'SKILL.md').read_text())
+            self.assertEqual((published / 'check_skills.py').read_bytes(), helper.read_bytes())
+            self.assertEqual((published / 'check_skills.py').stat().st_mode & 0o777, 0o755)
+            self.assertTrue((checkout / 'skills/ls-function-map/SKILL.md').is_file())
+            self.assertEqual((skill / 'SKILL.md').read_text(), original)
+
+    def test_names_failure_preserves_all_checkout_bytes_modes_and_obsolete_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = destination(root / 'checkout')
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}):
+                publish.publish(checkout)
+                stale = checkout / 'skills/ls-workbench/stale.py'
+                stale.write_text('retained until publication passes')
+                stale.chmod(0o751)
+                before = {p.relative_to(checkout): (p.read_bytes(), p.stat().st_mode)
+                          for p in checkout.rglob('*') if p.is_file()}
+                (source / 'harness/hs-run.sh').write_text('changed allowed file')
+                (source / 'harness/hs-save.sh').write_text('unlisted-' + next(iter(publish.SKILL_MAP)))
+                for check in (False, True):
+                    with self.subTest(check=check), self.assertRaisesRegex(ValueError, 'names check failed before'):
+                        publish.publish(checkout, check=check)
+                    after = {p.relative_to(checkout): (p.read_bytes(), p.stat().st_mode)
+                             for p in checkout.rglob('*') if p.is_file()}
+                    self.assertEqual(after, before)
+
+    def test_staged_names_check_includes_repository_only_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = destination(root / 'checkout')
+            (checkout / 'unmanaged.txt').write_text(next(iter(publish.SKILL_MAP)))
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}):
+                with self.assertRaisesRegex(ValueError, 'unmanaged.txt'):
+                    publish.publish(checkout)
+            self.assertFalse((checkout / 'harness').exists())
+
+    def test_missing_names_manifest_refuses_before_writing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = root / 'checkout'
+            checkout.mkdir()
+            with patch.dict(os.environ, {'LS_WB_SOURCE_ROOT': str(source)}), self.assertRaises(OSError):
+                publish.publish(checkout)
+            self.assertEqual(list(checkout.iterdir()), [])
+
+    def test_sync_shell_checks_staged_sources_before_replacement(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = stage(root / 'stage'); checkout = destination(root / 'checkout')
+            for name in ('sync-from-live.sh', 'publish.py', 'name_policy.py', 'publish-check.sh'):
+                shutil.copy2(ROOT / name, checkout / name)
+            env = {**os.environ, 'LS_WB_SOURCE_ROOT': str(source), 'HS_PYTHON': sys.executable}
+            command = ['bash', str(checkout / 'sync-from-live.sh')]
+            first = subprocess.run(command, env=env, text=True, capture_output=True)
+            self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+            checked = subprocess.run([*command, '--check'], env=env, text=True, capture_output=True)
+            self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+            target = checkout / 'harness/hs-run.sh'
+            before = target.read_bytes()
+            (source / 'harness/hs-run.sh').write_text('unlisted-' + next(iter(publish.SKILL_MAP)))
+            refused = subprocess.run(command, env=env, text=True, capture_output=True)
+            self.assertNotEqual(refused.returncode, 0)
+            self.assertIn('names check failed before publication', refused.stderr)
+            self.assertEqual(target.read_bytes(), before)
+
+    def test_relocation_is_literal_and_skips_private_and_linked_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            script = root / 'script.sh'; script.write_text('/home/mooki/Games/.hookshot-harness\n'); script.chmod(0o755)
+            (root / '.private').mkdir(); private = root / '.private/state'; private.write_text('/home/mooki')
+            outside = root / '.private/target'; outside.write_text('/home/mooki'); (root / 'linked').symlink_to(outside)
+            (root / 'docs').mkdir()
+            manifest = root / name_policy.MANIFEST
+            manifest.write_text(name_policy.BEGIN + '\n["script.sh", "/home/mooki/Games/.hookshot-harness", 1, "host path"]\n' + name_policy.END)
+            with contextlib.redirect_stdout(io.StringIO()):
+                publish.relocate(root, '/home/space & value')
+            self.assertEqual(script.read_text(), '/home/space & value/Games/.hookshot-harness\n')
+            self.assertEqual(script.stat().st_mode & 0o777, 0o755)
+            self.assertEqual(private.read_text(), '/home/mooki')
+            self.assertEqual(outside.read_text(), '/home/mooki')
+            self.assertFalse(name_policy.violations(root, files=['script.sh']))
+
+    def test_relocation_rejects_invalid_homes(self):
+        for home in ('relative', '/', '/home/bad\nnext'):
+            with self.subTest(home=home), self.assertRaises(ValueError):
+                publish.relocate(ROOT, home)
+
+    def test_relocate_shell_uses_the_tested_function(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for name in ('relocate.sh', 'publish.py', 'name_policy.py'):
+                shutil.copy2(ROOT / name, root / name)
+            (root / 'source.sh').write_text('/home/mooki/Code/Hookshot\n')
+            result = subprocess.run(['bash', str(root / 'relocate.sh'), '/home/fixture & space'], text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((root / 'source.sh').read_text(), '/home/fixture & space/Code/Hookshot\n')
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

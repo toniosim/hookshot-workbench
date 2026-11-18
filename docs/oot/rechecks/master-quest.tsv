@@ -1,0 +1,56 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+master-quest	f_80eefdb0	function	agrees	read	read	0x100 allocation, holder 0x84e97e48 stored, nnMain copy to 0x84eb5f40 right after the call returning at 0x81223140, then slot 5 called with phase 2	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_83392a00	function	agrees	read	read	Phase 2 flow matches (count, min 32, list, entry 1 sets +216, then f_8338f290). The quoted 0x83392a38 and 0x83392a70 are return addresses; the calls are at 0x83392a34 and 0x83392a6c	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8517d900	function	agrees	read	read	A host import stub (f_8517d900 in a64_hooks.c, not a lifted function); only caller PLT f_83c62340 and f_83392a00 (call at 0x83392a34)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+master-quest	f_8517d950	function	agrees	read	read	A host import stub; PLT f_83c62350; called from f_83392a00 (call at 0x83392a6c)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8338f290	function	agrees	read	read	Carries the string BootupBackgroundWorkThread; called from f_83392a00	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_83392c80	function	partly	read	read	Matches (+208 set to 1 or 2, bit 0 of +212 cleared), but it takes a parameter block (x1), picks 2 from a bit lookup and a byte, and ends in a tail call of a virtual of a global object	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_83392250	function	agrees	read	read	Clears the holder at 0x84e97e48 after calling its destructor; falls to f_80ed9bf0 when it is not the held object	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_80fb1560	function	agrees	read	read	0x68-byte allocation, holder 0x84e9f558 stored (page 0x84e9f000 +1368), called from f_80fb14b0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_80fb14b0	function	agrees	read	read	Carries both file names; calls f_80fb1560 then f_80fb1600	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_80fb1600	function	agrees	read	read	Stores 0x7fffffff at +16 first ("dev"), splits lines with f_810c4420 (which calls f_810c4d60), calls f_8349b3f0, sets byte +64 to 1	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_810c4d30	function	corrected	read	read	Only f_810c4c90 calls it directly; about 14 other functions use the holder (page 0x84e9f000 +1368) inline. Not about 40 callers	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_810c4d60	function	corrected	read	read	A three-character base-36 parser: "dev" gives 0x7fffffff, a three-character token is d0*1296 + d1*36 + d2 (0-9, A-Z, a-z), anything else is 0xffffffff. So "120" is 1368, "111" 1333, "110" 1332	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_810c4bf0	function	agrees	read	read	Parses the literal at +3803 of its page (the token 120) and stores the result at 0x84e49438; the stored value is 1368 (base 36)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8331a6c0	function	agrees	read	read	0x28 allocation, +8..+39 cleared, u16 0xff at +30, vtable word from the page; static initialiser f_8108d7c0 fills entry 0x84e92f98 with key 0x97bb1b66 and this function	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8331a8f0	function	agrees	read	read	Slot 19 of vtable 0x84bea500 (0x84bea598)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8331a800	function	agrees	read	read	Carries "HasAoCMQ"; calls f_803f5b40 to bind the output; slot 28	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8331a710	function	agrees	read	read	Version read inline (not through f_810c4d30); 0x7fffffff gives 1, else byte +216 of the entitlement; byte stored through [+32]&~3; the TLS step as described	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_851095f0	function	agrees	read	read	A host import stub (a64_hooks.c); slot at [[0x84c9db18]+84], 0x84c9db18 holds 0x84ea52a8	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25	310e7c9dfa152ecf7ff165b22a86c62bd444451f	dyst
+master-quest	f_85109610	function	agrees	read	read	A host import stub; the same slot word is read in f_8331a710	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_8331cdb0	function	agrees	read	read	Reads bytes +142 and +143 of the object behind GOT cell 0x84ca1660 (holds 0x84e98e38) into two outputs; node status written to +24	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_80c6e850	function	agrees	read	read	Declares the outputs IsExist and IsMQModeExist (two f_803f5b40 calls)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_83305480	function	agrees	read	read	Bool byte at [+40]; entitlement null or bit 0 gives mode 1, else clears hash 0x605e5df8 through f_806a2b20; stores at component +336/+337 and bit 23 (0x800000) as stated; f_83381400 called	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_833056c0	function	agrees	read	read	Returns the string SeqOneShotSetMQMode	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_832f8f80	function	agrees	read	read	Hashes 0xe1932d84 and 0x6d47deab used, preset names table in order NewGame, ResetOption, BackToTitle, BackToTitleFromGameOver, NewGameMQ, ReleaseMQ; calls f_83425a00	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_82919de0	function	agrees	read	read	Class OneShotOpenSystemWindow; calls f_82919fb0 and f_83425a00	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_83425a00	function	agrees	read	read	Button calls f_83425bc0 with (0,0),(1,1) for 0 and 4, (0,2), (0,3), (0,4) as stated; strings %04d, LayoutMsg/SystemWindow_00 and T_Text_00 present	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_811f4040	function	agrees	read	read	Hash 0x605e5df8 present; the three named functions f_8022b900, f_8022a580, f_80594ab0 also carry it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_82a21720	function	agrees	read	read	All 13 dungeon names and "_MQ" are in the function; "no code reads its output, no .ainb uses it" is a data claim not checked here	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_80ecffd0	function	agrees	read	read	0x148 allocation, vtable page 0x84aa7000, store at +320	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_80831a80	function	agrees	read	read	Carries GameBancParamName; two declarations	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	f_809d76a0	function	agrees	read	read	Hashes 0xcea220d3 and 0x3c3171e5 and the "_MQ" string present; +842 not located as a number in the text	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84e97e48	data	agrees	read	read	Holder stored by f_80eefdb0 and cleared by f_83392250; byte +216 read by f_8331a710 and f_83305480	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84c9d9c8	data	agrees	read	read	Image value is 0x84e97e48	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84eb5f40	data	agrees	read	read	nnMain stores the entitlement pointer there (through GOT cell 0x84c9d9c0) and calls slot 5 on it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84bf86d0	data	agrees	read	read	Slot 5 (+40) is f_83392a00 and slot 6 f_83392c80	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84e9f558	data	agrees	read	read	Read as page 0x84e9f000 + 1368 by f_8331a710, f_810c4d30 and 14 others; stored by f_80fb1560	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x83f44d10	data	agrees	read	read	Image word is 0x7fffffff	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84e49438	data	agrees	read	read	Stored by f_810c4bf0 (page 0x84e49000 + 1080)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84e92f98	data	agrees	read	read	Filled at run time by f_8108d7c0: key 0x97bb1b66 at +0 and the create function at +8; zero in the image	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84bea500	data	agrees	read	read	Slots 19, 28 and 39 hold f_8331a8f0, f_8331a800 and f_8331a710	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x84bd4be8	data	agrees	read	read	The evaluate slot (+0x138) holds f_832f8f80	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x83f0a9a0	data	agrees	read	read	Six names in order from the image: NewGame, ResetOption, BackToTitle, BackToTitleFromGameOver, NewGameMQ, ReleaseMQ	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	0x83d0488a	data	agrees	read	read	The string is "_MQ"	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+0	field	agrees	read	read	Vtable stored first by f_80eefdb0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+8	field	agrees	read	read	f_80eefb10 is run on obj+8; its LightEvent at +0x70 gives +120	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+144,+176	field	cannot-check	read	read	deep: the run-time vtable stores at +144 and +176 were not traced	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+208	field	agrees	read	read	Slot 6 stores 1 or 2 as a byte; f_8007f6c0, f_8007fe60, f_800eb9c0, f_832d11b0 and f_832d1660 compare it with 2	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+212	field	agrees	read	read	Those five set bit 0 (atomic or) when +208 is 2; slot 6 clears it (atomic and)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+216	field	agrees	read	read	f_83392a00 stores byte 1 on a match; nothing in the text clears it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	EntitlementObject+224	field	agrees	read	read	f_80eefdb0 stores the disposer at +224 and the same address at 0x84e97bc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	RegionLanguageMgr+16	field	agrees	read	read	f_80fb1600 stores 0x7fffffff first and f_810c4420 the parsed token; a base-36 value, not decimal (see f_810c4d60)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	RegionLanguageMgr+64	field	agrees	read	read	f_80fb1600 stores byte 1 at +64 at its end; f_810c4d30 and f_8331a710 test it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	SeqQueryHasAoCMQ+0	field	agrees	read	read	Stored by f_8331a6c0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	SeqQueryHasAoCMQ+30	field	agrees	read	read	f_8331a6c0 stores 0xff as u16 at +30	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+master-quest	SeqQueryHasAoCMQ+32	field	agrees	read	read	f_8331a710 writes a byte through [+32]&~3 and tests bit 1	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

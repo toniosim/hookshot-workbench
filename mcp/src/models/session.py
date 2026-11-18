@@ -76,11 +76,18 @@ class Predicate(Record):
         return self
 
 
+Finite = Annotated[float, Field(allow_inf_nan=False)]
+
+
 class GameSample(Record):
     map: str | None = Field(default=None, max_length=80)
     event: bool | None = None
     loading: bool | None = None
     age: str | None = Field(default=None, max_length=32)
+    pos: list[Finite] | None = Field(default=None, min_length=3, max_length=3)
+    life: int | None = Field(default=None, ge=0)
+    max_life: int | None = Field(default=None, ge=0)
+    rupees: int | None = Field(default=None, ge=0)
 
 
 class Sample(Record):
@@ -151,12 +158,26 @@ class OptionsChanged(Record):
     restoration: Literal["not_requested", "on_finish"]
 
 
+class Destination(Record):
+    index: int = Field(ge=0, le=255)
+    child: str | None = Field(default=None, min_length=1, max_length=80)
+    adult: str | None = Field(default=None, min_length=1, max_length=80)
+
+
+class DestinationsPage(Record):
+    destinations: list[Destination] = Field(max_length=256)
+    observed_at: str
+
+
 class TravelResult(Record):
     sent: bool | None
     accepted: bool | None
     arrived: bool | None
     controllable: bool | None
     state: Sample
+    before: GameSample | None = None
+    destination: Destination | None = None
+    map: str | None = Field(default=None, max_length=80)
 
 
 class SaveFile(Record):
@@ -192,6 +213,8 @@ class BuildEntry(Record):
     reviewed: Literal[True]
     owned: Literal[True]
     provenance: Build = Field(default_factory=Build)
+    # Private operator-generated game info for the debug tools (schema: src/models/session_debug.py).
+    game_info: Path | None = None
 
 
 class SaveEntry(Record):
@@ -204,12 +227,23 @@ class SessionProfile(Record):
     resource_class: Literal["ordinary", "whole"] = "ordinary"
     disposable: Literal[True] = True
     debug: bool = False
+    precompile: bool = Field(default=True, strict=True)
+    # Launch switches for the debug tools; each needs a debug profile.
+    debug_tools: bool = False
+    memory: Literal["off", "rw"] = "off"
+    protect_hearts: bool = False
     max_wall_seconds: int = Field(default=450, ge=1, le=450)
 
     @model_validator(mode="after")
     def lane_class(self):
         if self.lane == "intel" and self.resource_class != "ordinary":
             raise ValueError("Intel does not have whole-card mode")
+        return self
+
+    @model_validator(mode="after")
+    def debug_switches(self):
+        if (self.debug_tools or self.memory != "off" or self.protect_hearts) and not self.debug:
+            raise ValueError("debug_tools, memory and protect_hearts require debug")
         return self
 
 

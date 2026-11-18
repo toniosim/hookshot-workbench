@@ -1,0 +1,61 @@
+page	key	kind	verdict	sure_before	sure_after	note	checked	build	hooks_at	origin
+drawing	f_8066fc80	function	agrees	read	read	Read: string "Draw(TV)", f_8066ff60, f_80021a10, f_80665980, f_802ab6c0, f_802a46e0, +0xa34 flags. Agrees with REFrame notes	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_836ce750	function	agrees	read	read	Read: string "PostDraw(TV)", +0xa34 test, calls f_83560df0 (which calls f_834bf400 three times)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80665980	function	agrees	read	read	Read: Initialize..BeginRecording, WaitEvent, Sampler/TexturePool, ShaderScratch, calls f_806668b0 and f_8007de00 once each	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_806650d0	function	agrees	read	read	Read: queue index argument stored at +0x182; ~4 calls from f_80660320 (plus 5 other callers); RE notes agree; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8007de00	function	agrees	read	read	Read: timestamp, EndRecording, memory used, Finalize, then QueueSubmitCommands under the mutex or the pending list; 11 call sites. RE notes agree; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_802ab6c0	function	partly	guess	guess	Not only a getter: it calls f_802aba50, f_802aa8f0, a clear (f_80265760), sets viewport/scissor (f_802a46e0), makes virtual draw calls and ends via f_836d0130. String "Draw(drawMainScreen_)" confirmed	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80660320	function	agrees	read	read	Read: SignalEvent x9, WaitEvent x10, f_806650d0 x4, f_806668b0 x2, switch on ctx+0x18, +0x2d0 counter, [renderer+0xe28]; ~69 distinct callees (row says 62); changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80083580	function	agrees	read	read	Read: tail calls f_8007b520, f_8006cd60 and f_8007d2e0 by task type; a fourth branch uses "agl::lyr::Renderer" begin/end. Callers f_80083960 and f_8007fe60	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8007b520	function	agrees	read	read	Read: own command buffer (Initialize..EndRecording, Finalize), f_8006e160 and f_8007de00 called	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8007d2e0	function	agrees	read	read	Read: f_8007ad40 (which calls BeginRecording), f_8006e160, f_8007de00	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8006e160	function	agrees	read	read	Read: direct calls of f_80a47660, f_8027e840, f_802702e0, f_8006f9c0, f_80070350 (also f_8006fe10, f_806dc280) and virtual steps; REFrame step table agrees	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80a47660	function	agrees	read	read	Read: OnPhase (vtable +0x58) numbers 0,1,4,8,9,0xa,0xb,0xc,0xf,0x10, then 0xd,0xe,3,4,5,6,7,2; WaitEvent x3; 10 f_806688c0 calls; f_802737a0/f_802731c0 releases; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8009bb80	function	agrees	read	read	Read: 12 InvalidateMappedRange sites, 6 BufferInitialize/Finalize, 13 GetFlags, 182 indirect calls, calls f_8008f840, f_800a8df0 and f_806002e0; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80553cd0	function	agrees	read	read	Read: 30 calls of f_80554440; one caller	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80554440	function	agrees	read	read	Read: batches built per type; jump table 0x83f4c2e4 per REFrame; rank 719; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80676ef0	function	agrees	read	read	Read: batch arrays at +0x3c00..+0x3c28, atomic/lock paths; one caller	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80681320	function	agrees	read	read	Read: reads table 0x84c29878; callers f_80255be0, f_8028a2a0, f_806688c0, f_806811d0 as stated	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8008b3e0	function	agrees	read	read	Read: image table entry 5 is f_8008b3e0; Material_Bind, polygon state, CallCommands, DrawElementsInstanced inlined	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8008d640	function	agrees	read	read	Read: table entry 160; ResetCounter, ReportCounter, SetRenderEnable(+Conditional), draw inlined	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80078ce0	function	agrees	read	read	Read: table entry 32; SetRenderEnable and SetRenderEnableConditional around f_80078fc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80078490	function	agrees	read	read	Read: table entry 132; ResetCounter and ReportCounter around f_80078fc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_835c1380	function	agrees	read	read	Read: strings DepthShadowCascade:0x%x, UserPass%d, UserQueue%d, Shape:%d [%s], SubMesh:%d, ModelSortKey line	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80078fc0	function	agrees	read	read	Read: vtable 0x84c2a130 slot +0x58; GeometryProcessingMode, Material_Bind, CallCommands, DrawElementsInstanced, DrawMeshTasks, f_83607e80/f_83607730/f_83607840/f_8029fef0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_800955a0	function	agrees	read	read	Read: vtable 0x84c324d0 slot +0x58; three Material_Bind calls, query/condition calls, BindUniformBuffer	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_8008fc00	function	agrees	read	read	Read: 263 caller functions; state bytes +0x59/+0x5a/+0x5c, ids +0x78..+0x98, +0x8c, program +0xd8	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80077d60	function	agrees	read	read	Read: blend, colour, channel mask, depth-stencil, polygon states and clamps; 254 callers	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80078b10	function	agrees	read	read	Read: SetRenderEnable, offsets +0xc0/+0xc8, +0x5a, +0x60, +0x78..+0x98, +0xd0/+0xd8; 256 call sites	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_83607e80	function	agrees	read	read	Read: SetPrimitiveRestart (via f_834bf480) on, DrawElementsIndirect (4), restart off as a tail call; arguments at +0x14 of a 32-byte entry	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80511fd0	function	agrees	read	read	Read: vtable slot +0x10 of both shape vtables; makes the culling object via f_83607c20	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80521e20	function	agrees	guess	guess	Read: string "gsys::ShapeDL", f_80522050 (GpuMemory_Alloc), called by f_80521a70 (vtable +0x48). Memory pool confirmed; the "display list" role stays a guess	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_806002e0	function	agrees	read	read	Read: 16 BindUniformBuffer, 10 BindStorageBuffer, CallCommands, Initialize..; two callers	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_80364080	function	agrees	read	read	Read: DispatchCompute(8,1,1), +0x4a ring index, +0x328 flag, bind helpers; callers f_80660320 and f_831f4490	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	f_808833e0	function	agrees	guess	read	Read: names UboCtx, SsboUnitPlacement(_DrawList), SsboMeshPlacement_Leaf, AglOcclusionDepthData, TurfTemp; DispatchComputeIndirect twice. Raise to read	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	0x84c29878	data	agrees	read	read	Image: 256 entries; 5=f_8008b3e0, 32=f_80078ce0, 132=f_80078490, 160=f_8008d640, 176=f_80522a20; 243 in 0x835c3e90-0x83604000, 13 outside	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	0x84c2a130	data	agrees	read	read	Image: +0x10 f_80511fd0, +0x48 f_80521a70, +0x50 f_836063a0, +0x58 f_80078fc0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	0x84c324d0	data	agrees	read	read	Image: +0x50 f_836b7ff0, +0x58 f_800955a0	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	0x84ea2780	data	agrees	read	read	Image: GOT slot 0x84ca9cc0 holds 0x84ea2780; f_80083960 reads it (and 16 other functions)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	0x84e9fca8	data	agrees	read	read	Read: +0x2d0 counter (atomic) and +0x2e0 event array used in f_80660320; +0x278 slot pool in f_80665980/f_806650d0; GOT 0x84ca2d60 holds it; changed by b597a8a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A batch+0	field	agrees	read	read	Read: the view (its +0xc bit 0 is tested by f_80084de0); consumer loads [batch+0]	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A batch+8	field	agrees	read	read	Read: f_80083960 passes [batch+8] (the draw list) to f_80084de0; batch stride 0x28	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A batch+0x10	field	agrees	read	read	Read: passed as the pass descriptor; f_80084de0 hashes its first 0x70 bytes with CRC	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A batch+0x18	field	agrees	read	read	Producer side only (f_80554440); the consumer's read of the two words was not followed	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A batch+0x20	field	agrees	read	read	Producer side only; the weight's use is open in the page too	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw item+8	field	agrees	read	read	Read: loops load [item+8]/32 and test it against the view mask	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw item+0xe	field	agrees	read	read	Read: 16-bit word loaded in the loops (class, bit 4, LOD bits); compares with ctx +0x5a/+0x5b	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw item+0x10	field	agrees	read	read	Read: [item+16] is the shape whose vtable +0x58 draws	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x28	field	agrees	read	read	Read: f_8066fc80/f_80665980 pass it; the NVN command buffer is at +0xd8 of that holder (as f_809f0900 etc.)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x3b	field	agrees	read	read	Read: f_835c3140 compares item+0x69e with ctx+0x3b and updates it	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x50	field	agrees	read	read	Read in f_80078fc0 (statistics add); LOD +0x268 not re-checked	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x59	field	agrees	read	read	Read: f_8008fc00 offsets +0x59/+0x5a/+0x5c all present	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x5a	field	agrees	read	read	Read: f_8008fc00 and f_80078b10 use +0x5a	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x5c	field	agrees	read	read	Read: f_8008fc00 and f_80078fc0 test +0x5c flags	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x78…+0x94	field	agrees	read	read	Read: f_8008fc00 compares and f_80078b10 resets +0x78..+0x98 (the reset reaches +0x98)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0x8c	field	agrees	read	read	Read: f_8008fc00 +0x8c (texture set id)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A draw context+0xd8	field	agrees	read	read	Read: f_8008fc00 +0xd8 compare; f_80078b10 clears +0xd0/+0xd8	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A command-buffer slot+0x2c	field	agrees	read	read	Read in f_8007de00 (+44 written after GetCommandMemoryUsed)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A command-buffer slot+0x38	field	agrees	read	read	Read in f_8007de00 (+56 the recording context)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A command-buffer slot+0x4c	field	agrees	read	read	Read in f_8007de00 (+76 after GetControlMemoryUsed)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A command-buffer slot+0x50	field	agrees	read	read	Read in f_8007de00 (+80 the EndRecording handle); matches REFrame (g_GfxDevice handles differ)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst
+drawing	A command-buffer slot+0x90	field	agrees	read	read	Read in f_8007de00 (+144, the timestamps)	2026-11-17	d3bd280503b8d5ea10111883edacf68b7f223d25		dyst

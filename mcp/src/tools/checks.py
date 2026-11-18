@@ -13,7 +13,7 @@ SPECS = (
     ToolSpec("build_start", Safety.RUN, "Start an operator-approved build plan as an owned gated Job; never prepare shaders, accept SDK terms or upgrade dependencies.", shell_route="Gated full/reused build wrappers and completion bookkeeping"),
     ToolSpec("checks_source", Safety.RUN, "Run the reviewed game-free suite or exact declared test names; optionally compare only failures with a reviewed base commit.", shell_route="Idle-gated source test runner and failing-name comparison"),
     ToolSpec("checks_windows_syntax", Safety.RUN, "Run the existing Windows-target fixture check; Windows runtime is always not_run.", shell_route="Windows-target fixture check wrapper (not Windows runtime)"),
-    ToolSpec("checks_pr", Safety.WRITE_LOCAL, "Run the configured repository-bound pre-push check, including its fetch; never push or publish.", open_world=True, shell_route="Repository-bound pre-push check; whole imported-commit attestations only"),
+    ToolSpec("checks_pr", Safety.WRITE_LOCAL, "Run the configured repository-bound pre-push check, including its fetch; never push or publish. repo_id must match the operator catalogue's pr_check_checkout binding exactly.", open_world=True, shell_route="Repository-bound pre-push check at pr_check_checkout; whole imported-commit attestations only"),
     ToolSpec("ci_read", Safety.READ, "Read allowlisted PR or run checks and failing test names; compare with completed main runs without rerunning or modifying CI.", open_world=True, shell_route="CI reader plus failed-job/log and matching-main inspection"),
 )
 

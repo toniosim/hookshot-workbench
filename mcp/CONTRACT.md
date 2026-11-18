@@ -17,7 +17,7 @@ lifespan starts; `close()` cancels and reaps this server's workers, then closes 
 | `paths` | `PathGuards.read(path)` checks registered roots, canonical containment and protected roots. `output(path)` also refuses existing output. `reserve_file(path)` atomically creates a new file and returns its fd, rejecting symlink directory components. Close that fd. |
 | `registry` | SQLite WAL `Registry`, short transactions, full synchronization, five-second busy deadline. `create_job`, `get_job`, `list_jobs`, `update_job`, `append_event`, `events`, `finish`, `receipt`; `create_run`, `get_run`, `update_run`; `add_artifact`, `get_artifact`, `artifact_path`. |
 | `supervisor` | Linux `Supervisor`: `await start(job_id, argv, cwd=, wall_seconds=, queue_timeout_seconds=3600, grace_seconds=2, queued=False, cancellation="group", trusted_read_environment=False)` starts a trusted worker. `mark_admitted(job_id)` separates queue/held clocks. `await cancel(job_id)` never selects by name. `reconcile(job_id)` imports a durable guardian receipt after disconnect/restart. Ordered adapter mode is described below. |
-| `error` | `raise deps.error(code, operation)` returns the one `WorkbenchError`, a framework `ToolError`. It carries only fixed operator guidance, never backend exception text. |
+| `error` | `raise deps.error(code, operation)` returns the one `WorkbenchError`, a framework `ToolError`. Guidance is fixed except the bounded, server-chosen runtime socket path/length diagnostic; never forward backend exception text. |
 | `tool(mcp, name)` | Decorator using the group's declared safety spec, registering only selected tools. Unselected decorators leave the function unregistered. |
 | `selected`, `specs` | Actual selected names and the complete validated `ToolSpec` map. Use these when adding resources. |
 | `gates` | Injected passive observation backend. `snapshot(device=None, request_pid=None, cursor=0, limit=50)` returns typed timestamped queue state without acquiring locks or creating files. |
@@ -103,8 +103,9 @@ a terminal state: use `finish(job_id, state, receipt, error=None)` to store term
 
 `add_artifact(path, guards=deps.paths, mime=, producer=Producer(...), run_id=None, clock=None,
 privacy="private", complete=False)` checks roots, hashes a stable file and retains its private path internally. Large
-hashing belongs in a bounded background job. A URI is metadata, not permission to serve raw bytes: this core exposes
-no artifact-content resource. Never add a generic file resource, and never publish saves, dumps or guest memory.
+hashing belongs in a bounded background job. The artifact text resource serves only complete registered
+JSON/plain/CSV text up to 8 MiB, with hashes checked, paths/secrets redacted and opaque revision-bound cursors.
+It accepts no caller-selected path and never serves binary files, saves, dumps or guest memory.
 
 ### Events, process identity and receipts
 

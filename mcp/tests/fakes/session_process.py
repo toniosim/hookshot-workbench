@@ -25,15 +25,17 @@ def wrapper(args):
     assert args[0] == "--inner"
     root = Path(args[1])
     fixture = Path(os.environ["SESSION_FIXTURE"])
+    copy = Path((root / "copy.txt").read_text())
+    log_name = ("longshot" if (copy / "longshot").is_file() else "hookshot") + "_log.txt"
     (root / "start.txt").write_text("synthetic start")
     (root / "load-before.txt").write_text("0.1 0.2 0.3")
-    (root / "hookshot_log.txt").write_text("synthetic bridge starting\n")
+    (root / log_name).write_text("synthetic bridge starting\n")
     child = subprocess.Popen([sys.executable, "-I", __file__, "game", str(root)])
     code = child.wait()
     (root / "exit.txt").write_text(str(code if code >= 0 else 128-code))
     (root / "end.txt").write_text("synthetic end")
     (root / "load-after.txt").write_text("0.2 0.3 0.4")
-    with (root / "hookshot_log.txt").open("a") as stream:
+    with (root / log_name).open("a") as stream:
         stream.write("synthetic bridge ended\n")
     (root / "present.csv").write_text("frame,time,ms\n1,1,16\n")
     return 0  # deliberately not the game exit code
@@ -45,6 +47,7 @@ async def game(args):
     root = Path(args[0])
     fixture = Path(os.environ["SESSION_FIXTURE"])
     pairs = dict(line.split("=", 1) for line in (root / "extra-env.txt").read_text().splitlines() if "=" in line)
+    (fixture / "game-env.json").write_text(json.dumps(pairs))
     child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(3600)"])
     (fixture / "pids.json").write_text(json.dumps({"game": os.getpid(), "child": child.pid}))
     stopping = asyncio.Event()

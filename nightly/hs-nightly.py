@@ -75,7 +75,10 @@ def comparisons(store, night, current, history):
         current['comparisons'][metric] = decision
         if decision['state'] == 'regression':
             findings.append({'scenario': current['id'], 'kind': 'metric', 'metric': metric, **decision})
-    for finding in compare.compare_signatures(current['signatures'], [r['signatures'] for r in history]):
+    # Missing versions are legacy keys, not keys made by the currently loaded code.
+    signature_history = [r['signatures'] for r in history
+                         if r.get('signature_version', 1) == current.get('signature_version', 1)]
+    for finding in compare.compare_signatures(current['signatures'], signature_history):
         findings.append({'scenario': current['id'], 'kind': 'log-signature', **finding,
                          'log': log})
     for name, image in current['images'].items():
@@ -104,7 +107,7 @@ def arm(config, calendar=None):
     if not config.get('timer_enabled', False):
         raise RuntimeError('timer is disabled; enabling it requires the user’s explicit word')
     calendar = calendar or capture(['date', '-d', 'tomorrow ' + config['timer_time'], '+%Y-%m-%d %H:%M:%S']).strip()
-    unit = 'hookshot-nightly-' + slug(stamp('+%Y%m%d-%H%M%S'))
+    unit = 'ls-nightly-' + slug(stamp('+%Y%m%d-%H%M%S'))
     argv = ['systemd-run', '--user', '--unit=' + unit, '--on-calendar=' + calendar,
             '--timer-property=AccuracySec=60s', '--collect', config['python'], '-I', '-B',
             str(Path(__file__).resolve()), 'run', '--rearm']

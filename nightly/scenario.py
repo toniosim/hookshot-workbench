@@ -14,7 +14,7 @@ import time
 import threading
 from common import HARN, capture, env_clean, gated, put, slug, stamp, stop_group, text
 from monitor import Monitor, resources, unsafe
-from metrics import collect
+from metrics import WORST_SECOND_VERSION, collect
 from hs_names import checkout_names, copy_names, log_path
 
 
@@ -41,6 +41,13 @@ class Run:
         self.meta = {'id': spec['id'], 'status': 'running', 'started': stamp(), 'timings': {},
                      'checks': [], 'settings': spec.get('settings', {}), 'save': spec.get('save'),
                      'intel': bool(spec.get('intel'))}
+        settings = self.meta['settings']
+        self.meta['signature_roots'] = {
+            'copy': str(self.copy.resolve()), 'run': str(self.run.resolve()),
+            'evidence': str(self.out.resolve()),
+            'home': str(settings.get('HOME', os.environ.get('HOME', ''))),
+            'tmp': str(settings.get('TMPDIR', os.environ.get('TMPDIR')) or '/tmp'),
+        }
         self.monitor = Monitor(config, copy, self.run, self.out)
         self.bridge, self.proc = None, None
         self.start = None
@@ -203,7 +210,10 @@ class Run:
         self.out.mkdir(parents=True, exist_ok=True)
         (self.out / 'shots').mkdir(exist_ok=True)
         put(self.out / 'scenario.json', self.spec)
-        self.meta['scenario_sha256'] = hashlib.sha256(json.dumps(self.spec, sort_keys=True).encode()).hexdigest()
+        # Definition changes start a fresh history even with unchanged settings.
+        self.meta['metric_definitions'] = {'worst_second': WORST_SECOND_VERSION}
+        definition = {'scenario': self.spec, 'metric_definitions': self.meta['metric_definitions']}
+        self.meta['scenario_sha256'] = hashlib.sha256(json.dumps(definition, sort_keys=True).encode()).hexdigest()
         seconds = self.spec['seconds']
         if not 20 <= seconds <= 450:
             raise ValueError('this runner supports 20–450 game seconds, reserving termination time within eight minutes')
@@ -222,6 +232,7 @@ class Run:
         # A short path, private 0700, under the harness: Unix socket paths have a hard limit.
         socket_dir = HARN / 'nightly-local' / 'sockets' / slug(self.tag)
         socket_dir.mkdir(parents=True, mode=0o700, exist_ok=False)
+        self.meta['signature_roots']['socket'] = str(socket_dir.resolve())
         os.chmod(socket_dir, 0o700)
         sock = socket_dir / 'ctl'
         self.control_socket = sock
@@ -249,7 +260,8 @@ class Run:
             fields = {'copy.txt': str(self.copy), 'seconds.txt': str(seconds), 'input.txt': '',
                       'memmax': '', 'env-file.txt': '# empty: scenario environment only'}
             for name, value in fields.items():
-                (self.run / name).write_text(value + '\n')
+                # hs-run tests memmax with -s: even a newline requests a memory scope.
+                (self.run / name).write_text(value if name == 'memmax' else value + '\n')
             extras = ['HOS_CONTROL=' + str(sock), 'HOS_INPUT_EXCLUSIVE=1', 'RX_VK_SHOT_EVERY=600']
             extras += [str(k) + '=' + str(v) for k, v in self.spec.get('settings', {}).items()]
             (self.run / 'extra-env.txt').write_text('\n'.join(extras) + '\n')

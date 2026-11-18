@@ -9,6 +9,11 @@ import subprocess
 import sys
 import time
 
+EXE = "hookshot"
+VK_LIB = "hookshot_vk.so"
+os.getenv("HOOKSHOT_LIFT_JOBS")
+os.getenv("HOOKSHOT_KEEP_BUILD_FILES")
+
 CONTROL = Path("@CONTROL@")
 control = json.loads(CONTROL.read_text())
 name = Path(__file__).name

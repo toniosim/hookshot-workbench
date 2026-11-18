@@ -1,4 +1,4 @@
-"""Only fixed, actionable messages cross the protocol boundary."""
+"""Fixed error guidance, except bounded diagnostics for an owned runtime socket path."""
 import re
 from fastmcp.exceptions import ToolError
 from src.models import ErrorEnvelope
@@ -21,13 +21,14 @@ INPUT_ACTIONS = {
 
 class WorkbenchError(ToolError):
     def __init__(self, code: str, operation: str, *, retryable: bool = False,
-                 retry_after_seconds: float | None = None):
+                 retry_after_seconds: float | None = None, operator_action: str | None = None):
         if code not in ACTIONS:
             code = "backend_failed"
         operation = operation if re.fullmatch(r"[a-z][a-z0-9_]{0,63}", operation) else "request"
         self.envelope = ErrorEnvelope(code=code, operation=operation,
             retryable=retryable, retry_after_seconds=retry_after_seconds,
-            operator_action=INPUT_ACTIONS.get(operation, ACTIONS[code]))
+            operator_action=operator_action if operation == "session_socket_path" and operator_action is not None
+                else INPUT_ACTIONS.get(operation, ACTIONS[code]))
         super().__init__(self.envelope.model_dump_json())
 
 

@@ -9,7 +9,7 @@ import signal
 import subprocess
 import time
 from src.errors import fail
-from src.models.checks import Catalogue, PreflightLine, PreflightResult, TestResult, WindowsResult
+from src.models.checks import Catalogue, CHECK_NAME, PreflightLine, PreflightResult, TestResult, WindowsResult
 
 MAX_BYTES = 8 * 1024 * 1024
 TEST = r"(?:tests|nx2)/test_[A-Za-z0-9_.-]+\.py"
@@ -57,6 +57,15 @@ def prerequisite(deps, path: Path | None, *, directory=False) -> Path:
     if not (result.is_dir() if directory else result.is_file()):
         raise deps.error("unavailable", "checks_prerequisite")
     return result
+
+
+def windows_sysroot(deps, path):
+    root = prerequisite(deps, path, directory=True)
+    header = root / "include/windows.h"
+    if not header.is_file():
+        raise deps.error("unavailable", "checks_windows_sysroot")
+    deps.paths.read(header)
+    return root
 
 
 def capture(argv, *, cwd: Path, env=None, timeout=30, limit=MAX_BYTES):
@@ -141,7 +150,7 @@ def parse_source(text):
     rows, totals = {}, None
     if start is not None:
         for line in lines[start:]:
-            match = re.match(r"\s*(pass|FAIL|TIMEOUT|skip)\s+(?:(\d+(?:\.\d+)?)s\s+)?(" + TEST + r")(?:\s|$)", line)
+            match = re.match(r"\s*(pass|FAIL|TIMEOUT|skip)\s+(?:(\d+(?:\.\d+)?)s\s+)?(" + CHECK_NAME + r")(?:\s|$)", line)
             if match:
                 status, seconds, name = match.groups()
                 rows[name] = TestResult(name=name, status={"pass": "passed", "skip": "skipped"}.get(status, "failed"),
@@ -151,7 +160,7 @@ def parse_source(text):
                 totals = tuple(map(int, end.groups()))
     counts = tuple(sum(row.status == status for row in rows.values()) for status in ("passed", "failed", "skipped"))
     complete = totals is not None and totals == counts
-    return list(rows.values()), totals if complete else (None, None, None), complete
+    return list(rows.values()), totals if totals is not None else (None, None, None), complete
 
 
 def dry_run(text):

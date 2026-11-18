@@ -5,6 +5,8 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
+import traceback
 from src.config import Config
 from src.deps import Deps
 from src.errors import WorkbenchError
@@ -14,6 +16,7 @@ from src.effects.checks import (build_env, catalogue, checkout, copy_tree, donor
     seed_profile, snapshot, tree_identity, write_new)
 from src.effects.checks_common import (MAX_BYTES, TEST, dry_run, file_hash, git, json_read,
     parse_pr, parse_source, parse_windows, prerequisite, safe_relative)
+from src.effects.names import checkout_names
 
 
 def dependencies(payload):
@@ -30,6 +33,18 @@ def dependencies(payload):
     return deps
 
 
+def durable_registry_write(function, *args, **kwargs):
+    """Retry only a rolled-back busy registry transaction, never a child command."""
+    deadline = time.monotonic() + 30
+    while True:
+        try:
+            return function(*args, **kwargs)
+        except WorkbenchError as error:
+            if error.envelope.code != "busy" or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.05)
+
+
 class Worker:
     def __init__(self, deps, payload, folder):
         self.deps, self.payload, self.folder = deps, payload, folder
@@ -41,20 +56,37 @@ class Worker:
         self.artifacts = []
         self.steps = 0
         self.phase = None
+        self.progress_after = 0.0
+        self.progress_busy_reported = False
+
+    def observe(self, function, *args, **kwargs):
+        if time.monotonic() < self.progress_after:
+            return False
+        try:
+            function(*args, **kwargs)
+            return True
+        except WorkbenchError as error:
+            if error.envelope.code != "busy":
+                raise
+            self.progress_after = time.monotonic() + 1
+            if not self.progress_busy_reported:
+                print("Registry busy: live progress may be incomplete; continuing the child and retaining its raw log.", file=sys.stderr, flush=True)
+                self.progress_busy_reported = True
+            return False
 
     def progress(self, phase, **data):
-        if phase != self.phase:
+        if phase != self.phase and self.observe(self.deps.registry.update_job, self.job_id,
+                phase=phase, completed_steps=self.steps, progress_text=phase):
             self.phase = phase
-            self.deps.registry.update_job(self.job_id, phase=phase, completed_steps=self.steps, progress_text=phase)
         if data:
-            self.deps.registry.append_event(self.job_id, "check_progress", data)
+            self.observe(self.deps.registry.append_event, self.job_id, "check_progress", data)
 
     def artifact(self, path, mime="text/plain", *, complete=True):
-        artifact = self.deps.registry.add_artifact(path, guards=self.deps.paths, mime=mime,
+        artifact = durable_registry_write(self.deps.registry.add_artifact, path, guards=self.deps.paths, mime=mime,
             producer=Producer(tool=self.operation, source_commit=self.request["commit"]),
             run_id=self.payload["run_ids"][0] if self.payload["run_ids"] else None, complete=complete)
         self.artifacts.append(artifact)
-        self.deps.registry.update_job(self.job_id, artifact_uris=[a.uri for a in self.artifacts])
+        durable_registry_write(self.deps.registry.update_job, self.job_id, artifact_uris=[a.uri for a in self.artifacts])
         return artifact
 
     def stream(self, argv, source, env, label, *, build=False):
@@ -97,7 +129,7 @@ class Worker:
                 self.progress("compile")
             if re.match(r"^@@file \S+ [\d.]+ (?:new|cached|again)$", line):
                 self.steps += 1
-                self.deps.registry.update_job(self.job_id, completed_steps=self.steps)
+                self.observe(self.deps.registry.update_job, self.job_id, completed_steps=self.steps)
         else:
             row = re.match(r"^(pass|FAIL|TIMEOUT)\s+[\d.]+s\s+(" + TEST + r")(?:\s|$)", line)
             if row:
@@ -132,7 +164,7 @@ class Worker:
                 rows = [row.model_copy(update={"also_fails_on_base": outcomes.get(row.name) == "failed"
                         if outcomes.get(row.name) in ("passed", "failed") else None}) if row.status == "failed" else row for row in rows]
         result = SourceResult(commit=self.request["commit"], base_commit=base, passed=totals[0], failed=totals[1], skipped=totals[2],
-            tests=rows[:100], failing_names=failed[:100], truncated=len(rows) > 100 or len(failed) > 100,
+            tests=rows[:100], failing_names=failed, truncated=len(rows) > 100,
             exit=code, coverage="named" if tests else "suite", table_complete=complete,
             artifacts=[a.uri for a in self.artifacts])
         # Complete per-test results remain in a registered artifact rather than an oversized event.
@@ -196,6 +228,10 @@ class Worker:
         if identity != plan["profile_identity"]:
             raise self.deps.error("refused_by_policy", "build_start")
         source = self.source_tree(self.request["commit"], "source")
+        names = checkout_names(self.deps, source, "build_start")
+        outputs = (names.executable, names.renderer)
+        if plan["expected_outputs"] != [*outputs, "completion_receipt"]:
+            raise self.deps.error("refused_by_policy", "build_output_identity")
         output = self.folder / "output"
         self.deps.paths.output(output)
         donor = donor_record(self.deps, plan["donor_id"]) if plan["mode"] == "reuse" else None
@@ -220,7 +256,7 @@ class Worker:
         if len(stamps) != 1:
             raise self.deps.error("backend_failed", "build_source_stamp")
         if donor:
-            linked = [name for name in ("hookshot", "hookshot_vk.so")
+            linked = [name for name in outputs
                       if re.search(r"^linked .*/" + re.escape(name) + r":", text, re.M)]
             if len(linked) != 2:
                 raise self.deps.error("backend_failed", "build_receipt")
@@ -234,7 +270,7 @@ class Worker:
                         target.write(chunk)
         elif "@@done " + str(output) not in text.splitlines():
             raise self.deps.error("backend_failed", "build_receipt")
-        hashes = {name: file_hash(prerequisite(self.deps, output / name)) for name in ("hookshot", "hookshot_vk.so")}
+        hashes = {name: file_hash(prerequisite(self.deps, output / name)) for name in outputs}
         # A build donor is never a played copy; no saves or run folders may enter its manifest.
         if any((output / name).exists() for name in ("runs", "user", "user-template")):
             raise self.deps.error("refused_by_policy", "build_output")
@@ -258,14 +294,14 @@ class Worker:
         artifact = self.artifact(path, "application/json")
         # Summaries remain small; the complete typed result is retained separately.
         summary = {key: value for key, value in result.items() if key not in ("tests", "failing_names", "checks", "commands", "artifacts")}
-        self.deps.registry.append_event(self.job_id, "check_result", {"result": summary, "artifact": artifact.uri})
+        durable_registry_write(self.deps.registry.append_event, self.job_id, "check_result", {"result": summary, "artifact": artifact.uri})
         for key in ("tests", "checks", "commands"):
             rows = (extra or {}).get("all_tests", result.get(key, [])) if key == "tests" else result.get(key, [])
             for index, row in enumerate(rows):
                 # Individual rows fit the shared event cap; job_read provides its cursor.
                 encoded = json.dumps(row)
                 if len(encoded.encode()) <= 12000:
-                    self.deps.registry.append_event(self.job_id, "check_row",
+                    self.observe(self.deps.registry.append_event, self.job_id, "check_row",
                         {"kind": key, "index": index, "row": row, "artifact": artifact.uri})
 
 
@@ -308,9 +344,14 @@ def main():
                 "checks_pr": worker.pr, "build_start": worker.build}[payload["operation"]]()
         return code
     except Exception as exc:
+        # Keep the original failure even if reporting it encounters another busy writer.
+        traceback.print_exc()
         error = exc.envelope if isinstance(exc, WorkbenchError) else deps.error("backend_failed", payload["operation"]).envelope
-        deps.registry.update_job(job_id, error=error)
-        deps.registry.append_event(job_id, "check_error", error.model_dump())
+        try:
+            durable_registry_write(deps.registry.update_job, job_id, error=error)
+            durable_registry_write(deps.registry.append_event, job_id, "check_error", error.model_dump())
+        except WorkbenchError:
+            print("Registry error reporting unavailable; original exception retained above.", file=sys.stderr, flush=True)
         return 2
     finally:
         deps.registry.close()

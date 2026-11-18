@@ -8,3 +8,17 @@ LOCAL-NOTES.md
 pr-check-forbidden.txt
 .private/
 .uv-cache/
+# the pilot's private inputs and outputs (play/README.md): game-derived or machine-private, never committed
+play/pilot/segments/
+play/pilot/routes/
+play/pilot/cache/
+play/pilot/caps.json
+play/pilot/ledger*.jsonl
+play/pilot/planner.jsonl
+play/pilot/fragments.jsonl
+play/pilot/prompts.json
+play/pilot/songs.json
+play/bench/segments/
+play/bench/course-local.json
+# local tables the test player's tools read (game names and coordinates: you write them for your own game, never commit them)
+*.local.json

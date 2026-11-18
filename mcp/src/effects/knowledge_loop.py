@@ -23,7 +23,7 @@ def load_module(deps):
 
 def load_snapshot(deps):
     root = checked_path(deps, config(deps).prloop_state_dir, "prloop_next", directory=True)
-    state = read_json(deps, under(deps, root, "state.json", "prloop_next"), "prloop_next")
+    state = read_json(deps, under(deps, root, "state.json", "prloop_next"), "prloop_next", cap=16 * 1024 * 1024)
     policy = read_json(deps, under(deps, root, "config.json", "prloop_next"), "prloop_next")
     if not isinstance(state, dict) or not isinstance(policy, dict) or not isinstance(state.get("snapshot"), dict):
         raise deps.error("unavailable", "prloop_next")

@@ -115,6 +115,27 @@ class GateReader:
         match = re.search(r"^btime (\d+)$", text, re.M)
         return int(match[1]) + birth.start_ticks / os.sysconf("SC_CLK_TCK") if match else None
 
+    def _inherited_locks(self, pid: int) -> list[dict] | None:
+        """flock(1)'s PID may be dead while its open-file-description lock survives exec."""
+        birth = identity(pid, self.proc_root)
+        if birth is None:
+            return [] if not (self.proc_root / str(pid)).exists() else None
+        try:
+            from itertools import islice
+            entries = list(islice((self.proc_root / str(pid) / "fdinfo").iterdir(), MAX_SCAN + 1))
+            if len(entries) > MAX_SCAN:
+                return None
+            locks = []
+            for path in entries:
+                data = _text(path)
+                if data is None:
+                    return None
+                locks.extend(parse_locks("\n".join(line.split(":", 1)[1].lstrip()
+                    for line in data.splitlines() if line.startswith("lock:"))))
+            return locks if identity(pid, self.proc_root) == birth else None
+        except OSError:
+            return None
+
     def _holder(self, lock, slot: str, layout: Layout | None, observed_at: str, now: float,
                 *, resource_class: str | None = None) -> Holder:
         pid = lock["pid"] if lock["pid"] > 0 else None
@@ -265,15 +286,29 @@ class GateReader:
             holders = []
             waiters = []
             stale_holders = 0
+            inherited = {}
+            holder_identity_unknown = False
             for slot in slots:
                 key = _key(layout.directory / slot)
                 actual = [r for r in locks if key and r["key"] == key and not r["blocked"]]
                 recorded = _text(layout.directory / ("holder." + slot))
-                if recorded and not any(str(r["pid"]) == recorded.strip() for r in actual):
+                recorded_pid = int(recorded.strip()) if recorded and recorded.strip().isdigit() else None
+                retained = []
+                if recorded_pid and actual and not any(r["pid"] == recorded_pid for r in actual):
+                    if recorded_pid not in inherited:
+                        inherited[recorded_pid] = self._inherited_locks(recorded_pid)
+                    retained = inherited[recorded_pid]
+                    holder_identity_unknown |= retained is None
+                matches = lambda row: any(r["key"] == row["key"] and r["mode"] == row["mode"] and not r["blocked"]
+                                          for r in retained or [])
+                if recorded and not any(r["pid"] == recorded_pid or matches(r) for r in actual) and retained is not None:
                     stale_holders += 1
-                for lock in actual:
-                    same_slots = sum(1 for s in slots if any(r["key"] == _key(layout.directory / s) and r["pid"] == lock["pid"] and not r["blocked"] for r in locks))
-                    resource = "exclusive" if name == "gpu" and any(r["pid"] == lock["pid"] and r["mode"] == "WRITE" for r in quiet_locks) else "whole" if name == "gpu" and same_slots == 2 else "ordinary"
+                for raw_lock in actual:
+                    lock = {**raw_lock, "pid": recorded_pid} if matches(raw_lock) else raw_lock
+                    same_slots = sum(1 for s in slots if any(r["key"] == _key(layout.directory / s) and
+                        (r["pid"] == lock["pid"] or matches(r)) and not r["blocked"] for r in locks))
+                    exclusive = any((r["pid"] == lock["pid"] or matches(r)) and r["mode"] == "WRITE" for r in quiet_locks)
+                    resource = "exclusive" if name == "gpu" and exclusive else "whole" if name == "gpu" and same_slots == 2 else "ordinary"
                     holders.append(self._holder(lock, slot, layout, observed_at, now, resource_class=resource))
                 if name != "gpu":
                     for lock in locks:
@@ -293,7 +328,10 @@ class GateReader:
                 waiters = [w.model_copy(update={"position_or_null": order[w.ticket] if order else None}) for w in waiters]
                 waiters.sort(key=lambda w: (w.position_or_null or MAX_SCAN, w.ticket or ""))
                 position = next((w.position_or_null for w in waiters if w.pid == request_pid), None)
+            complete = complete and not holder_identity_unknown
             blockers = []
+            if holder_identity_unknown:
+                blockers.append("holder_identity_unavailable")
             if (layout.quiet_directory or layout.directory).joinpath("closed").exists() and name in {"gpu", "intel"}:
                 blockers.append("card_closed")
             if quiet.exclusive:
